@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medlyn - Campanhas</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
+    <nav>
+      <a href="index.html" class="nav-item">📅 Agenda</a>
+      <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
+      <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="estoque.html" class="nav-item">📦 Estoque</a>
+      <a href="contratos.html" class="nav-item">📄 Contratos</a>
+      <a href="campanhas.html" class="nav-item active">📢 Campanhas</a>
+      <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
+      <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>📢 Campanhas de Marketing</h1>
+      <button class="btn btn-purple" onclick="abrirModal()">+ Nova Campanha</button>
+    </div>
+
+    <!-- CARDS RESUMO -->
+    <div class="cards-top" style="margin-bottom:24px">
+      <div class="card card-white">
+        <div class="card-icon">🟢</div>
+        <div>
+          <div class="card-title">Ativas</div>
+          <div class="card-value" id="qtd-ativas">-</div>
+        </div>
+      </div>
+      <div class="card card-white">
+        <div class="card-icon">👆</div>
+        <div>
+          <div class="card-title">Total de Clicks</div>
+          <div class="card-value" id="total-clicks">-</div>
+        </div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-icon">🎯</div>
+        <div>
+          <div class="card-title">Total de Leads</div>
+          <div class="card-value" id="total-leads">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr><th>Campanha</th><th>Canal</th><th>Início</th><th>Fim</th><th>Clicks</th><th>Leads</th><th>Status</th><th>Ações</th></tr>
+        </thead>
+        <tbody id="tabela-campanhas">
+          <tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>📢 Nova Campanha</h2>
+    <div class="form-group">
+      <label>Nome da Campanha *</label>
+      <input type="text" id="nome" placeholder="Ex: Promoção Botox Verão" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Canal</label>
+        <select id="canal">
+          <option value="Instagram">Instagram</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Email">Email</option>
+          <option value="TikTok">TikTok</option>
+          <option value="Google Ads">Google Ads</option>
+          <option value="Indicação">Indicação</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="status">
+          <option value="Ativa">Ativa</option>
+          <option value="Em Andamento">Em Andamento</option>
+          <option value="Pausada">Pausada</option>
+          <option value="Encerrada">Encerrada</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data de Início</label>
+        <input type="date" id="data_inicio" />
+      </div>
+      <div class="form-group">
+        <label>Data de Fim</label>
+        <input type="date" id="data_fim" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Clicks</label>
+        <input type="number" id="clicks" placeholder="0" />
+      </div>
+      <div class="form-group">
+        <label>Leads</label>
+        <input type="number" id="leads" placeholder="0" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Orçamento (R$)</label>
+      <input type="number" id="orcamento" placeholder="0,00" step="0.01" />
+    </div>
+    <div class="form-group">
+      <label>Descrição / Objetivo</label>
+      <textarea id="descricao" rows="3" placeholder="Descreva a campanha..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gray" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-purple" onclick="salvar()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let campanhas = [];
+  let editId = null;
+
+  async function load() {
+    const { data } = await supabase.from('campanhas').select('*').order('created_at', {ascending: false});
+    campanhas = data || [];
+
+    document.getElementById('qtd-ativas').textContent = campanhas.filter(c => c.status === 'Ativa' || c.status === 'Em Andamento').length;
+    document.getElementById('total-clicks').textContent = campanhas.reduce((a,c) => a + (c.clicks || 0), 0).toLocaleString('pt-BR');
+    document.getElementById('total-leads').textContent = campanhas.reduce((a,c) => a + (c.leads || 0), 0).toLocaleString('pt-BR');
+
+    render(campanhas);
+  }
+
+  function render(rows) {
+    const tbody = document.getElementById('tabela-campanhas');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Nenhuma campanha cadastrada</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td><strong>${r.nome}</strong></td>
+        <td>${r.canal || '-'}</td>
+        <td>${r.data_inicio ? new Date(r.data_inicio+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
+        <td>${r.data_fim ? new Date(r.data_fim+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
+        <td>${(r.clicks || 0).toLocaleString('pt-BR')}</td>
+        <td>${(r.leads || 0).toLocaleString('pt-BR')}</td>
+        <td><span class="badge ${statusBadge(r.status)}">${r.status || '-'}</span></td>
+        <td>
+          <button class="btn-sm btn-outline" onclick="editar('${r.id}')">✏️</button>
+          <button class="btn-sm btn-outline" onclick="deletar('${r.id}')" style="margin-left:4px">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function statusBadge(s) {
+    if (s === 'Ativa') return 'badge-success';
+    if (s === 'Em Andamento') return 'badge-warning';
+    if (s === 'Encerrada') return 'badge-danger';
+    return 'badge-purple';
+  }
+
+  function abrirModal(dados = null) {
+    editId = dados?.id || null;
+    document.getElementById('nome').value = dados?.nome || '';
+    document.getElementById('canal').value = dados?.canal || 'Instagram';
+    document.getElementById('status').value = dados?.status || 'Ativa';
+    document.getElementById('data_inicio').value = dados?.data_inicio || '';
+    document.getElementById('data_fim').value = dados?.data_fim || '';
+    document.getElementById('clicks').value = dados?.clicks || '';
+    document.getElementById('leads').value = dados?.leads || '';
+    document.getElementById('orcamento').value = dados?.orcamento || '';
+    document.getElementById('descricao').value = dados?.descricao || '';
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function fecharModal() { document.getElementById('modal').classList.remove('open'); }
+
+  async function salvar() {
+    const payload = {
+      nome: document.getElementById('nome').value,
+      canal: document.getElementById('canal').value,
+      status: document.getElementById('status').value,
+      data_inicio: document.getElementById('data_inicio').value || null,
+      data_fim: document.getElementById('data_fim').value || null,
+      clicks: parseInt(document.getElementById('clicks').value) || 0,
+      leads: parseInt(document.getElementById('leads').value) || 0,
+      orcamento: parseFloat(document.getElementById('orcamento').value) || 0,
+      descricao: document.getElementById('descricao').value,
+    };
+    let erro;
+    if (editId) {
+      ({ error: erro } = await supabase.from('campanhas').update(payload).eq('id', editId));
+    } else {
+      ({ error: erro } = await supabase.from('campanhas').insert(payload));
+    }
+    if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
+    showToast('Campanha salva!', 'success');
+    fecharModal();
+    load();
+  }
+
+  function editar(id) { abrirModal(campanhas.find(c => c.id === id)); }
+
+  async function deletar(id) {
+    if (!confirm('Excluir campanha?')) return;
+    await supabase.from('campanhas').delete().eq('id', id);
+    showToast('Removida!');
+    load();
+  }
+
+  function showToast(msg, tipo = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = `toast show ${tipo}`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  load();
+</script>
+</body>
+</html>

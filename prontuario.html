@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medlyn - Prontuário</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
+    <nav>
+      <a href="index.html" class="nav-item">📅 Agenda</a>
+      <a href="prontuario.html" class="nav-item active">🧾 Prontuário</a>
+      <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="estoque.html" class="nav-item">📦 Estoque</a>
+      <a href="contratos.html" class="nav-item">📄 Contratos</a>
+      <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
+      <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
+      <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>🧾 Prontuários</h1>
+      <button class="btn btn-purple" onclick="abrirModal()">+ Novo Prontuário</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="busca" placeholder="Buscar por paciente..." oninput="filtrar()" />
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr><th>Paciente</th><th>Data</th><th>Procedimento</th><th>Profissional</th><th>Observações</th><th>Ações</th></tr>
+        </thead>
+        <tbody id="tabela-prontuario">
+          <tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>🧾 Registro de Prontuário</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Paciente *</label>
+        <input type="text" id="paciente_nome" placeholder="Nome do paciente" />
+      </div>
+      <div class="form-group">
+        <label>Data *</label>
+        <input type="date" id="data" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Procedimento *</label>
+        <input type="text" id="procedimento" placeholder="Ex: Botox, Preenchimento..." />
+      </div>
+      <div class="form-group">
+        <label>Profissional</label>
+        <input type="text" id="profissional" placeholder="Nome do profissional" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Queixa Principal</label>
+      <textarea id="queixa" rows="2" placeholder="Relato do paciente..." /></textarea>
+    </div>
+    <div class="form-group">
+      <label>Diagnóstico / Avaliação</label>
+      <textarea id="diagnostico" rows="2" placeholder="Avaliação clínica..." /></textarea>
+    </div>
+    <div class="form-group">
+      <label>Tratamento Realizado</label>
+      <textarea id="tratamento" rows="3" placeholder="Descreva o procedimento realizado..." /></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Produtos Utilizados</label>
+        <input type="text" id="produtos" placeholder="Ex: Botox 50U, Acido Hialurônico 1ml" />
+      </div>
+      <div class="form-group">
+        <label>Próxima Consulta</label>
+        <input type="date" id="proxima_consulta" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Observações Pós-Procedimento</label>
+      <textarea id="observacoes" rows="2" placeholder="Cuidados, recomendações..." /></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gray" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-purple" onclick="salvar()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let prontuarios = [];
+  let editId = null;
+
+  async function load() {
+    const { data } = await supabase.from('prontuarios').select('*').order('data', {ascending: false});
+    prontuarios = data || [];
+    filtrar();
+  }
+
+  function filtrar() {
+    const q = document.getElementById('busca').value.toLowerCase();
+    render(prontuarios.filter(r => !q || r.paciente_nome?.toLowerCase().includes(q)));
+  }
+
+  function render(rows) {
+    const tbody = document.getElementById('tabela-prontuario');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Nenhum prontuário encontrado</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td><strong>${r.paciente_nome}</strong></td>
+        <td>${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
+        <td>${r.procedimento || '-'}</td>
+        <td>${r.profissional || '-'}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.observacoes || '-'}</td>
+        <td>
+          <button class="btn-sm btn-outline" onclick="editar('${r.id}')">✏️ Ver</button>
+          <button class="btn-sm btn-outline" onclick="deletar('${r.id}')" style="margin-left:4px">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function abrirModal(dados = null) {
+    editId = dados?.id || null;
+    document.getElementById('paciente_nome').value = dados?.paciente_nome || '';
+    document.getElementById('data').value = dados?.data || new Date().toISOString().split('T')[0];
+    document.getElementById('procedimento').value = dados?.procedimento || '';
+    document.getElementById('profissional').value = dados?.profissional || 'Dra. Juliana';
+    document.getElementById('queixa').value = dados?.queixa || '';
+    document.getElementById('diagnostico').value = dados?.diagnostico || '';
+    document.getElementById('tratamento').value = dados?.tratamento || '';
+    document.getElementById('produtos').value = dados?.produtos || '';
+    document.getElementById('proxima_consulta').value = dados?.proxima_consulta || '';
+    document.getElementById('observacoes').value = dados?.observacoes || '';
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function fecharModal() { document.getElementById('modal').classList.remove('open'); }
+
+  async function salvar() {
+    const payload = {
+      paciente_nome: document.getElementById('paciente_nome').value,
+      data: document.getElementById('data').value,
+      procedimento: document.getElementById('procedimento').value,
+      profissional: document.getElementById('profissional').value,
+      queixa: document.getElementById('queixa').value,
+      diagnostico: document.getElementById('diagnostico').value,
+      tratamento: document.getElementById('tratamento').value,
+      produtos: document.getElementById('produtos').value,
+      proxima_consulta: document.getElementById('proxima_consulta').value || null,
+      observacoes: document.getElementById('observacoes').value,
+    };
+    let erro;
+    if (editId) {
+      ({ error: erro } = await supabase.from('prontuarios').update(payload).eq('id', editId));
+    } else {
+      ({ error: erro } = await supabase.from('prontuarios').insert(payload));
+    }
+    if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
+    showToast('Prontuário salvo!', 'success');
+    fecharModal();
+    load();
+  }
+
+  function editar(id) { abrirModal(prontuarios.find(p => p.id === id)); }
+
+  async function deletar(id) {
+    if (!confirm('Excluir prontuário?')) return;
+    await supabase.from('prontuarios').delete().eq('id', id);
+    showToast('Removido!');
+    load();
+  }
+
+  function showToast(msg, tipo = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = `toast show ${tipo}`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  load();
+</script>
+</body>
+</html>

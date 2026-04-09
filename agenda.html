@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medlyn - Agenda</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
+    <nav>
+      <a href="index.html" class="nav-item">📅 Agenda</a>
+      <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
+      <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="estoque.html" class="nav-item">📦 Estoque</a>
+      <a href="contratos.html" class="nav-item">📄 Contratos</a>
+      <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
+      <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
+      <a href="anamnese.html" class="nav-item active">🧠 Anamnese</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>📅 Agenda de Consultas</h1>
+      <button class="btn btn-purple" onclick="abrirModal()">+ Novo Agendamento</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="date" id="filtro-data" onchange="loadAgendamentos()" />
+      <input type="text" id="busca" placeholder="Buscar paciente..." oninput="filtrarTabela()" />
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Data</th>
+            <th>Horário</th>
+            <th>Procedimento</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-agendamentos">
+          <tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>📅 Novo Agendamento</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nome do Paciente</label>
+        <input type="text" id="paciente_nome" placeholder="Nome completo" />
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="text" id="telefone" placeholder="(11) 99999-9999" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data</label>
+        <input type="date" id="data" />
+      </div>
+      <div class="form-group">
+        <label>Horário</label>
+        <input type="time" id="horario" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Procedimento</label>
+      <input type="text" id="procedimento" placeholder="Ex: Botox, Limpeza de pele..." />
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <select id="status">
+        <option value="Agendado">Agendado</option>
+        <option value="Confirmado">Confirmado</option>
+        <option value="Realizado">Realizado</option>
+        <option value="Cancelado">Cancelado</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea id="observacoes" rows="3" placeholder="Anotações..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gray" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-purple" onclick="salvarAgendamento()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let agendamentos = [];
+  let editId = null;
+
+  async function loadAgendamentos() {
+    const data = document.getElementById('filtro-data').value;
+    let query = supabase.from('agendamentos').select('*').order('data').order('horario');
+    if (data) query = query.eq('data', data);
+    const { data: rows } = await query;
+    agendamentos = rows || [];
+    renderTabela(agendamentos);
+  }
+
+  function renderTabela(rows) {
+    const tbody = document.getElementById('tabela-agendamentos');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Nenhum agendamento encontrado</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td><strong>${r.paciente_nome}</strong></td>
+        <td>${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
+        <td>${r.horario || '-'}</td>
+        <td>${r.procedimento || '-'}</td>
+        <td><span class="badge ${statusBadge(r.status)}">${r.status || 'Agendado'}</span></td>
+        <td>
+          <button class="btn-sm btn-outline" onclick="editar('${r.id}')">✏️</button>
+          <button class="btn-sm btn-outline" onclick="deletar('${r.id}')" style="margin-left:4px">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function statusBadge(s) {
+    if (s === 'Confirmado') return 'badge-success';
+    if (s === 'Cancelado') return 'badge-danger';
+    if (s === 'Realizado') return 'badge-purple';
+    return 'badge-warning';
+  }
+
+  function filtrarTabela() {
+    const q = document.getElementById('busca').value.toLowerCase();
+    renderTabela(agendamentos.filter(r => r.paciente_nome?.toLowerCase().includes(q)));
+  }
+
+  function abrirModal(dados = null) {
+    editId = dados?.id || null;
+    document.getElementById('paciente_nome').value = dados?.paciente_nome || '';
+    document.getElementById('telefone').value = dados?.telefone || '';
+    document.getElementById('data').value = dados?.data || '';
+    document.getElementById('horario').value = dados?.horario || '';
+    document.getElementById('procedimento').value = dados?.procedimento || '';
+    document.getElementById('status').value = dados?.status || 'Agendado';
+    document.getElementById('observacoes').value = dados?.observacoes || '';
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function fecharModal() { document.getElementById('modal').classList.remove('open'); }
+
+  async function salvarAgendamento() {
+    const payload = {
+      paciente_nome: document.getElementById('paciente_nome').value,
+      telefone: document.getElementById('telefone').value,
+      data: document.getElementById('data').value,
+      horario: document.getElementById('horario').value,
+      procedimento: document.getElementById('procedimento').value,
+      status: document.getElementById('status').value,
+      observacoes: document.getElementById('observacoes').value,
+    };
+    let erro;
+    if (editId) {
+      ({ error: erro } = await supabase.from('agendamentos').update(payload).eq('id', editId));
+    } else {
+      ({ error: erro } = await supabase.from('agendamentos').insert(payload));
+    }
+    if (erro) { showToast('Erro ao salvar: ' + erro.message, 'error'); return; }
+    showToast('Agendamento salvo!', 'success');
+    fecharModal();
+    loadAgendamentos();
+  }
+
+  function editar(id) {
+    const r = agendamentos.find(a => a.id === id);
+    if (r) abrirModal(r);
+  }
+
+  async function deletar(id) {
+    if (!confirm('Excluir agendamento?')) return;
+    await supabase.from('agendamentos').delete().eq('id', id);
+    showToast('Removido!');
+    loadAgendamentos();
+  }
+
+  function showToast(msg, tipo = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast show ${tipo}`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Data padrão = hoje
+  document.getElementById('filtro-data').value = new Date().toISOString().split('T')[0];
+  loadAgendamentos();
+</script>
+</body>
+</html>

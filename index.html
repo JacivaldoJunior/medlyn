@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medlyn - Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-icon">💙</span>
+        <span class="logo-text">Medlyn</span>
+      </div>
+      <nav>
+        <a href="index.html" class="nav-item active">📅 Agenda</a>
+        <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
+        <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
+        <a href="estoque.html" class="nav-item">📦 Estoque</a>
+        <a href="contratos.html" class="nav-item">📄 Contratos</a>
+        <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
+        <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
+        <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+      <header class="top-bar">
+        <h2>👋 Olá, Dra. Juliana!</h2>
+        <div class="user-info">
+          <span>Dra. Juliana</span>
+          <div class="avatar">J</div>
+        </div>
+      </header>
+
+      <!-- CARDS TOPO -->
+      <section class="cards-top">
+        <div class="card card-white">
+          <div class="card-icon">📅</div>
+          <div>
+            <div class="card-title">Consultas Hoje</div>
+            <div class="card-value" id="consultas-hoje">--</div>
+            <div class="card-sub">agendadas</div>
+          </div>
+        </div>
+        <div class="card card-purple">
+          <div class="card-icon">🧠</div>
+          <div>
+            <div class="card-title">Anamneses</div>
+            <div class="card-value" id="anamneses-andamento">--</div>
+            <div class="card-sub">em andamento</div>
+          </div>
+        </div>
+        <div class="card card-dark">
+          <div class="card-icon">💰</div>
+          <div>
+            <div class="card-title">Faturamento</div>
+            <div class="card-value" id="faturamento-mes">--</div>
+            <div class="card-sub">Mês Atual</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRID DASHBOARD -->
+      <section class="dashboard-grid">
+
+        <!-- Próximas Consultas -->
+        <div class="dash-card">
+          <h3>📅 Próximas Consultas</h3>
+          <table class="mini-table">
+            <thead><tr><th>Paciente</th><th>Horário</th><th>Status</th></tr></thead>
+            <tbody id="proximas-consultas">
+              <tr><td colspan="3">Carregando...</td></tr>
+            </tbody>
+          </table>
+          <a href="agenda.html" class="btn-link">Ver agenda completa →</a>
+        </div>
+
+        <!-- Contratos -->
+        <div class="dash-card">
+          <h3>📄 Contratos Recentes</h3>
+          <div class="contrato-list" id="contratos-recentes">
+            <div class="contrato-item">
+              <span>Contrato Botulínica</span>
+              <button class="btn-sm btn-primary">Assinar</button>
+            </div>
+            <div class="contrato-item">
+              <span>Contrato Estético</span>
+              <button class="btn-sm btn-outline">Visualizar</button>
+            </div>
+          </div>
+          <a href="contratos.html" class="btn-link">Ver todos →</a>
+        </div>
+
+        <!-- Campanhas -->
+        <div class="dash-card">
+          <h3>📢 Campanhas Ativas</h3>
+          <div id="campanhas-ativas">
+            <div class="campanha-item">
+              <div class="campanha-nome">Promoção Botox</div>
+              <span class="badge badge-warning">Em Andamento</span>
+            </div>
+            <div class="campanha-item">
+              <div class="campanha-nome">Pacote Lipo de Enzimas</div>
+              <span class="badge badge-success">Ativa</span>
+              <div class="campanha-stats">Clicks: 850 / Leads: 320</div>
+            </div>
+          </div>
+          <a href="campanhas.html" class="btn-link">Ver campanhas →</a>
+        </div>
+
+        <!-- Anamnese -->
+        <div class="dash-card">
+          <h3>🧠 Anamnese Digital</h3>
+          <p>Formulários personalizados para novos pacientes.</p>
+          <div class="btn-group">
+            <button class="btn-sm btn-primary" onclick="window.location='anamnese.html'">📋 Formulários de Anamnese</button>
+            <button class="btn-sm btn-outline" onclick="window.location='contratos.html'">📝 Termos e Consentimentos</button>
+          </div>
+        </div>
+
+        <!-- Cadastro de Pacientes -->
+        <div class="dash-card">
+          <h3>👥 Cadastro de Pacientes</h3>
+          <div class="btn-group">
+            <button class="btn-sm btn-primary">🔍 Busca CEP Automática</button>
+            <button class="btn-sm btn-outline">📄 Gerar PDF & Excel</button>
+          </div>
+          <a href="pacientes.html" class="btn-link">Gerenciar pacientes →</a>
+        </div>
+
+        <!-- Financeiro -->
+        <div class="dash-card">
+          <h3>💰 Financeiro</h3>
+          <div id="financeiro-resumo">
+            <div class="fin-item"><span>Receitas</span><strong id="receitas" class="text-green">--</strong></div>
+            <div class="fin-item"><span>Despesas</span><strong id="despesas" class="text-red">--</strong></div>
+            <div class="fin-item"><span>Lucro Líquido</span><strong id="lucro">--</strong></div>
+          </div>
+          <a href="financeiro.html" class="btn-link">Ver financeiro →</a>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function loadDashboard() {
+      // Consultas hoje
+      const hoje = new Date().toISOString().split('T')[0];
+      const { data: consultas } = await supabase
+        .from('agendamentos')
+        .select('*')
+        .eq('data', hoje);
+      document.getElementById('consultas-hoje').textContent = consultas?.length ?? 0;
+
+      // Proximas consultas
+      if (consultas && consultas.length > 0) {
+        const tbody = document.getElementById('proximas-consultas');
+        tbody.innerHTML = consultas.slice(0, 5).map(c => `
+          <tr>
+            <td>${c.paciente_nome || '-'}</td>
+            <td>${c.horario || '-'}</td>
+            <td><span class="badge badge-success">${c.status || 'Agendado'}</span></td>
+          </tr>
+        `).join('');
+      } else {
+        document.getElementById('proximas-consultas').innerHTML = '<tr><td colspan="3">Nenhuma consulta hoje</td></tr>';
+      }
+
+      // Anamneses em andamento
+      const { data: anamneses } = await supabase
+        .from('anamneses')
+        .select('*')
+        .eq('status', 'em_andamento');
+      document.getElementById('anamneses-andamento').textContent = anamneses?.length ?? 0;
+
+      // Faturamento do mês
+      const mesInicio = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+      const { data: pagamentos } = await supabase
+        .from('financeiro')
+        .select('valor')
+        .eq('tipo', 'receita')
+        .gte('data', mesInicio);
+      const total = pagamentos?.reduce((acc, p) => acc + (p.valor || 0), 0) ?? 0;
+      document.getElementById('faturamento-mes').textContent = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+      // Financeiro resumo
+      const { data: despesas } = await supabase.from('financeiro').select('valor').eq('tipo', 'despesa').gte('data', mesInicio);
+      const totalDespesas = despesas?.reduce((acc, p) => acc + (p.valor || 0), 0) ?? 0;
+      document.getElementById('receitas').textContent = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      document.getElementById('despesas').textContent = `R$ ${totalDespesas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      document.getElementById('lucro').textContent = `R$ ${(total - totalDespesas).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
