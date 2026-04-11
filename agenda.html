@@ -1,104 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Agenda</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="auth.js"></script>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
     <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
     <nav>
-      <a href="index.html" class="nav-item">📅 Agenda</a>
+      <a href="index.html" class="nav-item">🏠 Dashboard</a>
+      <a href="agenda.html" class="nav-item active">📅 Agenda</a>
       <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
       <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
       <a href="estoque.html" class="nav-item">📦 Estoque</a>
       <a href="contratos.html" class="nav-item">📄 Contratos</a>
       <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
       <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
-      <a href="anamnese.html" class="nav-item active">🧠 Anamnese</a>
+      <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
+      <a href="usuarios.html" class="nav-item" id="nav-admin" style="display:none">⚙️ Usuários</a>
     </nav>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid rgba(0,0,0,0.1)">
+      <div style="font-weight:600;font-size:14px" id="user-name">-</div>
+      <button onclick="logout()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1.5px solid #c8ccd6;background:white;cursor:pointer;font-size:13px;font-family:inherit">🚪 Sair</button>
+    </div>
   </aside>
 
   <main class="main-content">
     <div class="page-header">
       <h1>📅 Agenda de Consultas</h1>
-      <button class="btn btn-purple" onclick="abrirModal()">+ Novo Agendamento</button>
+      <button class="btn btn-purple" id="btn-novo">+ Novo Agendamento</button>
     </div>
-
     <div class="search-bar">
-      <input type="date" id="filtro-data" onchange="loadAgendamentos()" />
-      <input type="text" id="busca" placeholder="Buscar paciente..." oninput="filtrarTabela()" />
+      <input type="date" id="filtro-data"/>
+      <input type="text" id="busca" placeholder="Buscar paciente..."/>
     </div>
-
     <div class="table-container">
       <table class="data-table">
-        <thead>
-          <tr>
-            <th>Paciente</th>
-            <th>Data</th>
-            <th>Horário</th>
-            <th>Procedimento</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-agendamentos">
-          <tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Carregando...</td></tr>
-        </tbody>
+        <thead><tr><th>Paciente</th><th>Data</th><th>Horário</th><th>Procedimento</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela"></tbody>
       </table>
     </div>
   </main>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <h2>📅 Novo Agendamento</h2>
+    <h2 id="modal-title">📅 Novo Agendamento</h2>
     <div class="form-row">
-      <div class="form-group">
-        <label>Nome do Paciente</label>
-        <input type="text" id="paciente_nome" placeholder="Nome completo" />
-      </div>
-      <div class="form-group">
-        <label>Telefone</label>
-        <input type="text" id="telefone" placeholder="(11) 99999-9999" />
-      </div>
+      <div class="form-group"><label>Nome do Paciente</label><input type="text" id="f-paciente_nome" placeholder="Nome completo"/></div>
+      <div class="form-group"><label>Telefone</label><input type="text" id="f-telefone" placeholder="(11) 99999-9999"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Data</label>
-        <input type="date" id="data" />
-      </div>
-      <div class="form-group">
-        <label>Horário</label>
-        <input type="time" id="horario" />
-      </div>
+      <div class="form-group"><label>Data</label><input type="date" id="f-data"/></div>
+      <div class="form-group"><label>Horário</label><input type="time" id="f-horario"/></div>
     </div>
-    <div class="form-group">
-      <label>Procedimento</label>
-      <input type="text" id="procedimento" placeholder="Ex: Botox, Limpeza de pele..." />
-    </div>
-    <div class="form-group">
-      <label>Status</label>
-      <select id="status">
+    <div class="form-group"><label>Procedimento</label><input type="text" id="f-procedimento" placeholder="Ex: Botox, Limpeza de pele..."/></div>
+    <div class="form-group"><label>Status</label>
+      <select id="f-status">
         <option value="Agendado">Agendado</option>
         <option value="Confirmado">Confirmado</option>
         <option value="Realizado">Realizado</option>
         <option value="Cancelado">Cancelado</option>
       </select>
     </div>
-    <div class="form-group">
-      <label>Observações</label>
-      <textarea id="observacoes" rows="3" placeholder="Anotações..."></textarea>
-    </div>
+    <div class="form-group"><label>Observações</label><textarea id="f-observacoes" rows="3" placeholder="Anotações..."></textarea></div>
     <div class="modal-footer">
-      <button class="btn btn-gray" onclick="fecharModal()">Cancelar</button>
-      <button class="btn btn-purple" onclick="salvarAgendamento()">💾 Salvar</button>
+      <button class="btn btn-gray" id="btn-cancelar">Cancelar</button>
+      <button class="btn btn-purple" id="btn-salvar">💾 Salvar</button>
     </div>
   </div>
 </div>
@@ -107,109 +82,124 @@
 
 <script>
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  let agendamentos = [];
-  let editId = null;
+  let rows = [], editId = null, clinicaId = null;
 
-  async function loadAgendamentos() {
-    const data = document.getElementById('filtro-data').value;
-    let query = supabase.from('agendamentos').select('*').order('data').order('horario');
-    if (data) query = query.eq('data', data);
-    const { data: rows } = await query;
-    agendamentos = rows || [];
-    renderTabela(agendamentos);
+  async function init() {
+    const user = await checkAuth();
+    if (!user) return;
+    clinicaId = user.clinica_id;
+    renderUserHeader();
+    if (user.perfil === 'admin') document.getElementById('nav-admin').style.display = 'flex';
+
+    document.getElementById('filtro-data').value = new Date().toISOString().split('T')[0];
+    document.getElementById('filtro-data').addEventListener('change', load);
+    document.getElementById('busca').addEventListener('input', filtrar);
+    document.getElementById('btn-novo').addEventListener('click', () => abrirModal());
+    document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
+    document.getElementById('btn-salvar').addEventListener('click', salvar);
+
+    load();
   }
 
-  function renderTabela(rows) {
-    const tbody = document.getElementById('tabela-agendamentos');
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Nenhum agendamento encontrado</td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(r => `
+  async function load() {
+    const data = document.getElementById('filtro-data').value;
+    let q = supabase.from('agendamentos').select('*').order('horario');
+    if (data) q = q.eq('data', data);
+    if (clinicaId) q = q.eq('clinica_id', clinicaId);
+    const { data: res } = await q;
+    rows = res || [];
+    render(rows);
+  }
+
+  function render(lista) {
+    const tbody = document.getElementById('tabela');
+    if (!lista.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Nenhum agendamento encontrado</td></tr>'; return; }
+    tbody.innerHTML = lista.map(r => `
       <tr>
-        <td><strong>${r.paciente_nome}</strong></td>
-        <td>${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
-        <td>${r.horario || '-'}</td>
-        <td>${r.procedimento || '-'}</td>
-        <td><span class="badge ${statusBadge(r.status)}">${r.status || 'Agendado'}</span></td>
-        <td>
-          <button class="btn-sm btn-outline" onclick="editar('${r.id}')">✏️</button>
-          <button class="btn-sm btn-outline" onclick="deletar('${r.id}')" style="margin-left:4px">🗑️</button>
+        <td style="padding:14px 18px"><strong>${r.paciente_nome}</strong></td>
+        <td style="padding:14px 18px">${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
+        <td style="padding:14px 18px">${r.horario||'-'}</td>
+        <td style="padding:14px 18px">${r.procedimento||'-'}</td>
+        <td style="padding:14px 18px"><span class="badge ${badgeTipo(r.status)}">${r.status||'Agendado'}</span></td>
+        <td style="padding:14px 18px">
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="editar">✏️</button>
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="deletar" style="margin-left:4px">🗑️</button>
         </td>
       </tr>
     `).join('');
+    document.getElementById('tabela').querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        if (btn.dataset.action === 'editar') editar(id);
+        else deletar(id);
+      });
+    });
   }
 
-  function statusBadge(s) {
+  function filtrar() {
+    const q = document.getElementById('busca').value.toLowerCase();
+    render(rows.filter(r => r.paciente_nome?.toLowerCase().includes(q)));
+  }
+
+  function badgeTipo(s) {
     if (s === 'Confirmado') return 'badge-success';
     if (s === 'Cancelado') return 'badge-danger';
     if (s === 'Realizado') return 'badge-purple';
     return 'badge-warning';
   }
 
-  function filtrarTabela() {
-    const q = document.getElementById('busca').value.toLowerCase();
-    renderTabela(agendamentos.filter(r => r.paciente_nome?.toLowerCase().includes(q)));
-  }
-
   function abrirModal(dados = null) {
     editId = dados?.id || null;
-    document.getElementById('paciente_nome').value = dados?.paciente_nome || '';
-    document.getElementById('telefone').value = dados?.telefone || '';
-    document.getElementById('data').value = dados?.data || '';
-    document.getElementById('horario').value = dados?.horario || '';
-    document.getElementById('procedimento').value = dados?.procedimento || '';
-    document.getElementById('status').value = dados?.status || 'Agendado';
-    document.getElementById('observacoes').value = dados?.observacoes || '';
+    document.getElementById('modal-title').textContent = editId ? '✏️ Editar Agendamento' : '📅 Novo Agendamento';
+    document.getElementById('f-paciente_nome').value = dados?.paciente_nome || '';
+    document.getElementById('f-telefone').value = dados?.telefone || '';
+    document.getElementById('f-data').value = dados?.data || document.getElementById('filtro-data').value || '';
+    document.getElementById('f-horario').value = dados?.horario || '';
+    document.getElementById('f-procedimento').value = dados?.procedimento || '';
+    document.getElementById('f-status').value = dados?.status || 'Agendado';
+    document.getElementById('f-observacoes').value = dados?.observacoes || '';
     document.getElementById('modal').classList.add('open');
   }
 
   function fecharModal() { document.getElementById('modal').classList.remove('open'); }
 
-  async function salvarAgendamento() {
+  async function salvar() {
     const payload = {
-      paciente_nome: document.getElementById('paciente_nome').value,
-      telefone: document.getElementById('telefone').value,
-      data: document.getElementById('data').value,
-      horario: document.getElementById('horario').value,
-      procedimento: document.getElementById('procedimento').value,
-      status: document.getElementById('status').value,
-      observacoes: document.getElementById('observacoes').value,
+      paciente_nome: document.getElementById('f-paciente_nome').value,
+      telefone: document.getElementById('f-telefone').value,
+      data: document.getElementById('f-data').value,
+      horario: document.getElementById('f-horario').value,
+      procedimento: document.getElementById('f-procedimento').value,
+      status: document.getElementById('f-status').value,
+      observacoes: document.getElementById('f-observacoes').value,
+      clinica_id: clinicaId,
     };
+    if (!payload.paciente_nome) { showToast('Informe o nome do paciente!', 'error'); return; }
     let erro;
     if (editId) {
       ({ error: erro } = await supabase.from('agendamentos').update(payload).eq('id', editId));
     } else {
       ({ error: erro } = await supabase.from('agendamentos').insert(payload));
     }
-    if (erro) { showToast('Erro ao salvar: ' + erro.message, 'error'); return; }
-    showToast('Agendamento salvo!', 'success');
-    fecharModal();
-    loadAgendamentos();
+    if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
+    showToast('Salvo!', 'success'); fecharModal(); load();
   }
 
-  function editar(id) {
-    const r = agendamentos.find(a => a.id === id);
-    if (r) abrirModal(r);
-  }
+  function editar(id) { abrirModal(rows.find(r => r.id === id)); }
 
   async function deletar(id) {
     if (!confirm('Excluir agendamento?')) return;
     await supabase.from('agendamentos').delete().eq('id', id);
-    showToast('Removido!');
-    loadAgendamentos();
+    showToast('Removido!'); load();
   }
 
   function showToast(msg, tipo = '') {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `toast show ${tipo}`;
+    t.textContent = msg; t.className = `toast show ${tipo}`;
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // Data padrão = hoje
-  document.getElementById('filtro-data').value = new Date().toISOString().split('T')[0];
-  loadAgendamentos();
+  init();
 </script>
 </body>
 </html>

@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Anamnese</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="auth.js"></script>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
     <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
     <nav>
-      <a href="index.html" class="nav-item">📅 Agenda</a>
+      <a href="index.html" class="nav-item">🏠 Dashboard</a>
+      <a href="agenda.html" class="nav-item">📅 Agenda</a>
       <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
       <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
       <a href="estoque.html" class="nav-item">📦 Estoque</a>
@@ -21,120 +24,68 @@
       <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
       <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
       <a href="anamnese.html" class="nav-item active">🧠 Anamnese</a>
+      <a href="usuarios.html" class="nav-item" id="nav-admin" style="display:none">⚙️ Usuários</a>
     </nav>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid rgba(0,0,0,0.1)">
+      <div style="font-weight:600;font-size:14px" id="user-name">-</div>
+      <button onclick="logout()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1.5px solid #c8ccd6;background:white;cursor:pointer;font-size:13px;font-family:inherit">🚪 Sair</button>
+    </div>
   </aside>
 
   <main class="main-content">
     <div class="page-header">
       <h1>🧠 Anamnese Digital</h1>
-      <button class="btn btn-purple" onclick="abrirModal()">+ Nova Anamnese</button>
+      <button class="btn btn-purple" id="btn-novo">+ Nova Anamnese</button>
     </div>
-
     <div class="search-bar">
-      <input type="text" id="busca" placeholder="Buscar por paciente..." oninput="filtrar()" />
-      <select id="filtro-status" onchange="filtrar()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px">
-        <option value="">Todos</option>
-        <option value="em_andamento">Em Andamento</option>
-        <option value="concluido">Concluído</option>
+      <input type="text" id="busca" placeholder="Buscar por paciente..."/>
+      <select id="filtro-status" style="padding:10px 16px;border:1.5px solid #c8ccd6;border-radius:10px;font-size:14px;font-family:inherit">
+        <option value="">Todos</option><option value="em_andamento">Em Andamento</option><option value="concluido">Concluído</option>
       </select>
     </div>
-
     <div class="table-container">
       <table class="data-table">
-        <thead>
-          <tr><th>Paciente</th><th>Data</th><th>Objetivo</th><th>Alergias</th><th>Status</th><th>Ações</th></tr>
-        </thead>
-        <tbody id="tabela-anamnese">
-          <tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Carregando...</td></tr>
-        </tbody>
+        <thead><tr><th>Paciente</th><th>Data</th><th>Objetivo</th><th>Alergias</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela"></tbody>
       </table>
     </div>
   </main>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal" style="max-width:600px">
-    <h2>🧠 Ficha de Anamnese</h2>
+    <h2 id="modal-title">🧠 Nova Anamnese</h2>
     <div class="form-row">
-      <div class="form-group">
-        <label>Paciente *</label>
-        <input type="text" id="paciente_nome" placeholder="Nome completo" />
-      </div>
-      <div class="form-group">
-        <label>Data</label>
-        <input type="date" id="data" />
-      </div>
+      <div class="form-group"><label>Paciente *</label><input type="text" id="f-paciente_nome" placeholder="Nome completo"/></div>
+      <div class="form-group"><label>Data</label><input type="date" id="f-data"/></div>
     </div>
-
-    <div class="form-group">
-      <label>Objetivo do Tratamento</label>
-      <textarea id="objetivo" rows="2" placeholder="O que deseja melhorar?"></textarea>
-    </div>
-
+    <div class="form-group"><label>Objetivo do Tratamento</label><textarea id="f-objetivo" rows="2" placeholder="O que deseja melhorar?"></textarea></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Possui alergias?</label>
-        <select id="tem_alergia">
-          <option value="Não">Não</option>
-          <option value="Sim">Sim</option>
-        </select>
+      <div class="form-group"><label>Possui alergias?</label>
+        <select id="f-tem_alergia"><option value="Não">Não</option><option value="Sim">Sim</option></select>
       </div>
-      <div class="form-group">
-        <label>Quais alergias?</label>
-        <input type="text" id="alergias" placeholder="Descreva as alergias..." />
-      </div>
+      <div class="form-group"><label>Quais alergias?</label><input type="text" id="f-alergias" placeholder="Descreva as alergias..."/></div>
     </div>
-
     <div class="form-row">
-      <div class="form-group">
-        <label>Usa medicamentos?</label>
-        <select id="usa_medicamentos">
-          <option value="Não">Não</option>
-          <option value="Sim">Sim</option>
-        </select>
+      <div class="form-group"><label>Usa medicamentos?</label>
+        <select id="f-usa_medicamentos"><option value="Não">Não</option><option value="Sim">Sim</option></select>
       </div>
-      <div class="form-group">
-        <label>Quais medicamentos?</label>
-        <input type="text" id="medicamentos" placeholder="Liste os medicamentos..." />
-      </div>
+      <div class="form-group"><label>Quais medicamentos?</label><input type="text" id="f-medicamentos" placeholder="Liste os medicamentos..."/></div>
     </div>
-
     <div class="form-row">
-      <div class="form-group">
-        <label>Grávida ou amamentando?</label>
-        <select id="gravida">
-          <option value="Não">Não</option>
-          <option value="Sim">Sim</option>
-        </select>
+      <div class="form-group"><label>Grávida ou amamentando?</label>
+        <select id="f-gravida"><option value="Não">Não</option><option value="Sim">Sim</option></select>
       </div>
-      <div class="form-group">
-        <label>Doenças pré-existentes</label>
-        <input type="text" id="doencas" placeholder="Ex: Diabetes, Hipertensão..." />
-      </div>
+      <div class="form-group"><label>Doenças pré-existentes</label><input type="text" id="f-doencas" placeholder="Ex: Diabetes, Hipertensão..."/></div>
     </div>
-
-    <div class="form-group">
-      <label>Tratamentos estéticos anteriores</label>
-      <textarea id="tratamentos_anteriores" rows="2" placeholder="Já realizou procedimentos? Quais?"></textarea>
+    <div class="form-group"><label>Tratamentos estéticos anteriores</label><textarea id="f-tratamentos_anteriores" rows="2" placeholder="Já realizou procedimentos? Quais?"></textarea></div>
+    <div class="form-group"><label>Expectativas e observações</label><textarea id="f-expectativas" rows="2" placeholder="Outras informações relevantes..."></textarea></div>
+    <div class="form-group"><label>Status</label>
+      <select id="f-status"><option value="em_andamento">Em Andamento</option><option value="concluido">Concluído</option></select>
     </div>
-
-    <div class="form-group">
-      <label>Expectativas e observações</label>
-      <textarea id="expectativas" rows="2" placeholder="Outras informações relevantes..."></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Status</label>
-      <select id="status">
-        <option value="em_andamento">Em Andamento</option>
-        <option value="concluido">Concluído</option>
-      </select>
-    </div>
-
     <div class="modal-footer">
-      <button class="btn btn-gray" onclick="fecharModal()">Cancelar</button>
-      <button class="btn btn-purple" onclick="salvar()">💾 Salvar</button>
+      <button class="btn btn-gray" id="btn-cancelar">Cancelar</button>
+      <button class="btn btn-purple" id="btn-salvar">💾 Salvar</button>
     </div>
   </div>
 </div>
@@ -143,59 +94,77 @@
 
 <script>
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  let anamneses = [];
-  let editId = null;
+  let rows = [], editId = null, clinicaId = null;
+
+  async function init() {
+    const user = await checkAuth();
+    if (!user) return;
+    clinicaId = user.clinica_id;
+    renderUserHeader();
+    if (user.perfil === 'admin') document.getElementById('nav-admin').style.display = 'flex';
+
+    document.getElementById('busca').addEventListener('input', filtrar);
+    document.getElementById('filtro-status').addEventListener('change', filtrar);
+    document.getElementById('btn-novo').addEventListener('click', () => abrirModal());
+    document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
+    document.getElementById('btn-salvar').addEventListener('click', salvar);
+
+    load();
+  }
 
   async function load() {
-    const { data } = await supabase.from('anamneses').select('*').order('created_at', {ascending: false});
-    anamneses = data || [];
+    let q = supabase.from('anamneses').select('*').order('created_at', {ascending: false});
+    if (clinicaId) q = q.eq('clinica_id', clinicaId);
+    const { data } = await q;
+    rows = data || [];
     filtrar();
   }
 
   function filtrar() {
     const q = document.getElementById('busca').value.toLowerCase();
     const s = document.getElementById('filtro-status').value;
-    let rows = anamneses;
-    if (q) rows = rows.filter(r => r.paciente_nome?.toLowerCase().includes(q));
-    if (s) rows = rows.filter(r => r.status === s);
-    render(rows);
+    render(rows.filter(r => (!q || r.paciente_nome?.toLowerCase().includes(q)) && (!s || r.status === s)));
   }
 
-  function render(rows) {
-    const tbody = document.getElementById('tabela-anamnese');
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Nenhuma anamnese encontrada</td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(r => `
+  function render(lista) {
+    const tbody = document.getElementById('tabela');
+    if (!lista.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Nenhuma anamnese encontrada</td></tr>'; return; }
+    tbody.innerHTML = lista.map(r => `
       <tr>
-        <td><strong>${r.paciente_nome}</strong></td>
-        <td>${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
-        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.objetivo || '-'}</td>
-        <td>${r.tem_alergia === 'Sim' ? `<span class="badge badge-danger">⚠️ Sim</span>` : '<span class="badge badge-success">Não</span>'}</td>
-        <td><span class="badge ${r.status === 'concluido' ? 'badge-success' : 'badge-warning'}">${r.status === 'concluido' ? 'Concluído' : 'Em Andamento'}</span></td>
-        <td>
-          <button class="btn-sm btn-outline" onclick="editar('${r.id}')">✏️ Ver</button>
-          <button class="btn-sm btn-outline" onclick="deletar('${r.id}')" style="margin-left:4px">🗑️</button>
+        <td style="padding:14px 18px"><strong>${r.paciente_nome}</strong></td>
+        <td style="padding:14px 18px">${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
+        <td style="padding:14px 18px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.objetivo||'-'}</td>
+        <td style="padding:14px 18px">${r.tem_alergia==='Sim' ? '<span class="badge badge-danger">⚠️ Sim</span>' : '<span class="badge badge-success">Não</span>'}</td>
+        <td style="padding:14px 18px"><span class="badge ${r.status==='concluido'?'badge-success':'badge-warning'}">${r.status==='concluido'?'Concluído':'Em Andamento'}</span></td>
+        <td style="padding:14px 18px">
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="editar">✏️ Ver</button>
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="deletar" style="margin-left:4px">🗑️</button>
         </td>
       </tr>
     `).join('');
+    tbody.querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.action === 'editar') editar(btn.dataset.id);
+        else deletar(btn.dataset.id);
+      });
+    });
   }
 
-  function abrirModal(dados = null) {
+  function abrirModal(dados=null) {
     editId = dados?.id || null;
-    document.getElementById('paciente_nome').value = dados?.paciente_nome || '';
-    document.getElementById('data').value = dados?.data || new Date().toISOString().split('T')[0];
-    document.getElementById('objetivo').value = dados?.objetivo || '';
-    document.getElementById('tem_alergia').value = dados?.tem_alergia || 'Não';
-    document.getElementById('alergias').value = dados?.alergias || '';
-    document.getElementById('usa_medicamentos').value = dados?.usa_medicamentos || 'Não';
-    document.getElementById('medicamentos').value = dados?.medicamentos || '';
-    document.getElementById('gravida').value = dados?.gravida || 'Não';
-    document.getElementById('doencas').value = dados?.doencas || '';
-    document.getElementById('tratamentos_anteriores').value = dados?.tratamentos_anteriores || '';
-    document.getElementById('expectativas').value = dados?.expectativas || '';
-    document.getElementById('status').value = dados?.status || 'em_andamento';
+    document.getElementById('modal-title').textContent = editId ? '✏️ Editar Anamnese' : '🧠 Nova Anamnese';
+    document.getElementById('f-paciente_nome').value = dados?.paciente_nome || '';
+    document.getElementById('f-data').value = dados?.data || new Date().toISOString().split('T')[0];
+    document.getElementById('f-objetivo').value = dados?.objetivo || '';
+    document.getElementById('f-tem_alergia').value = dados?.tem_alergia || 'Não';
+    document.getElementById('f-alergias').value = dados?.alergias || '';
+    document.getElementById('f-usa_medicamentos').value = dados?.usa_medicamentos || 'Não';
+    document.getElementById('f-medicamentos').value = dados?.medicamentos || '';
+    document.getElementById('f-gravida').value = dados?.gravida || 'Não';
+    document.getElementById('f-doencas').value = dados?.doencas || '';
+    document.getElementById('f-tratamentos_anteriores').value = dados?.tratamentos_anteriores || '';
+    document.getElementById('f-expectativas').value = dados?.expectativas || '';
+    document.getElementById('f-status').value = dados?.status || 'em_andamento';
     document.getElementById('modal').classList.add('open');
   }
 
@@ -203,19 +172,21 @@
 
   async function salvar() {
     const payload = {
-      paciente_nome: document.getElementById('paciente_nome').value,
-      data: document.getElementById('data').value,
-      objetivo: document.getElementById('objetivo').value,
-      tem_alergia: document.getElementById('tem_alergia').value,
-      alergias: document.getElementById('alergias').value,
-      usa_medicamentos: document.getElementById('usa_medicamentos').value,
-      medicamentos: document.getElementById('medicamentos').value,
-      gravida: document.getElementById('gravida').value,
-      doencas: document.getElementById('doencas').value,
-      tratamentos_anteriores: document.getElementById('tratamentos_anteriores').value,
-      expectativas: document.getElementById('expectativas').value,
-      status: document.getElementById('status').value,
+      paciente_nome: document.getElementById('f-paciente_nome').value,
+      data: document.getElementById('f-data').value,
+      objetivo: document.getElementById('f-objetivo').value,
+      tem_alergia: document.getElementById('f-tem_alergia').value,
+      alergias: document.getElementById('f-alergias').value,
+      usa_medicamentos: document.getElementById('f-usa_medicamentos').value,
+      medicamentos: document.getElementById('f-medicamentos').value,
+      gravida: document.getElementById('f-gravida').value,
+      doencas: document.getElementById('f-doencas').value,
+      tratamentos_anteriores: document.getElementById('f-tratamentos_anteriores').value,
+      expectativas: document.getElementById('f-expectativas').value,
+      status: document.getElementById('f-status').value,
+      clinica_id: clinicaId,
     };
+    if (!payload.paciente_nome) { showToast('Informe o nome do paciente!', 'error'); return; }
     let erro;
     if (editId) {
       ({ error: erro } = await supabase.from('anamneses').update(payload).eq('id', editId));
@@ -223,27 +194,24 @@
       ({ error: erro } = await supabase.from('anamneses').insert(payload));
     }
     if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
-    showToast('Anamnese salva!', 'success');
-    fecharModal();
-    load();
+    showToast('Anamnese salva!', 'success'); fecharModal(); load();
   }
 
-  function editar(id) { abrirModal(anamneses.find(a => a.id === id)); }
+  function editar(id) { abrirModal(rows.find(r => r.id === id)); }
 
   async function deletar(id) {
     if (!confirm('Excluir anamnese?')) return;
     await supabase.from('anamneses').delete().eq('id', id);
-    showToast('Removida!');
-    load();
+    showToast('Removida!'); load();
   }
 
-  function showToast(msg, tipo = '') {
+  function showToast(msg, tipo='') {
     const t = document.getElementById('toast');
     t.textContent = msg; t.className = `toast show ${tipo}`;
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  load();
+  init();
 </script>
 </body>
 </html>

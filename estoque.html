@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Estoque</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="auth.js"></script>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
     <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
     <nav>
-      <a href="index.html" class="nav-item">📅 Agenda</a>
+      <a href="index.html" class="nav-item">🏠 Dashboard</a>
+      <a href="agenda.html" class="nav-item">📅 Agenda</a>
       <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
       <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
       <a href="estoque.html" class="nav-item active">📦 Estoque</a>
@@ -21,104 +24,62 @@
       <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
       <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
       <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
+      <a href="usuarios.html" class="nav-item" id="nav-admin" style="display:none">⚙️ Usuários</a>
     </nav>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid rgba(0,0,0,0.1)">
+      <div style="font-weight:600;font-size:14px" id="user-name">-</div>
+      <button onclick="logout()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1.5px solid #c8ccd6;background:white;cursor:pointer;font-size:13px;font-family:inherit">🚪 Sair</button>
+    </div>
   </aside>
 
   <main class="main-content">
     <div class="page-header">
       <h1>📦 Controle de Estoque</h1>
-      <button class="btn btn-purple" onclick="abrirModal()">+ Novo Item</button>
+      <button class="btn btn-purple" id="btn-novo">+ Novo Item</button>
     </div>
-
     <div class="search-bar">
-      <input type="text" id="busca" placeholder="Buscar produto..." oninput="filtrar()" />
-      <select id="filtro-cat" onchange="filtrar()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px">
+      <input type="text" id="busca" placeholder="Buscar produto..."/>
+      <select id="filtro-cat" style="padding:10px 16px;border:1.5px solid #c8ccd6;border-radius:10px;font-size:14px;font-family:inherit">
         <option value="">Todas categorias</option>
-        <option value="Insumos">Insumos</option>
-        <option value="Medicamentos">Medicamentos</option>
-        <option value="Equipamentos">Equipamentos</option>
-        <option value="Cosméticos">Cosméticos</option>
-        <option value="Outros">Outros</option>
+        <option>Insumos</option><option>Medicamentos</option><option>Equipamentos</option><option>Cosméticos</option><option>Outros</option>
       </select>
     </div>
-
     <div class="table-container">
       <table class="data-table">
-        <thead>
-          <tr><th>Produto</th><th>Categoria</th><th>Qtd Atual</th><th>Qtd Mínima</th><th>Unidade</th><th>Validade</th><th>Status</th><th>Ações</th></tr>
-        </thead>
-        <tbody id="tabela-estoque">
-          <tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Carregando...</td></tr>
-        </tbody>
+        <thead><tr><th>Produto</th><th>Categoria</th><th>Qtd Atual</th><th>Qtd Mínima</th><th>Unidade</th><th>Validade</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela"></tbody>
       </table>
     </div>
   </main>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <h2>📦 Cadastro de Item</h2>
+    <h2 id="modal-title">📦 Novo Item</h2>
     <div class="form-row">
-      <div class="form-group">
-        <label>Nome do Produto *</label>
-        <input type="text" id="nome" placeholder="Ex: Toxina Botulínica" />
-      </div>
-      <div class="form-group">
-        <label>Categoria</label>
-        <select id="categoria">
-          <option value="Insumos">Insumos</option>
-          <option value="Medicamentos">Medicamentos</option>
-          <option value="Equipamentos">Equipamentos</option>
-          <option value="Cosméticos">Cosméticos</option>
-          <option value="Outros">Outros</option>
-        </select>
+      <div class="form-group"><label>Nome do Produto *</label><input type="text" id="f-nome" placeholder="Ex: Toxina Botulínica"/></div>
+      <div class="form-group"><label>Categoria</label>
+        <select id="f-categoria"><option>Insumos</option><option>Medicamentos</option><option>Equipamentos</option><option>Cosméticos</option><option>Outros</option></select>
       </div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Quantidade Atual</label>
-        <input type="number" id="quantidade" placeholder="0" />
-      </div>
-      <div class="form-group">
-        <label>Quantidade Mínima (alerta)</label>
-        <input type="number" id="quantidade_minima" placeholder="5" />
-      </div>
+      <div class="form-group"><label>Quantidade Atual</label><input type="number" id="f-quantidade" placeholder="0"/></div>
+      <div class="form-group"><label>Quantidade Mínima (alerta)</label><input type="number" id="f-quantidade_minima" placeholder="5"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Unidade</label>
-        <select id="unidade">
-          <option value="unidade">Unidade</option>
-          <option value="ml">mL</option>
-          <option value="mg">mg</option>
-          <option value="caixa">Caixa</option>
-          <option value="frasco">Frasco</option>
-          <option value="ampola">Ampola</option>
-        </select>
+      <div class="form-group"><label>Unidade</label>
+        <select id="f-unidade"><option>unidade</option><option>ml</option><option>mg</option><option>caixa</option><option>frasco</option><option>ampola</option></select>
       </div>
-      <div class="form-group">
-        <label>Validade</label>
-        <input type="date" id="validade" />
-      </div>
+      <div class="form-group"><label>Validade</label><input type="date" id="f-validade"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Custo Unitário (R$)</label>
-        <input type="number" id="custo" placeholder="0,00" step="0.01" />
-      </div>
-      <div class="form-group">
-        <label>Fornecedor</label>
-        <input type="text" id="fornecedor" placeholder="Nome do fornecedor" />
-      </div>
+      <div class="form-group"><label>Custo Unitário (R$)</label><input type="number" id="f-custo" placeholder="0,00" step="0.01"/></div>
+      <div class="form-group"><label>Fornecedor</label><input type="text" id="f-fornecedor" placeholder="Nome do fornecedor"/></div>
     </div>
-    <div class="form-group">
-      <label>Observações</label>
-      <textarea id="observacoes" rows="2" placeholder="Notas sobre o produto..."></textarea>
-    </div>
+    <div class="form-group"><label>Observações</label><textarea id="f-observacoes" rows="2" placeholder="Notas..."></textarea></div>
     <div class="modal-footer">
-      <button class="btn btn-gray" onclick="fecharModal()">Cancelar</button>
-      <button class="btn btn-purple" onclick="salvar()">💾 Salvar</button>
+      <button class="btn btn-gray" id="btn-cancelar">Cancelar</button>
+      <button class="btn btn-purple" id="btn-salvar">💾 Salvar</button>
     </div>
   </div>
 </div>
@@ -127,66 +88,78 @@
 
 <script>
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  let itens = [];
-  let editId = null;
+  let rows = [], editId = null, clinicaId = null;
+
+  async function init() {
+    const user = await checkAuth();
+    if (!user) return;
+    clinicaId = user.clinica_id;
+    renderUserHeader();
+    if (user.perfil === 'admin') document.getElementById('nav-admin').style.display = 'flex';
+
+    document.getElementById('busca').addEventListener('input', filtrar);
+    document.getElementById('filtro-cat').addEventListener('change', filtrar);
+    document.getElementById('btn-novo').addEventListener('click', () => abrirModal());
+    document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
+    document.getElementById('btn-salvar').addEventListener('click', salvar);
+
+    load();
+  }
 
   async function load() {
-    const { data } = await supabase.from('estoque').select('*').order('nome');
-    itens = data || [];
+    let q = supabase.from('estoque').select('*').order('nome');
+    if (clinicaId) q = q.eq('clinica_id', clinicaId);
+    const { data } = await q;
+    rows = data || [];
     filtrar();
   }
 
   function filtrar() {
     const q = document.getElementById('busca').value.toLowerCase();
     const cat = document.getElementById('filtro-cat').value;
-    let rows = itens;
-    if (q) rows = rows.filter(r => r.nome?.toLowerCase().includes(q));
-    if (cat) rows = rows.filter(r => r.categoria === cat);
-    render(rows);
+    render(rows.filter(r => (!q||r.nome?.toLowerCase().includes(q)) && (!cat||r.categoria===cat)));
   }
 
-  function render(rows) {
-    const tbody = document.getElementById('tabela-estoque');
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Nenhum item encontrado</td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(r => {
-      const baixo = r.quantidade <= (r.quantidade_minima || 5);
+  function render(lista) {
+    const tbody = document.getElementById('tabela');
+    if (!lista.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Nenhum item encontrado</td></tr>'; return; }
+    tbody.innerHTML = lista.map(r => {
+      const baixo = r.quantidade <= (r.quantidade_minima||5);
       const vencido = r.validade && new Date(r.validade) < new Date();
-      return `
-        <tr>
-          <td><strong>${r.nome}</strong></td>
-          <td>${r.categoria || '-'}</td>
-          <td class="${baixo ? 'text-red' : 'text-green'}"><strong>${r.quantidade || 0}</strong></td>
-          <td>${r.quantidade_minima || '-'}</td>
-          <td>${r.unidade || '-'}</td>
-          <td class="${vencido ? 'text-red' : ''}">${r.validade ? new Date(r.validade+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
-          <td>
-            ${vencido ? '<span class="badge badge-danger">Vencido</span>' :
-              baixo ? '<span class="badge badge-warning">Estoque Baixo</span>' :
-              '<span class="badge badge-success">OK</span>'}
-          </td>
-          <td>
-            <button class="btn-sm btn-outline" onclick="editar('${r.id}')">✏️</button>
-            <button class="btn-sm btn-outline" onclick="deletar('${r.id}')" style="margin-left:4px">🗑️</button>
-          </td>
-        </tr>
-      `;
+      return `<tr>
+        <td style="padding:14px 18px"><strong>${r.nome}</strong></td>
+        <td style="padding:14px 18px">${r.categoria||'-'}</td>
+        <td style="padding:14px 18px;color:${baixo?'#ef4444':'#10b981'};font-weight:700">${r.quantidade??0}</td>
+        <td style="padding:14px 18px">${r.quantidade_minima||'-'}</td>
+        <td style="padding:14px 18px">${r.unidade||'-'}</td>
+        <td style="padding:14px 18px;color:${vencido?'#ef4444':'inherit'}">${r.validade?new Date(r.validade+'T00:00:00').toLocaleDateString('pt-BR'):'-'}</td>
+        <td style="padding:14px 18px">${vencido?'<span class="badge badge-danger">Vencido</span>':baixo?'<span class="badge badge-warning">Estoque Baixo</span>':'<span class="badge badge-success">OK</span>'}</td>
+        <td style="padding:14px 18px">
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="editar">✏️</button>
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="deletar" style="margin-left:4px">🗑️</button>
+        </td>
+      </tr>`;
     }).join('');
+    document.getElementById('tabela').querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.action==='editar') editar(btn.dataset.id);
+        else deletar(btn.dataset.id);
+      });
+    });
   }
 
-  function abrirModal(dados = null) {
-    editId = dados?.id || null;
-    document.getElementById('nome').value = dados?.nome || '';
-    document.getElementById('categoria').value = dados?.categoria || 'Insumos';
-    document.getElementById('quantidade').value = dados?.quantidade || '';
-    document.getElementById('quantidade_minima').value = dados?.quantidade_minima || '';
-    document.getElementById('unidade').value = dados?.unidade || 'unidade';
-    document.getElementById('validade').value = dados?.validade || '';
-    document.getElementById('custo').value = dados?.custo || '';
-    document.getElementById('fornecedor').value = dados?.fornecedor || '';
-    document.getElementById('observacoes').value = dados?.observacoes || '';
+  function abrirModal(dados=null) {
+    editId = dados?.id||null;
+    document.getElementById('modal-title').textContent = editId ? '✏️ Editar Item' : '📦 Novo Item';
+    document.getElementById('f-nome').value = dados?.nome||'';
+    document.getElementById('f-categoria').value = dados?.categoria||'Insumos';
+    document.getElementById('f-quantidade').value = dados?.quantidade??'';
+    document.getElementById('f-quantidade_minima').value = dados?.quantidade_minima??'5';
+    document.getElementById('f-unidade').value = dados?.unidade||'unidade';
+    document.getElementById('f-validade').value = dados?.validade||'';
+    document.getElementById('f-custo').value = dados?.custo||'';
+    document.getElementById('f-fornecedor').value = dados?.fornecedor||'';
+    document.getElementById('f-observacoes').value = dados?.observacoes||'';
     document.getElementById('modal').classList.add('open');
   }
 
@@ -194,44 +167,42 @@
 
   async function salvar() {
     const payload = {
-      nome: document.getElementById('nome').value,
-      categoria: document.getElementById('categoria').value,
-      quantidade: parseInt(document.getElementById('quantidade').value) || 0,
-      quantidade_minima: parseInt(document.getElementById('quantidade_minima').value) || 5,
-      unidade: document.getElementById('unidade').value,
-      validade: document.getElementById('validade').value || null,
-      custo: parseFloat(document.getElementById('custo').value) || 0,
-      fornecedor: document.getElementById('fornecedor').value,
-      observacoes: document.getElementById('observacoes').value,
+      nome: document.getElementById('f-nome').value,
+      categoria: document.getElementById('f-categoria').value,
+      quantidade: parseInt(document.getElementById('f-quantidade').value)||0,
+      quantidade_minima: parseInt(document.getElementById('f-quantidade_minima').value)||5,
+      unidade: document.getElementById('f-unidade').value,
+      validade: document.getElementById('f-validade').value||null,
+      custo: parseFloat(document.getElementById('f-custo').value)||0,
+      fornecedor: document.getElementById('f-fornecedor').value,
+      observacoes: document.getElementById('f-observacoes').value,
+      clinica_id: clinicaId,
     };
+    if (!payload.nome) { showToast('Informe o nome do produto!', 'error'); return; }
     let erro;
     if (editId) {
       ({ error: erro } = await supabase.from('estoque').update(payload).eq('id', editId));
     } else {
       ({ error: erro } = await supabase.from('estoque').insert(payload));
     }
-    if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
-    showToast('Salvo!', 'success');
-    fecharModal();
-    load();
+    if (erro) { showToast('Erro: '+erro.message, 'error'); return; }
+    showToast('Salvo!', 'success'); fecharModal(); load();
   }
 
-  function editar(id) { abrirModal(itens.find(i => i.id === id)); }
-
+  function editar(id) { abrirModal(rows.find(r=>r.id===id)); }
   async function deletar(id) {
     if (!confirm('Excluir item?')) return;
     await supabase.from('estoque').delete().eq('id', id);
-    showToast('Removido!');
-    load();
+    showToast('Removido!'); load();
   }
 
-  function showToast(msg, tipo = '') {
+  function showToast(msg, tipo='') {
     const t = document.getElementById('toast');
     t.textContent = msg; t.className = `toast show ${tipo}`;
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  load();
+  init();
 </script>
 </body>
 </html>

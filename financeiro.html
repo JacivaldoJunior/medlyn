@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Financeiro</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="auth.js"></script>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
     <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
     <nav>
-      <a href="index.html" class="nav-item">📅 Agenda</a>
+      <a href="index.html" class="nav-item">🏠 Dashboard</a>
+      <a href="agenda.html" class="nav-item">📅 Agenda</a>
       <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
       <a href="financeiro.html" class="nav-item active">💰 Financeiro</a>
       <a href="estoque.html" class="nav-item">📦 Estoque</a>
@@ -21,121 +24,71 @@
       <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
       <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
       <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
+      <a href="usuarios.html" class="nav-item" id="nav-admin" style="display:none">⚙️ Usuários</a>
     </nav>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid rgba(0,0,0,0.1)">
+      <div style="font-weight:600;font-size:14px" id="user-name">-</div>
+      <button onclick="logout()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1.5px solid #c8ccd6;background:white;cursor:pointer;font-size:13px;font-family:inherit">🚪 Sair</button>
+    </div>
   </aside>
 
   <main class="main-content">
     <div class="page-header">
       <h1>💰 Financeiro</h1>
-      <button class="btn btn-purple" onclick="abrirModal()">+ Nova Transação</button>
+      <button class="btn btn-purple" id="btn-novo">+ Nova Transação</button>
     </div>
 
-    <!-- RESUMO -->
     <div class="cards-top" style="margin-bottom:24px">
-      <div class="card card-white">
-        <div class="card-icon">📈</div>
-        <div>
-          <div class="card-title">Receitas do Mês</div>
-          <div class="card-value text-green" id="total-receitas">R$ 0,00</div>
-        </div>
-      </div>
-      <div class="card card-white">
-        <div class="card-icon">📉</div>
-        <div>
-          <div class="card-title">Despesas do Mês</div>
-          <div class="card-value text-red" id="total-despesas">R$ 0,00</div>
-        </div>
-      </div>
-      <div class="card card-dark">
-        <div class="card-icon">💎</div>
-        <div>
-          <div class="card-title">Lucro Líquido</div>
-          <div class="card-value" id="lucro-liquido">R$ 0,00</div>
-        </div>
-      </div>
+      <div class="card card-white"><div class="card-icon">📈</div><div><div class="card-title">Receitas</div><div class="card-value text-green" id="total-receitas">R$ 0,00</div></div></div>
+      <div class="card card-white"><div class="card-icon">📉</div><div><div class="card-title">Despesas</div><div class="card-value text-red" id="total-despesas">R$ 0,00</div></div></div>
+      <div class="card card-dark"><div class="card-icon">💎</div><div><div class="card-title">Lucro Líquido</div><div class="card-value" id="lucro-liquido">R$ 0,00</div></div></div>
     </div>
 
     <div class="search-bar">
-      <input type="month" id="filtro-mes" onchange="load()" />
-      <select id="filtro-tipo" onchange="filtrar()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px">
-        <option value="">Todos</option>
-        <option value="receita">Receitas</option>
-        <option value="despesa">Despesas</option>
+      <input type="month" id="filtro-mes"/>
+      <select id="filtro-tipo" style="padding:10px 16px;border:1.5px solid #c8ccd6;border-radius:10px;font-size:14px;font-family:inherit">
+        <option value="">Todos</option><option value="receita">Receitas</option><option value="despesa">Despesas</option>
       </select>
-      <input type="text" id="busca" placeholder="Buscar..." oninput="filtrar()" />
+      <input type="text" id="busca" placeholder="Buscar..."/>
     </div>
 
     <div class="table-container">
       <table class="data-table">
-        <thead>
-          <tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Tipo</th><th>Forma Pgto</th><th>Valor</th><th>Ações</th></tr>
-        </thead>
-        <tbody id="tabela-financeiro">
-          <tr><td colspan="7" style="text-align:center;padding:40px;color:#aaa">Carregando...</td></tr>
-        </tbody>
+        <thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Tipo</th><th>Forma Pgto</th><th>Valor</th><th>Ações</th></tr></thead>
+        <tbody id="tabela"></tbody>
       </table>
     </div>
   </main>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <h2>💰 Nova Transação</h2>
+    <h2 id="modal-title">💰 Nova Transação</h2>
     <div class="form-row">
-      <div class="form-group">
-        <label>Tipo *</label>
-        <select id="tipo">
-          <option value="receita">Receita</option>
-          <option value="despesa">Despesa</option>
-        </select>
+      <div class="form-group"><label>Tipo *</label>
+        <select id="f-tipo"><option value="receita">Receita</option><option value="despesa">Despesa</option></select>
       </div>
-      <div class="form-group">
-        <label>Data *</label>
-        <input type="date" id="data" />
-      </div>
+      <div class="form-group"><label>Data *</label><input type="date" id="f-data"/></div>
     </div>
-    <div class="form-group">
-      <label>Descrição *</label>
-      <input type="text" id="descricao" placeholder="Ex: Consulta Botox - Maria" />
+    <div class="form-group"><label>Descrição *</label><input type="text" id="f-descricao" placeholder="Ex: Consulta Botox - Maria"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Categoria</label><input type="text" id="f-categoria" placeholder="Ex: Procedimento, Aluguel..."/></div>
+      <div class="form-group"><label>Valor (R$) *</label><input type="number" id="f-valor" placeholder="0,00" step="0.01"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Categoria</label>
-        <input type="text" id="categoria" placeholder="Ex: Procedimento, Aluguel..." />
-      </div>
-      <div class="form-group">
-        <label>Valor (R$) *</label>
-        <input type="number" id="valor" placeholder="0,00" step="0.01" />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Forma de Pagamento</label>
-        <select id="forma_pagamento">
-          <option value="Dinheiro">Dinheiro</option>
-          <option value="PIX">PIX</option>
-          <option value="Cartão Débito">Cartão Débito</option>
-          <option value="Cartão Crédito">Cartão Crédito</option>
-          <option value="Transferência">Transferência</option>
+      <div class="form-group"><label>Forma de Pagamento</label>
+        <select id="f-forma_pagamento">
+          <option>Dinheiro</option><option>PIX</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Transferência</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select id="status_pgto">
-          <option value="Pago">Pago</option>
-          <option value="Pendente">Pendente</option>
-          <option value="Cancelado">Cancelado</option>
-        </select>
+      <div class="form-group"><label>Status</label>
+        <select id="f-status_pgto"><option>Pago</option><option>Pendente</option><option>Cancelado</option></select>
       </div>
     </div>
-    <div class="form-group">
-      <label>Paciente / Fornecedor</label>
-      <input type="text" id="paciente" placeholder="Nome..." />
-    </div>
+    <div class="form-group"><label>Paciente / Fornecedor</label><input type="text" id="f-paciente" placeholder="Nome..."/></div>
     <div class="modal-footer">
-      <button class="btn btn-gray" onclick="fecharModal()">Cancelar</button>
-      <button class="btn btn-purple" onclick="salvar()">💾 Salvar</button>
+      <button class="btn btn-gray" id="btn-cancelar">Cancelar</button>
+      <button class="btn btn-purple" id="btn-salvar">💾 Salvar</button>
     </div>
   </div>
 </div>
@@ -144,70 +97,85 @@
 
 <script>
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  let registros = [];
-  let editId = null;
+  let rows = [], editId = null, clinicaId = null;
+  const fmt = v => `R$ ${(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+
+  async function init() {
+    const user = await checkAuth();
+    if (!user) return;
+    clinicaId = user.clinica_id;
+    renderUserHeader();
+    if (user.perfil === 'admin') document.getElementById('nav-admin').style.display = 'flex';
+
+    document.getElementById('filtro-mes').value = new Date().toISOString().slice(0,7);
+    document.getElementById('filtro-mes').addEventListener('change', load);
+    document.getElementById('filtro-tipo').addEventListener('change', filtrar);
+    document.getElementById('busca').addEventListener('input', filtrar);
+    document.getElementById('btn-novo').addEventListener('click', () => abrirModal());
+    document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
+    document.getElementById('btn-salvar').addEventListener('click', salvar);
+
+    load();
+  }
 
   async function load() {
     const mes = document.getElementById('filtro-mes').value;
-    let query = supabase.from('financeiro').select('*').order('data', {ascending: false});
-    if (mes) {
-      query = query.gte('data', mes + '-01').lte('data', mes + '-31');
-    }
-    const { data } = await query;
-    registros = data || [];
+    let q = supabase.from('financeiro').select('*').order('data', {ascending:false});
+    if (mes) q = q.gte('data', mes+'-01').lte('data', mes+'-31');
+    if (clinicaId) q = q.eq('clinica_id', clinicaId);
+    const { data } = await q;
+    rows = data || [];
 
-    const receitas = registros.filter(r => r.tipo === 'receita').reduce((a, r) => a + (r.valor || 0), 0);
-    const despesas = registros.filter(r => r.tipo === 'despesa').reduce((a, r) => a + (r.valor || 0), 0);
-    document.getElementById('total-receitas').textContent = fmt(receitas);
-    document.getElementById('total-despesas').textContent = fmt(despesas);
-    document.getElementById('lucro-liquido').textContent = fmt(receitas - despesas);
-
+    const rec = rows.filter(r=>r.tipo==='receita').reduce((a,r)=>a+(r.valor||0),0);
+    const desp = rows.filter(r=>r.tipo==='despesa').reduce((a,r)=>a+(r.valor||0),0);
+    document.getElementById('total-receitas').textContent = fmt(rec);
+    document.getElementById('total-despesas').textContent = fmt(desp);
+    document.getElementById('lucro-liquido').textContent = fmt(rec-desp);
     filtrar();
   }
 
   function filtrar() {
     const tipo = document.getElementById('filtro-tipo').value;
     const q = document.getElementById('busca').value.toLowerCase();
-    let rows = registros;
-    if (tipo) rows = rows.filter(r => r.tipo === tipo);
-    if (q) rows = rows.filter(r => r.descricao?.toLowerCase().includes(q) || r.categoria?.toLowerCase().includes(q));
-    render(rows);
+    render(rows.filter(r => (!tipo||r.tipo===tipo) && (!q||r.descricao?.toLowerCase().includes(q))));
   }
 
-  function render(rows) {
-    const tbody = document.getElementById('tabela-financeiro');
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#aaa">Nenhum registro</td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(r => `
+  function render(lista) {
+    const tbody = document.getElementById('tabela');
+    if (!lista.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#aaa">Nenhum registro</td></tr>'; return; }
+    tbody.innerHTML = lista.map(r => `
       <tr>
-        <td><strong>${r.descricao || '-'}</strong></td>
-        <td>${r.categoria || '-'}</td>
-        <td>${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
-        <td><span class="badge ${r.tipo === 'receita' ? 'badge-success' : 'badge-danger'}">${r.tipo === 'receita' ? '📈 Receita' : '📉 Despesa'}</span></td>
-        <td>${r.forma_pagamento || '-'}</td>
-        <td class="${r.tipo === 'receita' ? 'text-green' : 'text-red'}"><strong>${fmt(r.valor)}</strong></td>
-        <td>
-          <button class="btn-sm btn-outline" onclick="editar('${r.id}')">✏️</button>
-          <button class="btn-sm btn-outline" onclick="deletar('${r.id}')" style="margin-left:4px">🗑️</button>
+        <td style="padding:14px 18px"><strong>${r.descricao||'-'}</strong></td>
+        <td style="padding:14px 18px">${r.categoria||'-'}</td>
+        <td style="padding:14px 18px">${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
+        <td style="padding:14px 18px"><span class="badge ${r.tipo==='receita'?'badge-success':'badge-danger'}">${r.tipo==='receita'?'📈 Receita':'📉 Despesa'}</span></td>
+        <td style="padding:14px 18px">${r.forma_pagamento||'-'}</td>
+        <td style="padding:14px 18px"><strong style="color:${r.tipo==='receita'?'#10b981':'#ef4444'}">${fmt(r.valor)}</strong></td>
+        <td style="padding:14px 18px">
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="editar">✏️</button>
+          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="deletar" style="margin-left:4px">🗑️</button>
         </td>
       </tr>
     `).join('');
+    document.getElementById('tabela').querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.action==='editar') editar(btn.dataset.id);
+        else deletar(btn.dataset.id);
+      });
+    });
   }
 
-  function fmt(v) { return `R$ ${(v || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`; }
-
-  function abrirModal(dados = null) {
-    editId = dados?.id || null;
-    document.getElementById('tipo').value = dados?.tipo || 'receita';
-    document.getElementById('data').value = dados?.data || new Date().toISOString().split('T')[0];
-    document.getElementById('descricao').value = dados?.descricao || '';
-    document.getElementById('categoria').value = dados?.categoria || '';
-    document.getElementById('valor').value = dados?.valor || '';
-    document.getElementById('forma_pagamento').value = dados?.forma_pagamento || 'PIX';
-    document.getElementById('status_pgto').value = dados?.status_pgto || 'Pago';
-    document.getElementById('paciente').value = dados?.paciente || '';
+  function abrirModal(dados=null) {
+    editId = dados?.id||null;
+    document.getElementById('modal-title').textContent = editId ? '✏️ Editar Transação' : '💰 Nova Transação';
+    document.getElementById('f-tipo').value = dados?.tipo||'receita';
+    document.getElementById('f-data').value = dados?.data||new Date().toISOString().split('T')[0];
+    document.getElementById('f-descricao').value = dados?.descricao||'';
+    document.getElementById('f-categoria').value = dados?.categoria||'';
+    document.getElementById('f-valor').value = dados?.valor||'';
+    document.getElementById('f-forma_pagamento').value = dados?.forma_pagamento||'PIX';
+    document.getElementById('f-status_pgto').value = dados?.status_pgto||'Pago';
+    document.getElementById('f-paciente').value = dados?.paciente||'';
     document.getElementById('modal').classList.add('open');
   }
 
@@ -215,48 +183,41 @@
 
   async function salvar() {
     const payload = {
-      tipo: document.getElementById('tipo').value,
-      data: document.getElementById('data').value,
-      descricao: document.getElementById('descricao').value,
-      categoria: document.getElementById('categoria').value,
-      valor: parseFloat(document.getElementById('valor').value) || 0,
-      forma_pagamento: document.getElementById('forma_pagamento').value,
-      status_pgto: document.getElementById('status_pgto').value,
-      paciente: document.getElementById('paciente').value,
+      tipo: document.getElementById('f-tipo').value,
+      data: document.getElementById('f-data').value,
+      descricao: document.getElementById('f-descricao').value,
+      categoria: document.getElementById('f-categoria').value,
+      valor: parseFloat(document.getElementById('f-valor').value)||0,
+      forma_pagamento: document.getElementById('f-forma_pagamento').value,
+      status_pgto: document.getElementById('f-status_pgto').value,
+      paciente: document.getElementById('f-paciente').value,
+      clinica_id: clinicaId,
     };
+    if (!payload.descricao) { showToast('Informe a descrição!', 'error'); return; }
     let erro;
     if (editId) {
       ({ error: erro } = await supabase.from('financeiro').update(payload).eq('id', editId));
     } else {
       ({ error: erro } = await supabase.from('financeiro').insert(payload));
     }
-    if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
-    showToast('Salvo!', 'success');
-    fecharModal();
-    load();
+    if (erro) { showToast('Erro: '+erro.message, 'error'); return; }
+    showToast('Salvo!', 'success'); fecharModal(); load();
   }
 
-  function editar(id) {
-    const r = registros.find(x => x.id === id);
-    if (r) abrirModal(r);
-  }
-
+  function editar(id) { abrirModal(rows.find(r=>r.id===id)); }
   async function deletar(id) {
     if (!confirm('Excluir registro?')) return;
     await supabase.from('financeiro').delete().eq('id', id);
-    showToast('Removido!');
-    load();
+    showToast('Removido!'); load();
   }
 
-  function showToast(msg, tipo = '') {
+  function showToast(msg, tipo='') {
     const t = document.getElementById('toast');
     t.textContent = msg; t.className = `toast show ${tipo}`;
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  const mesAtual = new Date().toISOString().slice(0, 7);
-  document.getElementById('filtro-mes').value = mesAtual;
-  load();
+  init();
 </script>
 </body>
 </html>
