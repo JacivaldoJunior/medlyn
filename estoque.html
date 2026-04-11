@@ -6,9 +6,9 @@
   <title>Medlyn - Estoque</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="auth.js"></script>
+  
+  
+  
 </head>
 <body>
 <div class="app-layout">
@@ -86,8 +86,10 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script>
   let rows = [], editId = null, clinicaId = null;
 
   async function init() {
@@ -107,7 +109,7 @@
   }
 
   async function load() {
-    let q = supabase.from('estoque').select('*').order('nome');
+    let q = supabaseClient.from('estoque').select('*').order('nome');
     if (clinicaId) q = q.eq('clinica_id', clinicaId);
     const { data } = await q;
     rows = data || [];
@@ -181,9 +183,9 @@
     if (!payload.nome) { showToast('Informe o nome do produto!', 'error'); return; }
     let erro;
     if (editId) {
-      ({ error: erro } = await supabase.from('estoque').update(payload).eq('id', editId));
+      ({ error: erro } = await supabaseClient.from('estoque').update(payload).eq('id', editId));
     } else {
-      ({ error: erro } = await supabase.from('estoque').insert(payload));
+      ({ error: erro } = await supabaseClient.from('estoque').insert(payload));
     }
     if (erro) { showToast('Erro: '+erro.message, 'error'); return; }
     showToast('Salvo!', 'success'); fecharModal(); load();
@@ -192,7 +194,7 @@
   function editar(id) { abrirModal(rows.find(r=>r.id===id)); }
   async function deletar(id) {
     if (!confirm('Excluir item?')) return;
-    await supabase.from('estoque').delete().eq('id', id);
+    await supabaseClient.from('estoque').delete().eq('id', id);
     showToast('Removido!'); load();
   }
 

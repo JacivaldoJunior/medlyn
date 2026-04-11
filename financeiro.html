@@ -6,9 +6,9 @@
   <title>Medlyn - Financeiro</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="auth.js"></script>
+  
+  
+  
 </head>
 <body>
 <div class="app-layout">
@@ -95,8 +95,10 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script>
   let rows = [], editId = null, clinicaId = null;
   const fmt = v => `R$ ${(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
 
@@ -120,7 +122,7 @@
 
   async function load() {
     const mes = document.getElementById('filtro-mes').value;
-    let q = supabase.from('financeiro').select('*').order('data', {ascending:false});
+    let q = supabaseClient.from('financeiro').select('*').order('data', {ascending:false});
     if (mes) q = q.gte('data', mes+'-01').lte('data', mes+'-31');
     if (clinicaId) q = q.eq('clinica_id', clinicaId);
     const { data } = await q;
@@ -196,9 +198,9 @@
     if (!payload.descricao) { showToast('Informe a descrição!', 'error'); return; }
     let erro;
     if (editId) {
-      ({ error: erro } = await supabase.from('financeiro').update(payload).eq('id', editId));
+      ({ error: erro } = await supabaseClient.from('financeiro').update(payload).eq('id', editId));
     } else {
-      ({ error: erro } = await supabase.from('financeiro').insert(payload));
+      ({ error: erro } = await supabaseClient.from('financeiro').insert(payload));
     }
     if (erro) { showToast('Erro: '+erro.message, 'error'); return; }
     showToast('Salvo!', 'success'); fecharModal(); load();
@@ -207,7 +209,7 @@
   function editar(id) { abrirModal(rows.find(r=>r.id===id)); }
   async function deletar(id) {
     if (!confirm('Excluir registro?')) return;
-    await supabase.from('financeiro').delete().eq('id', id);
+    await supabaseClient.from('financeiro').delete().eq('id', id);
     showToast('Removido!'); load();
   }
 

@@ -6,8 +6,8 @@
   <title>Medlyn - Login</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
+  
+  
   <style>
     body { background: linear-gradient(135deg, #1e1e2e 0%, #2d1b69 100%); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
     .login-box { background: white; border-radius: 20px; padding: 48px 40px; width: 400px; max-width: 95vw; box-shadow: 0 30px 80px rgba(0,0,0,0.3); }
@@ -46,9 +46,10 @@
     <button class="btn-login" onclick="entrar()">Entrar →</button>
   </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script>
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+    var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     // Se já logado, vai pro index
     if (localStorage.getItem('medlyn_user')) {
       window.location.href = 'index.html';
@@ -67,7 +68,7 @@
       }
 
       // Busca usuário na tabela usuarios
-      const { data: user, error } = await supabase
+      const { data: user, error } = await supabaseClient
         .from('usuarios')
         .select('*')
         .eq('login', login)

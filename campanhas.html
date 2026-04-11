@@ -6,9 +6,9 @@
   <title>Medlyn - Campanhas</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="auth.js"></script>
+  
+  
+  
 </head>
 <body>
 <div class="app-layout">
@@ -84,8 +84,10 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script>
   let rows = [], editId = null, clinicaId = null;
 
   async function init() {
@@ -103,7 +105,7 @@
   }
 
   async function load() {
-    let q = supabase.from('campanhas').select('*').order('created_at', {ascending: false});
+    let q = supabaseClient.from('campanhas').select('*').order('created_at', {ascending: false});
     if (clinicaId) q = q.eq('clinica_id', clinicaId);
     const { data } = await q;
     rows = data || [];
@@ -181,9 +183,9 @@
     if (!payload.nome) { showToast('Informe o nome da campanha!', 'error'); return; }
     let erro;
     if (editId) {
-      ({ error: erro } = await supabase.from('campanhas').update(payload).eq('id', editId));
+      ({ error: erro } = await supabaseClient.from('campanhas').update(payload).eq('id', editId));
     } else {
-      ({ error: erro } = await supabase.from('campanhas').insert(payload));
+      ({ error: erro } = await supabaseClient.from('campanhas').insert(payload));
     }
     if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
     showToast('Campanha salva!', 'success'); fecharModal(); load();
@@ -193,7 +195,7 @@
 
   async function deletar(id) {
     if (!confirm('Excluir campanha?')) return;
-    await supabase.from('campanhas').delete().eq('id', id);
+    await supabaseClient.from('campanhas').delete().eq('id', id);
     showToast('Removida!'); load();
   }
 

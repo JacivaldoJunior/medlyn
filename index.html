@@ -6,9 +6,9 @@
   <title>Medlyn - Dashboard</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="auth.js"></script>
+  
+  
+  
 </head>
 <body>
 <div class="app-layout">
@@ -98,8 +98,10 @@
   </main>
 </div>
 
-<script>
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script>
 
   async function init() {
     const user = await checkAuth();
@@ -117,7 +119,7 @@
 
     // Busca nome da clínica
     if (user.clinica_id) {
-      const { data: cl } = await supabase.from('clinicas').select('nome').eq('id', user.clinica_id).single();
+      const { data: cl } = await supabaseClient.from('clinicas').select('nome').eq('id', user.clinica_id).single();
       if (cl) {
         document.getElementById('clinica-label').textContent = '🏥 ' + cl.nome;
         document.getElementById('user-clinica').textContent = cl.nome;
@@ -131,11 +133,11 @@
     const hoje = new Date().toISOString().split('T')[0];
     const mesInicio = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
 
-    let q1 = supabase.from('agendamentos').select('*').eq('data', hoje);
-    let q2 = supabase.from('anamneses').select('*').eq('status', 'em_andamento');
-    let q3 = supabase.from('financeiro').select('valor').eq('tipo', 'receita').gte('data', mesInicio);
-    let q4 = supabase.from('financeiro').select('valor').eq('tipo', 'despesa').gte('data', mesInicio);
-    let q5 = supabase.from('campanhas').select('*').in('status', ['Ativa', 'Em Andamento']);
+    let q1 = supabaseClient.from('agendamentos').select('*').eq('data', hoje);
+    let q2 = supabaseClient.from('anamneses').select('*').eq('status', 'em_andamento');
+    let q3 = supabaseClient.from('financeiro').select('valor').eq('tipo', 'receita').gte('data', mesInicio);
+    let q4 = supabaseClient.from('financeiro').select('valor').eq('tipo', 'despesa').gte('data', mesInicio);
+    let q5 = supabaseClient.from('campanhas').select('*').in('status', ['Ativa', 'Em Andamento']);
 
     if (clinica_id) {
       q1 = q1.eq('clinica_id', clinica_id);

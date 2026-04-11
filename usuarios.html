@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Usuários</title>
   <link rel="stylesheet" href="style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="auth.js"></script>
+  
+  
+  
 </head>
 <body>
 <div class="app-layout">
@@ -111,8 +111,10 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script>
   let usuarios = [], clinicas = [], editId = null;
 
   async function init() {
@@ -129,7 +131,7 @@
   }
 
   async function loadClinicas() {
-    const { data } = await supabase.from('clinicas').select('*').order('nome');
+    const { data } = await supabaseClient.from('clinicas').select('*').order('nome');
     clinicas = data || [];
     // Preenche select
     const sel = document.getElementById('clinica_id');
@@ -148,7 +150,7 @@
   }
 
   async function loadUsuarios() {
-    const { data } = await supabase.from('usuarios').select('*, clinicas(nome)').order('nome');
+    const { data } = await supabaseClient.from('usuarios').select('*, clinicas(nome)').order('nome');
     usuarios = data || [];
     const tbody = document.getElementById('tabela-usuarios');
     if (!usuarios.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#aaa">Nenhum usuário cadastrado</td></tr>'; return; }
@@ -192,9 +194,9 @@
     if (!payload.nome || !payload.login || !payload.senha) { showToast('Preencha nome, login e senha!', 'error'); return; }
     let erro;
     if (editId) {
-      ({ error: erro } = await supabase.from('usuarios').update(payload).eq('id', editId));
+      ({ error: erro } = await supabaseClient.from('usuarios').update(payload).eq('id', editId));
     } else {
-      ({ error: erro } = await supabase.from('usuarios').insert(payload));
+      ({ error: erro } = await supabaseClient.from('usuarios').insert(payload));
     }
     if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
     showToast('Usuário salvo!', 'success');
@@ -205,7 +207,7 @@
   function editarUsuario(id) { abrirModal(usuarios.find(u => u.id === id)); }
   async function deletarUsuario(id) {
     if (!confirm('Excluir usuário?')) return;
-    await supabase.from('usuarios').delete().eq('id', id);
+    await supabaseClient.from('usuarios').delete().eq('id', id);
     showToast('Removido!'); loadUsuarios();
   }
 
@@ -214,7 +216,7 @@
   async function salvarClinica() {
     const payload = { nome: document.getElementById('c-nome').value, responsavel: document.getElementById('c-responsavel').value, telefone: document.getElementById('c-telefone').value, endereco: document.getElementById('c-endereco').value };
     if (!payload.nome) { showToast('Informe o nome da clínica!', 'error'); return; }
-    const { error } = await supabase.from('clinicas').insert(payload);
+    const { error } = await supabaseClient.from('clinicas').insert(payload);
     if (error) { showToast('Erro: ' + error.message, 'error'); return; }
     showToast('Clínica criada!', 'success');
     fecharModalClinica();
@@ -222,7 +224,7 @@
   }
   async function deletarClinica(id) {
     if (!confirm('Excluir clínica?')) return;
-    await supabase.from('clinicas').delete().eq('id', id);
+    await supabaseClient.from('clinicas').delete().eq('id', id);
     showToast('Removida!'); loadClinicas();
   }
 
