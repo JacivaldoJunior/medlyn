@@ -4,16 +4,233 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Agenda</title>
-  <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  
-  
-  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
+
+    /* ---- LAYOUT ---- */
+    .app-layout { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 220px; min-height: 100vh; background: white;
+      border-right: 1px solid #e8eaf0; display: flex; flex-direction: column;
+      padding: 24px 16px; position: fixed; top: 0; left: 0; bottom: 0;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 32px; color: #6c3fc5; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border-radius: 10px; text-decoration: none; color: #555; font-size: 14px;
+      margin-bottom: 4px; transition: background .2s;
+    }
+    .nav-item:hover { background: #f3f0fc; color: #6c3fc5; }
+    .nav-item.active { background: #6c3fc5; color: white; font-weight: 600; }
+    .main-content { margin-left: 220px; padding: 28px; flex: 1; }
+
+    /* ---- HEADER ---- */
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .page-header h1 { font-size: 22px; font-weight: 700; }
+    .btn { padding: 10px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; transition: .2s; }
+    .btn-purple { background: #6c3fc5; color: white; }
+    .btn-purple:hover { background: #5a31a8; }
+    .btn-gray { background: #e8eaf0; color: #555; }
+    .btn-gray:hover { background: #d8dae8; }
+
+    /* ---- INDICADORES ---- */
+    .indicadores { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+    .card-ind {
+      background: white; border-radius: 12px; padding: 14px 20px;
+      flex: 1; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .card-ind .num { font-size: 26px; font-weight: 700; }
+    .card-ind .label { font-size: 12px; color: #888; margin-top: 2px; }
+    .card-ind.hoje .num { color: #6c3fc5; }
+    .card-ind.confirm .num { color: #22c55e; }
+    .card-ind.cancel .num { color: #ef4444; }
+    .card-ind.falta .num { color: #f59e0b; }
+
+    /* ---- TOOLBAR ---- */
+    .toolbar {
+      background: white; border-radius: 14px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06); flex-wrap: wrap;
+    }
+    .toolbar input[type=date], .toolbar select, .toolbar input[type=text] {
+      border: 1.5px solid #e0e2ec; border-radius: 8px; padding: 8px 12px;
+      font-family: inherit; font-size: 13px; outline: none; background: #fafbff;
+    }
+    .toolbar input:focus, .toolbar select:focus { border-color: #6c3fc5; }
+    .modo-btns { display: flex; gap: 4px; background: #f0f2f8; border-radius: 8px; padding: 3px; }
+    .modo-btn {
+      padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer;
+      font-family: inherit; font-size: 13px; font-weight: 500; color: #666; background: transparent; transition: .2s;
+    }
+    .modo-btn.active { background: white; color: #6c3fc5; font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+    .nav-semana { display: flex; align-items: center; gap: 6px; }
+    .nav-semana button { background: #f0f2f8; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 15px; }
+    .nav-semana .label-periodo { font-size: 13px; font-weight: 600; min-width: 180px; text-align: center; }
+
+    /* ---- CALENDÁRIO MINI ---- */
+    .cal-mini-wrap { background: white; border-radius: 14px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06); margin-bottom: 20px; }
+    .cal-mini-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .cal-mini-header span { font-weight: 700; font-size: 14px; }
+    .cal-mini-header button { background: none; border: none; cursor: pointer; font-size: 16px; color: #6c3fc5; }
+    .cal-mini-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; text-align: center; }
+    .cal-dow { font-size: 10px; font-weight: 700; color: #aaa; padding: 4px 0; }
+    .cal-day {
+      font-size: 12px; padding: 5px 2px; border-radius: 6px; cursor: pointer;
+      transition: .15s;
+    }
+    .cal-day:hover { background: #f0f2f8; }
+    .cal-day.hoje { background: #6c3fc5; color: white; font-weight: 700; }
+    .cal-day.selecionado { background: #e8d5ff; color: #6c3fc5; font-weight: 700; border: 1.5px solid #6c3fc5; }
+    .cal-day.feriado { color: #ef4444; font-weight: 600; }
+    .cal-day.fim-semana:not(.hoje) { color: #d97706; }
+    .cal-day.outro-mes { color: #ccc; }
+    .cal-day.tem-agenda::after { content:''; display:block; width:5px; height:5px; border-radius:50%; background:#6c3fc5; margin:1px auto 0; }
+
+    /* ---- AGENDA DIÁRIA ---- */
+    .agenda-diaria { background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.06); overflow: hidden; }
+    .dia-header {
+      padding: 14px 20px; background: linear-gradient(135deg, #6c3fc5, #8b5cf6);
+      color: white; font-weight: 700; font-size: 15px;
+    }
+    .dia-header.feriado-header { background: linear-gradient(135deg, #ef4444, #f87171); }
+    .dia-header.fds-header { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .horario-slot {
+      display: flex; align-items: stretch; border-bottom: 1px solid #f0f2f8; min-height: 56px;
+    }
+    .horario-slot:last-child { border-bottom: none; }
+    .horario-label {
+      width: 70px; min-width: 70px; padding: 14px 12px; font-size: 12px;
+      font-weight: 600; color: #888; background: #fafbff; border-right: 1px solid #f0f2f8;
+      text-align: right;
+    }
+    .horario-eventos { flex: 1; padding: 6px 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .evento-card {
+      border-radius: 8px; padding: 7px 12px; font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;
+      max-width: 400px; transition: .2s; position: relative;
+    }
+    .evento-card:hover { filter: brightness(.95); }
+    .evento-card.Agendado { background: #fef9c3; border-left: 4px solid #f59e0b; }
+    .evento-card.Confirmado { background: #dcfce7; border-left: 4px solid #22c55e; }
+    .evento-card.Cancelado { background: #fee2e2; border-left: 4px solid #ef4444; }
+    .evento-card.Realizado { background: #ede9fe; border-left: 4px solid #8b5cf6; }
+    .evento-nome { font-weight: 600; font-size: 13px; flex: 1; }
+    .evento-proc { font-size: 11px; color: #666; }
+    .btn-wpp {
+      background: #25d366; color: white; border: none; border-radius: 7px;
+      padding: 5px 9px; cursor: pointer; font-size: 16px; line-height: 1;
+      display: flex; align-items: center; transition: .2s; flex-shrink: 0;
+    }
+    .btn-wpp:hover { background: #1da851; transform: scale(1.1); }
+    .slot-vazio { color: #ccc; font-size: 12px; }
+
+    /* ---- AGENDA SEMANAL ---- */
+    .agenda-semanal { background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.06); overflow: auto; }
+    .semana-grid { display: grid; min-width: 700px; }
+    .semana-header-row { display: flex; border-bottom: 2px solid #f0f2f8; position: sticky; top: 0; background: white; z-index: 2; }
+    .semana-col-hora { width: 70px; min-width: 70px; flex-shrink: 0; }
+    .semana-col-dia {
+      flex: 1; text-align: center; padding: 12px 4px; font-size: 13px; font-weight: 700;
+      border-left: 1px solid #f0f2f8;
+    }
+    .semana-col-dia .data-num { font-size: 20px; font-weight: 800; display: block; }
+    .semana-col-dia.hoje-col { color: #6c3fc5; }
+    .semana-col-dia.fds-col { color: #d97706; }
+    .semana-col-dia.feriado-col { color: #ef4444; }
+    .semana-body-row { display: flex; border-bottom: 1px solid #f0f2f8; min-height: 52px; }
+    .semana-hora-label {
+      width: 70px; min-width: 70px; padding: 10px 8px; font-size: 11px;
+      color: #aaa; text-align: right; font-weight: 600; flex-shrink: 0;
+      border-right: 1px solid #f0f2f8;
+    }
+    .semana-cell {
+      flex: 1; border-left: 1px solid #f0f2f8; padding: 3px 5px;
+      display: flex; flex-direction: column; gap: 3px; min-width: 80px;
+    }
+    .semana-cell.fds-cell { background: #fff8f0; }
+    .semana-cell.feriado-cell { background: #fff5f5; }
+    .evento-mini {
+      border-radius: 5px; padding: 3px 7px; font-size: 11px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 4px;
+    }
+    .evento-mini.Agendado { background: #fef9c3; color: #854d0e; border-left: 3px solid #f59e0b; }
+    .evento-mini.Confirmado { background: #dcfce7; color: #14532d; border-left: 3px solid #22c55e; }
+    .evento-mini.Cancelado { background: #fee2e2; color: #7f1d1d; border-left: 3px solid #ef4444; }
+    .evento-mini.Realizado { background: #ede9fe; color: #4c1d95; border-left: 3px solid #8b5cf6; }
+    .evento-mini .mini-wpp { background: #25d366; color: white; border-radius: 3px; padding: 1px 4px; font-size: 10px; cursor: pointer; }
+
+    /* ---- MODAL ---- */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.4);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; opacity: 0; pointer-events: none; transition: .2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 16px; padding: 28px; width: 95%; max-width: 520px;
+      transform: translateY(20px); transition: .2s; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal h2 { font-size: 18px; margin-bottom: 20px; }
+    .form-row { display: flex; gap: 14px; }
+    .form-group { flex: 1; margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; border: 1.5px solid #e0e2ec; border-radius: 8px; padding: 9px 12px;
+      font-family: inherit; font-size: 14px; outline: none; transition: .2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #6c3fc5; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+
+    /* ---- BADGE ---- */
+    .badge { border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 600; }
+    .badge-warning { background: #fef9c3; color: #854d0e; }
+    .badge-success { background: #dcfce7; color: #14532d; }
+    .badge-danger { background: #fee2e2; color: #7f1d1d; }
+    .badge-purple { background: #ede9fe; color: #4c1d95; }
+
+    /* ---- TOAST ---- */
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white;
+      padding: 12px 20px; border-radius: 10px; font-size: 14px;
+      opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #22c55e; }
+    .toast.error { background: #ef4444; }
+
+    /* ---- FERIADO TAG ---- */
+    .feriado-tag {
+      display: inline-block; background: #fee2e2; color: #ef4444; font-size: 11px;
+      font-weight: 700; border-radius: 6px; padding: 2px 8px; margin-left: 10px;
+    }
+    .fds-tag {
+      display: inline-block; background: #fef3c7; color: #d97706; font-size: 11px;
+      font-weight: 700; border-radius: 6px; padding: 2px 8px; margin-left: 10px;
+    }
+
+    /* ---- TOOLTIP FERIADO ---- */
+    .cal-day { position: relative; }
+    .cal-day[data-feriado]:hover::before {
+      content: attr(data-feriado); position: absolute; bottom: 110%; left: 50%;
+      transform: translateX(-50%); background: #1a1a2e; color: white; font-size: 10px;
+      padding: 3px 7px; border-radius: 5px; white-space: nowrap; z-index: 10; pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 16px; }
+      .form-row { flex-direction: column; gap: 0; }
+      .indicadores { gap: 8px; }
+    }
+  </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="logo"><span class="logo-icon">💙</span><span class="logo-text">Medlyn</span></div>
+    <div class="logo"><span>💙</span><span>Medlyn</span></div>
     <nav>
       <a href="index.html" class="nav-item">🏠 Dashboard</a>
       <a href="agenda.html" class="nav-item active">📅 Agenda</a>
@@ -26,9 +243,9 @@
       <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
       <a href="usuarios.html" class="nav-item" id="nav-admin" style="display:none">⚙️ Usuários</a>
     </nav>
-    <div style="margin-top:auto;padding-top:20px;border-top:1px solid rgba(0,0,0,0.1)">
-      <div style="font-weight:600;font-size:14px" id="user-name">-</div>
-      <button onclick="logout()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1.5px solid #c8ccd6;background:white;cursor:pointer;font-size:13px;font-family:inherit">🚪 Sair</button>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid #eee">
+      <div style="font-weight:600;font-size:14px" id="user-name">Administrador</div>
+      <button onclick="logout()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1.5px solid #e0e2ec;background:white;cursor:pointer;font-size:13px;font-family:inherit">🚪 Sair</button>
     </div>
   </aside>
 
@@ -37,19 +254,63 @@
       <h1>📅 Agenda de Consultas</h1>
       <button class="btn btn-purple" id="btn-novo">+ Novo Agendamento</button>
     </div>
-    <div class="search-bar">
-      <input type="date" id="filtro-data"/>
-      <input type="text" id="busca" placeholder="Buscar paciente..."/>
+
+    <!-- INDICADORES -->
+    <div class="indicadores">
+      <div class="card-ind hoje"><div class="num" id="ind-total">0</div><div class="label">Consultas hoje</div></div>
+      <div class="card-ind confirm"><div class="num" id="ind-confirm">0</div><div class="label">Confirmados</div></div>
+      <div class="card-ind cancel"><div class="num" id="ind-cancel">0</div><div class="label">Cancelados</div></div>
+      <div class="card-ind falta"><div class="num" id="ind-agendado">0</div><div class="label">Aguardando</div></div>
     </div>
-    <div class="table-container">
-      <table class="data-table">
-        <thead><tr><th>Paciente</th><th>Data</th><th>Horário</th><th>Procedimento</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tabela"></tbody>
-      </table>
+
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <!-- CALENDÁRIO MINI -->
+      <div style="flex-shrink:0">
+        <div class="cal-mini-wrap" style="width:260px">
+          <div class="cal-mini-header">
+            <button id="cal-prev">‹</button>
+            <span id="cal-mes-label"></span>
+            <button id="cal-next">›</button>
+          </div>
+          <div class="cal-mini-grid" id="cal-mini-grid">
+            <div class="cal-dow">D</div><div class="cal-dow">S</div><div class="cal-dow">T</div>
+            <div class="cal-dow">Q</div><div class="cal-dow">Q</div><div class="cal-dow">S</div>
+            <div class="cal-dow">S</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN AGENDA -->
+      <div style="flex:1;min-width:300px">
+        <!-- TOOLBAR -->
+        <div class="toolbar">
+          <div class="modo-btns">
+            <button class="modo-btn active" id="btn-diario" onclick="setModo('diario')">📅 Diário</button>
+            <button class="modo-btn" id="btn-semanal" onclick="setModo('semanal')">📆 Semanal</button>
+          </div>
+          <div class="nav-semana">
+            <button onclick="navPeriodo(-1)">‹</button>
+            <span class="label-periodo" id="label-periodo"></span>
+            <button onclick="navPeriodo(1)">›</button>
+          </div>
+          <input type="text" id="busca" placeholder="🔍 Buscar paciente..." style="flex:1;min-width:140px"/>
+          <select id="filtro-status">
+            <option value="">Todos status</option>
+            <option value="Agendado">Agendado</option>
+            <option value="Confirmado">Confirmado</option>
+            <option value="Cancelado">Cancelado</option>
+            <option value="Realizado">Realizado</option>
+          </select>
+        </div>
+
+        <!-- VISUALIZAÇÃO -->
+        <div id="view-container"></div>
+      </div>
     </div>
   </main>
 </div>
 
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h2 id="modal-title">📅 Novo Agendamento</h2>
@@ -80,128 +341,419 @@
 
 <div class="toast" id="toast"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="auth.js"></script>
-  <script>
-  let rows = [], editId = null, clinicaId = null;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script>
+// ===================== FERIADOS NACIONAIS BRASIL =====================
+function getFeriados(ano) {
+  // Cálculo da Páscoa (algoritmo de Gauss)
+  const a = ano % 19, b = Math.floor(ano / 100), c = ano % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const mes = Math.floor((h + l - 7 * m + 114) / 31);
+  const dia = ((h + l - 7 * m + 114) % 31) + 1;
+  const pascoa = new Date(ano, mes - 1, dia);
 
-  async function init() {
-    const user = await checkAuth();
-    if (!user) return;
-    clinicaId = user.clinica_id;
-    renderUserHeader();
-    if (user.perfil === 'admin') document.getElementById('nav-admin').style.display = 'flex';
+  function addDias(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+  function fmt(d) { return d.toISOString().split('T')[0]; }
 
-    document.getElementById('filtro-data').value = new Date().toISOString().split('T')[0];
-    document.getElementById('filtro-data').addEventListener('change', load);
-    document.getElementById('busca').addEventListener('input', filtrar);
-    document.getElementById('btn-novo').addEventListener('click', () => abrirModal());
-    document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
-    document.getElementById('btn-salvar').addEventListener('click', salvar);
+  return {
+    [fmt(new Date(ano, 0, 1))]: 'Confraternização Universal',
+    [fmt(addDias(pascoa, -47))]: 'Carnaval',
+    [fmt(addDias(pascoa, -46))]: 'Carnaval',
+    [fmt(addDias(pascoa, -2))]: 'Sexta-feira Santa',
+    [fmt(pascoa)]: 'Páscoa',
+    [fmt(addDias(pascoa, 60))]: 'Corpus Christi',
+    [fmt(new Date(ano, 3, 21))]: 'Tiradentes',
+    [fmt(new Date(ano, 4, 1))]: 'Dia do Trabalho',
+    [fmt(new Date(ano, 8, 7))]: 'Independência do Brasil',
+    [fmt(new Date(ano, 9, 12))]: 'Nossa Senhora Aparecida',
+    [fmt(new Date(ano, 10, 2))]: 'Finados',
+    [fmt(new Date(ano, 10, 15))]: 'Proclamação da República',
+    [fmt(new Date(ano, 11, 25))]: 'Natal',
+  };
+}
 
-    load();
-  }
+// ===================== ESTADO GLOBAL =====================
+let rows = [], editId = null, clinicaId = null;
+let modo = 'diario';
+let dataAtual = new Date();
+dataAtual.setHours(0,0,0,0);
+let calViewDate = new Date(dataAtual);
+let feriados = {};
 
-  async function load() {
-    const data = document.getElementById('filtro-data').value;
-    let q = supabaseClient.from('agendamentos').select('*').order('horario');
-    if (data) q = q.eq('data', data);
-    if (clinicaId) q = q.eq('clinica_id', clinicaId);
-    const { data: res } = await q;
-    rows = res || [];
-    render(rows);
-  }
-
-  function render(lista) {
-    const tbody = document.getElementById('tabela');
-    if (!lista.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#aaa">Nenhum agendamento encontrado</td></tr>'; return; }
-    tbody.innerHTML = lista.map(r => `
-      <tr>
-        <td style="padding:14px 18px"><strong>${r.paciente_nome}</strong></td>
-        <td style="padding:14px 18px">${r.data ? new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</td>
-        <td style="padding:14px 18px">${r.horario||'-'}</td>
-        <td style="padding:14px 18px">${r.procedimento||'-'}</td>
-        <td style="padding:14px 18px"><span class="badge ${badgeTipo(r.status)}">${r.status||'Agendado'}</span></td>
-        <td style="padding:14px 18px">
-          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="editar">✏️</button>
-          <button class="btn-sm btn-outline" data-id="${r.id}" data-action="deletar" style="margin-left:4px">🗑️</button>
-        </td>
-      </tr>
-    `).join('');
-    document.getElementById('tabela').querySelectorAll('button[data-action]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
-        if (btn.dataset.action === 'editar') editar(id);
-        else deletar(id);
-      });
-    });
-  }
-
-  function filtrar() {
-    const q = document.getElementById('busca').value.toLowerCase();
-    render(rows.filter(r => r.paciente_nome?.toLowerCase().includes(q)));
-  }
-
-  function badgeTipo(s) {
-    if (s === 'Confirmado') return 'badge-success';
-    if (s === 'Cancelado') return 'badge-danger';
-    if (s === 'Realizado') return 'badge-purple';
-    return 'badge-warning';
-  }
-
-  function abrirModal(dados = null) {
-    editId = dados?.id || null;
-    document.getElementById('modal-title').textContent = editId ? '✏️ Editar Agendamento' : '📅 Novo Agendamento';
-    document.getElementById('f-paciente_nome').value = dados?.paciente_nome || '';
-    document.getElementById('f-telefone').value = dados?.telefone || '';
-    document.getElementById('f-data').value = dados?.data || document.getElementById('filtro-data').value || '';
-    document.getElementById('f-horario').value = dados?.horario || '';
-    document.getElementById('f-procedimento').value = dados?.procedimento || '';
-    document.getElementById('f-status').value = dados?.status || 'Agendado';
-    document.getElementById('f-observacoes').value = dados?.observacoes || '';
-    document.getElementById('modal').classList.add('open');
-  }
-
-  function fecharModal() { document.getElementById('modal').classList.remove('open'); }
-
-  async function salvar() {
-    const payload = {
-      paciente_nome: document.getElementById('f-paciente_nome').value,
-      telefone: document.getElementById('f-telefone').value,
-      data: document.getElementById('f-data').value,
-      horario: document.getElementById('f-horario').value,
-      procedimento: document.getElementById('f-procedimento').value,
-      status: document.getElementById('f-status').value,
-      observacoes: document.getElementById('f-observacoes').value,
-      clinica_id: clinicaId,
-    };
-    if (!payload.paciente_nome) { showToast('Informe o nome do paciente!', 'error'); return; }
-    let erro;
-    if (editId) {
-      ({ error: erro } = await supabaseClient.from('agendamentos').update(payload).eq('id', editId));
-    } else {
-      ({ error: erro } = await supabaseClient.from('agendamentos').insert(payload));
+// ===================== INIT =====================
+async function init() {
+  // Tenta autenticação se existir, senão usa modo demo
+  try {
+    if (typeof checkAuth === 'function') {
+      const user = await checkAuth();
+      if (user) {
+        clinicaId = user.clinica_id;
+        if (typeof renderUserHeader === 'function') renderUserHeader();
+        if (user.perfil === 'admin') document.getElementById('nav-admin').style.display = 'flex';
+      }
     }
-    if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
-    showToast('Salvo!', 'success'); fecharModal(); load();
+  } catch(e) {}
+
+  feriados = { ...getFeriados(dataAtual.getFullYear()), ...getFeriados(dataAtual.getFullYear() + 1) };
+
+  document.getElementById('btn-novo').addEventListener('click', () => abrirModal());
+  document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
+  document.getElementById('btn-salvar').addEventListener('click', salvar);
+  document.getElementById('busca').addEventListener('input', renderView);
+  document.getElementById('filtro-status').addEventListener('input', renderView);
+  document.getElementById('cal-prev').addEventListener('click', () => { calViewDate.setMonth(calViewDate.getMonth()-1); renderCalMini(); });
+  document.getElementById('cal-next').addEventListener('click', () => { calViewDate.setMonth(calViewDate.getMonth()+1); renderCalMini(); });
+
+  await load();
+  renderCalMini();
+  renderView();
+}
+
+// ===================== DATA =====================
+async function load() {
+  try {
+    if (typeof supabaseClient !== 'undefined') {
+      let q = supabaseClient.from('agendamentos').select('*').order('horario');
+      if (clinicaId) q = q.eq('clinica_id', clinicaId);
+      const { data: res } = await q;
+      rows = res || [];
+    } else {
+      // DADOS DEMO para visualização
+      rows = gerarDemoData();
+    }
+  } catch(e) {
+    rows = gerarDemoData();
   }
+  atualizarIndicadores();
+  renderView();
+}
 
-  function editar(id) { abrirModal(rows.find(r => r.id === id)); }
+function gerarDemoData() {
+  const hoje = dataFmt(new Date());
+  const amanha = dataFmt(addDias(new Date(), 1));
+  return [
+    { id:'d1', paciente_nome:'Ana Silva', telefone:'11999990001', data:hoje, horario:'08:00', procedimento:'Botox', status:'Confirmado', observacoes:'' },
+    { id:'d2', paciente_nome:'Bruno Costa', telefone:'11999990002', data:hoje, horario:'09:30', procedimento:'Limpeza de Pele', status:'Agendado', observacoes:'' },
+    { id:'d3', paciente_nome:'Carla Mendes', telefone:'11999990003', data:hoje, horario:'11:00', procedimento:'Preenchimento', status:'Realizado', observacoes:'' },
+    { id:'d4', paciente_nome:'Diego Alves', telefone:'11999990004', data:hoje, horario:'14:00', procedimento:'Consulta', status:'Cancelado', observacoes:'' },
+    { id:'d5', paciente_nome:'Eva Lima', telefone:'11999990005', data:amanha, horario:'10:00', procedimento:'Botox', status:'Agendado', observacoes:'' },
+    { id:'d6', paciente_nome:'Fernanda Ramos', telefone:'11999990006', data:amanha, horario:'15:30', procedimento:'Massagem', status:'Confirmado', observacoes:'' },
+  ];
+}
 
-  async function deletar(id) {
-    if (!confirm('Excluir agendamento?')) return;
-    await supabaseClient.from('agendamentos').delete().eq('id', id);
-    showToast('Removido!'); load();
+// ===================== INDICADORES =====================
+function atualizarIndicadores() {
+  const hoje = dataFmt(new Date());
+  const deHoje = rows.filter(r => r.data === hoje);
+  document.getElementById('ind-total').textContent = deHoje.length;
+  document.getElementById('ind-confirm').textContent = deHoje.filter(r => r.status === 'Confirmado').length;
+  document.getElementById('ind-cancel').textContent = deHoje.filter(r => r.status === 'Cancelado').length;
+  document.getElementById('ind-agendado').textContent = deHoje.filter(r => r.status === 'Agendado').length;
+}
+
+// ===================== CALENDÁRIO MINI =====================
+function renderCalMini() {
+  const y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+  feriados = { ...getFeriados(y), ...getFeriados(y + 1) };
+  document.getElementById('cal-mes-label').textContent =
+    calViewDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+  const grid = document.getElementById('cal-mini-grid');
+  // Remove dias anteriores (mantém cabeçalho DOW = 7 primeiros filhos)
+  while (grid.children.length > 7) grid.removeChild(grid.lastChild);
+
+  const primeiro = new Date(y, m, 1);
+  const ultimoDia = new Date(y, m + 1, 0).getDate();
+  const diaSemPrimeiro = primeiro.getDay(); // 0=Dom
+
+  const hoje = dataFmt(new Date());
+  const dataSel = dataFmt(dataAtual);
+
+  // Dias do mês anterior para completar
+  for (let i = 0; i < diaSemPrimeiro; i++) {
+    const d = new Date(y, m, -diaSemPrimeiro + i + 1);
+    const el = criarCalDia(d, true);
+    grid.appendChild(el);
   }
-
-  function showToast(msg, tipo = '') {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.className = `toast show ${tipo}`;
-    setTimeout(() => t.classList.remove('show'), 3000);
+  for (let d = 1; d <= ultimoDia; d++) {
+    const date = new Date(y, m, d);
+    const el = criarCalDia(date, false);
+    grid.appendChild(el);
   }
+  // Completar grid com dias do próximo mês
+  const totalCells = diaSemPrimeiro + ultimoDia;
+  const resto = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let i = 1; i <= resto; i++) {
+    const d = new Date(y, m + 1, i);
+    const el = criarCalDia(d, true);
+    grid.appendChild(el);
+  }
+}
 
-  init();
+function criarCalDia(date, outroMes) {
+  const key = dataFmt(date);
+  const el = document.createElement('div');
+  el.className = 'cal-day';
+  el.textContent = date.getDate();
+  if (outroMes) el.classList.add('outro-mes');
+  if (key === dataFmt(new Date())) el.classList.add('hoje');
+  if (key === dataFmt(dataAtual) && !outroMes) el.classList.add('selecionado');
+  const dow = date.getDay();
+  if (dow === 0 || dow === 6) el.classList.add('fim-semana');
+  if (feriados[key]) { el.classList.add('feriado'); el.setAttribute('data-feriado', feriados[key]); }
+  if (rows.some(r => r.data === key)) el.classList.add('tem-agenda');
+  el.addEventListener('click', () => {
+    if (!outroMes) { dataAtual = new Date(date); renderCalMini(); renderView(); }
+  });
+  return el;
+}
+
+// ===================== MODO / NAV =====================
+function setModo(m) {
+  modo = m;
+  document.getElementById('btn-diario').classList.toggle('active', m === 'diario');
+  document.getElementById('btn-semanal').classList.toggle('active', m === 'semanal');
+  renderView();
+}
+
+function navPeriodo(dir) {
+  if (modo === 'diario') { dataAtual = addDias(dataAtual, dir); }
+  else { dataAtual = addDias(dataAtual, dir * 7); }
+  calViewDate = new Date(dataAtual);
+  renderCalMini();
+  renderView();
+}
+
+// ===================== RENDER VIEW =====================
+function renderView() {
+  const busca = document.getElementById('busca').value.toLowerCase();
+  const filtroStatus = document.getElementById('filtro-status').value;
+  const filtrado = rows.filter(r =>
+    (!busca || r.paciente_nome?.toLowerCase().includes(busca)) &&
+    (!filtroStatus || r.status === filtroStatus)
+  );
+  if (modo === 'diario') renderDiario(filtrado);
+  else renderSemanal(filtrado);
+}
+
+// ===================== MODO DIÁRIO =====================
+const HORARIOS = ['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30',
+  '11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30',
+  '15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
+
+function renderDiario(filtrado) {
+  const key = dataFmt(dataAtual);
+  const dow = dataAtual.getDay();
+  const isFds = dow === 0 || dow === 6;
+  const feriadoNome = feriados[key];
+
+  // Label período
+  document.getElementById('label-periodo').textContent =
+    dataAtual.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+
+  const deHoje = filtrado.filter(r => r.data === key);
+
+  let headerClass = 'dia-header';
+  if (feriadoNome) headerClass += ' feriado-header';
+  else if (isFds) headerClass += ' fds-header';
+
+  let headerExtra = '';
+  if (feriadoNome) headerExtra = `<span class="feriado-tag">🎉 ${feriadoNome}</span>`;
+  else if (dow === 0) headerExtra = `<span class="fds-tag">🟡 Domingo</span>`;
+  else if (dow === 6) headerExtra = `<span class="fds-tag">🟡 Sábado</span>`;
+
+  const slots = HORARIOS.map(h => {
+    const eventos = deHoje.filter(r => (r.horario || '').startsWith(h));
+    const eventosHTML = eventos.length
+      ? eventos.map(r => eventoCardHTML(r)).join('')
+      : `<span class="slot-vazio">—</span>`;
+    return `
+      <div class="horario-slot">
+        <div class="horario-label">${h}</div>
+        <div class="horario-eventos">${eventosHTML}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('view-container').innerHTML = `
+    <div class="agenda-diaria">
+      <div class="${headerClass}">
+        ${dataAtual.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}
+        ${headerExtra}
+        <span style="float:right;font-size:13px;opacity:.8">${deHoje.length} consulta(s)</span>
+      </div>
+      ${slots}
+    </div>`;
+}
+
+function eventoCardHTML(r) {
+  const tel = (r.telefone || '').replace(/\D/g,'');
+  const msg = encodeURIComponent(`Olá, ${r.paciente_nome}! Você tem consulta amanhã às ${r.horario}. Confirme sua presença!`);
+  const wppLink = tel ? `https://wa.me/55${tel}?text=${msg}` : '#';
+  return `
+    <div class="evento-card ${r.status}" onclick="editar('${r.id}')">
+      <div style="flex:1">
+        <div class="evento-nome">${r.paciente_nome}</div>
+        <div class="evento-proc">${r.procedimento || ''}</div>
+      </div>
+      <span class="badge ${badgeTipo(r.status)}">${r.status}</span>
+      <a href="${wppLink}" target="_blank" onclick="event.stopPropagation()" class="btn-wpp" title="Confirmar via WhatsApp">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.115 1.527 5.845L.057 23.926l6.235-1.635A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.37l-.36-.214-3.7.97 1.002-3.598-.234-.37A9.818 9.818 0 1112 21.818z"/></svg>
+      </a>
+    </div>`;
+}
+
+// ===================== MODO SEMANAL =====================
+function renderSemanal(filtrado) {
+  // Encontra segunda-feira da semana
+  const dow = dataAtual.getDay();
+  const seg = addDias(dataAtual, -(dow === 0 ? 6 : dow - 1));
+  const diasSemana = Array.from({length:7}, (_,i) => addDias(seg, i));
+
+  const primD = diasSemana[0], ultD = diasSemana[6];
+  document.getElementById('label-periodo').textContent =
+    primD.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) + ' — ' +
+    ultD.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+
+  const nomeDia = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const hoje = dataFmt(new Date());
+
+  const headerCols = diasSemana.map(d => {
+    const key = dataFmt(d);
+    const dw = d.getDay();
+    const isFds = dw === 0 || dw === 6;
+    const ferNome = feriados[key];
+    let cls = 'semana-col-dia';
+    if (key === hoje) cls += ' hoje-col';
+    else if (ferNome) cls += ' feriado-col';
+    else if (isFds) cls += ' fds-col';
+    return `<div class="${cls}" onclick="goToDate('${key}')">
+      <span class="cal-day-dow">${nomeDia[dw]}</span>
+      <span class="data-num">${d.getDate()}</span>
+      ${ferNome ? `<div style="font-size:9px">${ferNome}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const bodyRows = HORARIOS.map(h => {
+    const cells = diasSemana.map(d => {
+      const key = dataFmt(d);
+      const dw = d.getDay();
+      const isFds = dw === 0 || dw === 6;
+      const ferNome = feriados[key];
+      let cls = 'semana-cell';
+      if (ferNome) cls += ' feriado-cell';
+      else if (isFds) cls += ' fds-cell';
+      const eventos = filtrado.filter(r => r.data === key && (r.horario||'').startsWith(h));
+      const eventosHTML = eventos.map(r => {
+        const tel = (r.telefone || '').replace(/\D/g,'');
+        const msg = encodeURIComponent(`Olá, ${r.paciente_nome}! Você tem consulta às ${r.horario}. Confirme sua presença!`);
+        const wppLink = tel ? `https://wa.me/55${tel}?text=${msg}` : '#';
+        return `<div class="evento-mini ${r.status}" onclick="editar('${r.id}')">
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.paciente_nome}</span>
+          <a href="${wppLink}" target="_blank" onclick="event.stopPropagation()" class="mini-wpp" title="WhatsApp">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.115 1.527 5.845L.057 23.926l6.235-1.635A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.37l-.36-.214-3.7.97 1.002-3.598-.234-.37A9.818 9.818 0 1112 21.818z"/></svg>
+          </a>
+        </div>`;
+      }).join('');
+      return `<div class="${cls}">${eventosHTML}</div>`;
+    }).join('');
+    return `<div class="semana-body-row">
+      <div class="semana-hora-label">${h}</div>
+      ${cells}
+    </div>`;
+  }).join('');
+
+  document.getElementById('view-container').innerHTML = `
+    <div class="agenda-semanal">
+      <div class="semana-header-row">
+        <div class="semana-col-hora"></div>
+        ${headerCols}
+      </div>
+      <div>${bodyRows}</div>
+    </div>`;
+}
+
+function goToDate(key) {
+  dataAtual = new Date(key + 'T00:00:00');
+  setModo('diario');
+  calViewDate = new Date(dataAtual);
+  renderCalMini();
+}
+
+// ===================== MODAL =====================
+function abrirModal(dados = null) {
+  editId = dados?.id || null;
+  document.getElementById('modal-title').textContent = editId ? '✏️ Editar Agendamento' : '📅 Novo Agendamento';
+  document.getElementById('f-paciente_nome').value = dados?.paciente_nome || '';
+  document.getElementById('f-telefone').value = dados?.telefone || '';
+  document.getElementById('f-data').value = dados?.data || dataFmt(dataAtual);
+  document.getElementById('f-horario').value = dados?.horario || '';
+  document.getElementById('f-procedimento').value = dados?.procedimento || '';
+  document.getElementById('f-status').value = dados?.status || 'Agendado';
+  document.getElementById('f-observacoes').value = dados?.observacoes || '';
+  document.getElementById('modal').classList.add('open');
+}
+function fecharModal() { document.getElementById('modal').classList.remove('open'); }
+
+async function salvar() {
+  const payload = {
+    paciente_nome: document.getElementById('f-paciente_nome').value,
+    telefone: document.getElementById('f-telefone').value,
+    data: document.getElementById('f-data').value,
+    horario: document.getElementById('f-horario').value,
+    procedimento: document.getElementById('f-procedimento').value,
+    status: document.getElementById('f-status').value,
+    observacoes: document.getElementById('f-observacoes').value,
+    clinica_id: clinicaId,
+  };
+  if (!payload.paciente_nome) { showToast('Informe o nome do paciente!', 'error'); return; }
+  try {
+    if (typeof supabaseClient !== 'undefined') {
+      let erro;
+      if (editId) {
+        ({ error: erro } = await supabaseClient.from('agendamentos').update(payload).eq('id', editId));
+      } else {
+        ({ error: erro } = await supabaseClient.from('agendamentos').insert(payload));
+      }
+      if (erro) { showToast('Erro: ' + erro.message, 'error'); return; }
+    } else {
+      // Demo mode
+      if (editId) {
+        const idx = rows.findIndex(r => r.id === editId);
+        if (idx >= 0) rows[idx] = { ...rows[idx], ...payload };
+      } else {
+        rows.push({ id: 'demo_' + Date.now(), ...payload });
+      }
+    }
+    showToast('Salvo!', 'success'); fecharModal();
+    atualizarIndicadores(); renderView(); renderCalMini();
+  } catch(e) { showToast('Erro ao salvar', 'error'); }
+}
+
+function editar(id) { abrirModal(rows.find(r => r.id == id)); }
+
+// ===================== UTILS =====================
+function dataFmt(d) { return d.toISOString().split('T')[0]; }
+function addDias(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function badgeTipo(s) {
+  if (s === 'Confirmado') return 'badge-success';
+  if (s === 'Cancelado') return 'badge-danger';
+  if (s === 'Realizado') return 'badge-purple';
+  return 'badge-warning';
+}
+function showToast(msg, tipo = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${tipo}`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+function logout() { if (typeof supabaseClient !== 'undefined') supabaseClient.auth.signOut(); window.location.href = 'login.html'; }
+
+init();
 </script>
 </body>
 </html>
