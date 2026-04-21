@@ -16,11 +16,7 @@
       padding: 24px 16px; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto;
     }
     .logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 32px; color: #6c3fc5; }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-      border-radius: 10px; text-decoration: none; color: #555; font-size: 14px;
-      margin-bottom: 4px; transition: background .2s;
-    }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: #555; font-size: 14px; margin-bottom: 4px; transition: background .2s; }
     .nav-item:hover { background: #f3f0fc; color: #6c3fc5; }
     .nav-item.active { background: #6c3fc5; color: white; font-weight: 600; }
     .main-content { margin-left: 220px; padding: 28px; flex: 1; }
@@ -34,42 +30,24 @@
     .btn-gray:hover { background: #d8dae8; }
     .btn-green { background: #22c55e; color: white; }
     .btn-green:hover { background: #16a34a; }
-    .btn-orange { background: #f59e0b; color: white; }
-    .btn-orange:hover { background: #d97706; }
-    .btn-red { background: #ef4444; color: white; }
-    .btn-red:hover { background: #dc2626; }
-    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 7px; }
 
     /* INDICADORES */
     .indicadores { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
-    .card-ind {
-      background: white; border-radius: 12px; padding: 14px 20px;
-      flex: 1; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    }
+    .card-ind { background: white; border-radius: 12px; padding: 14px 20px; flex: 1; min-width: 110px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
     .card-ind .num { font-size: 26px; font-weight: 700; }
     .card-ind .label { font-size: 12px; color: #888; margin-top: 2px; }
     .card-ind.c-total .num { color: #6c3fc5; }
     .card-ind.c-confirm .num { color: #22c55e; }
+    .card-ind.c-atend .num { color: #3b82f6; }
     .card-ind.c-cancel .num { color: #ef4444; }
     .card-ind.c-aguard .num { color: #f59e0b; }
-    .card-ind.c-atend .num { color: #3b82f6; }
 
     /* TOOLBAR */
-    .toolbar {
-      background: white; border-radius: 14px; padding: 14px 18px;
-      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06); flex-wrap: wrap;
-    }
-    .toolbar select, .toolbar input[type=text] {
-      border: 1.5px solid #e0e2ec; border-radius: 8px; padding: 8px 12px;
-      font-family: inherit; font-size: 13px; outline: none; background: #fafbff;
-    }
+    .toolbar { background: white; border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); flex-wrap: wrap; }
+    .toolbar select, .toolbar input[type=text] { border: 1.5px solid #e0e2ec; border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; outline: none; background: #fafbff; }
     .toolbar input:focus, .toolbar select:focus { border-color: #6c3fc5; }
     .modo-btns { display: flex; gap: 4px; background: #f0f2f8; border-radius: 8px; padding: 3px; }
-    .modo-btn {
-      padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer;
-      font-family: inherit; font-size: 13px; font-weight: 500; color: #666; background: transparent; transition: .2s;
-    }
+    .modo-btn { padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; color: #666; background: transparent; transition: .2s; }
     .modo-btn.active { background: white; color: #6c3fc5; font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
     .nav-periodo { display: flex; align-items: center; gap: 6px; }
     .nav-periodo button { background: #f0f2f8; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 15px; }
@@ -91,11 +69,7 @@
     .cal-day.d-fds:not(.d-hoje) { color: #d97706; }
     .cal-day.d-outro { color: #ccc; }
     .cal-day.d-temag::after { content:''; display:block; width:5px; height:5px; border-radius:50%; background:#6c3fc5; margin:1px auto 0; }
-    .cal-day[data-feriado]:hover::before {
-      content: attr(data-feriado); position: absolute; bottom: 110%; left: 50%;
-      transform: translateX(-50%); background: #1a1a2e; color: white; font-size: 10px;
-      padding: 3px 7px; border-radius: 5px; white-space: nowrap; z-index: 10; pointer-events: none;
-    }
+    .cal-day[data-feriado]:hover::before { content: attr(data-feriado); position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: white; font-size: 10px; padding: 3px 7px; border-radius: 5px; white-space: nowrap; z-index: 10; pointer-events: none; }
 
     /* AGENDA DIÁRIA */
     .agenda-diaria { background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.06); overflow: hidden; }
@@ -109,11 +83,7 @@
     .slot-vazio { color: #ccc; font-size: 12px; }
 
     /* EVENTO CARD */
-    .evento-card {
-      border-radius: 8px; padding: 8px 12px; font-size: 13px;
-      display: flex; align-items: center; gap: 8px; flex: 1; min-width: 220px; max-width: 500px;
-      transition: .2s; position: relative;
-    }
+    .evento-card { border-radius: 8px; padding: 8px 12px; font-size: 13px; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 240px; max-width: 560px; transition: .2s; position: relative; }
     .evento-card.Agendado    { background: #fef9c3; border-left: 4px solid #f59e0b; }
     .evento-card.Confirmado  { background: #dcfce7; border-left: 4px solid #22c55e; }
     .evento-card.Cancelado   { background: #fee2e2; border-left: 4px solid #ef4444; }
@@ -124,12 +94,10 @@
     .evento-info { flex: 1; min-width: 0; }
     .evento-nome { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .evento-proc { font-size: 11px; color: #666; }
-    .evento-acoes { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-
-    /* BOTÕES AÇÃO */
-    .btn-wpp { background: #25d366; color: white; border: none; border-radius: 7px; padding: 5px 8px; cursor: pointer; display: flex; align-items: center; transition: .2s; flex-shrink: 0; }
+    .evento-acoes { display: flex; align-items: center; gap: 4px; flex-shrink: 0; flex-wrap: wrap; }
+    .btn-wpp { background: #25d366; color: white; border: none; border-radius: 7px; padding: 5px 8px; cursor: pointer; display: flex; align-items: center; transition: .2s; }
     .btn-wpp:hover { background: #1da851; transform: scale(1.08); }
-    .btn-acao { border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px; font-weight: 700; font-family: inherit; transition: .2s; white-space: nowrap; }
+    .btn-acao { border: none; border-radius: 6px; padding: 4px 9px; cursor: pointer; font-size: 11px; font-weight: 700; font-family: inherit; transition: .2s; white-space: nowrap; }
     .btn-checkin  { background: #dbeafe; color: #1d4ed8; }
     .btn-checkin:hover { background: #bfdbfe; }
     .btn-atend    { background: #ccfbf1; color: #0f766e; }
@@ -139,35 +107,31 @@
     .btn-editar   { background: #f3f4f6; color: #374151; }
     .btn-editar:hover { background: #e5e7eb; }
 
-    /* STATUS BADGE */
+    /* BADGE */
     .badge { border-radius: 20px; padding: 2px 9px; font-size: 11px; font-weight: 700; }
-    .b-agendado   { background: #fef9c3; color: #854d0e; }
-    .b-confirmado { background: #dcfce7; color: #14532d; }
-    .b-cancelado  { background: #fee2e2; color: #7f1d1d; }
-    .b-realizado  { background: #ede9fe; color: #4c1d95; }
-    .b-chegou     { background: #dbeafe; color: #1e40af; }
-    .b-atendimento{ background: #ccfbf1; color: #0f766e; }
-    .b-finalizado { background: #f0fdf4; color: #166534; }
+    .b-agendado    { background: #fef9c3; color: #854d0e; }
+    .b-confirmado  { background: #dcfce7; color: #14532d; }
+    .b-cancelado   { background: #fee2e2; color: #7f1d1d; }
+    .b-realizado   { background: #ede9fe; color: #4c1d95; }
+    .b-chegou      { background: #dbeafe; color: #1e40af; }
+    .b-atendimento { background: #ccfbf1; color: #0f766e; }
+    .b-finalizado  { background: #f0fdf4; color: #166534; }
 
-    /* FERIADO/FDS TAG */
     .tag-feriado { display:inline-block; background:#fee2e2; color:#ef4444; font-size:11px; font-weight:700; border-radius:6px; padding:2px 8px; margin-left:10px; }
     .tag-fds     { display:inline-block; background:#fef3c7; color:#d97706; font-size:11px; font-weight:700; border-radius:6px; padding:2px 8px; margin-left:10px; }
 
-    /* AGENDA SEMANAL */
+    /* SEMANAL */
     .agenda-semanal { background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.06); overflow: auto; }
     .semana-header-row { display: flex; border-bottom: 2px solid #f0f2f8; position: sticky; top: 0; background: white; z-index: 2; }
     .semana-col-hora { width: 70px; min-width: 70px; flex-shrink: 0; }
     .semana-col-dia { flex: 1; text-align: center; padding: 12px 4px; font-size: 13px; font-weight: 700; border-left: 1px solid #f0f2f8; cursor: pointer; }
     .semana-col-dia .data-num { font-size: 20px; font-weight: 800; display: block; }
     .semana-col-dia:hover { background: #f3f0fc; }
-    .s-hoje { color: #6c3fc5; }
-    .s-fds  { color: #d97706; }
-    .s-fer  { color: #ef4444; }
+    .s-hoje { color: #6c3fc5; } .s-fds { color: #d97706; } .s-fer { color: #ef4444; }
     .semana-body-row { display: flex; border-bottom: 1px solid #f0f2f8; min-height: 50px; }
     .semana-hora-label { width: 70px; min-width: 70px; padding: 10px 8px; font-size: 11px; color: #aaa; text-align: right; font-weight: 600; flex-shrink: 0; border-right: 1px solid #f0f2f8; }
     .semana-cell { flex: 1; border-left: 1px solid #f0f2f8; padding: 3px 4px; display: flex; flex-direction: column; gap: 2px; min-width: 80px; }
-    .semana-cell.c-fds { background: #fff8f0; }
-    .semana-cell.c-fer { background: #fff5f5; }
+    .semana-cell.c-fds { background: #fff8f0; } .semana-cell.c-fer { background: #fff5f5; }
     .evento-mini { border-radius: 4px; padding: 3px 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 3px; }
     .evento-mini.Agendado    { background: #fef9c3; color: #854d0e; border-left: 3px solid #f59e0b; }
     .evento-mini.Confirmado  { background: #dcfce7; color: #14532d; border-left: 3px solid #22c55e; }
@@ -178,59 +142,60 @@
     .evento-mini.Finalizado  { background: #f0fdf4; color: #166534; border-left: 3px solid #86efac; }
     .mini-wpp { background: #25d366; color: white; border-radius: 3px; padding: 1px 3px; font-size: 10px; text-decoration: none; }
 
-    /* MODAL */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.4);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 200; opacity: 0; pointer-events: none; transition: .2s;
-    }
+    /* ====== MODAL BASE ====== */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: .2s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: white; border-radius: 16px; padding: 28px; width: 95%; max-width: 540px;
-      transform: translateY(20px); transition: .2s; max-height: 92vh; overflow-y: auto;
-    }
+    .modal { background: white; border-radius: 16px; padding: 28px; width: 95%; max-width: 560px; transform: translateY(20px); transition: .2s; max-height: 92vh; overflow-y: auto; }
     .modal-overlay.open .modal { transform: translateY(0); }
-    .modal h2 { font-size: 18px; margin-bottom: 20px; }
+    .modal h2 { font-size: 18px; margin-bottom: 6px; }
+    .modal-subtitle { font-size: 13px; color: #888; margin-bottom: 20px; }
     .form-row { display: flex; gap: 14px; }
     .form-group { flex: 1; margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; border: 1.5px solid #e0e2ec; border-radius: 8px; padding: 9px 12px;
-      font-family: inherit; font-size: 14px; outline: none; transition: .2s;
-    }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 5px; }
+    .form-group label .obrig { color: #ef4444; margin-left: 2px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; border: 1.5px solid #e0e2ec; border-radius: 8px; padding: 9px 12px; font-family: inherit; font-size: 13px; outline: none; transition: .2s; }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #6c3fc5; }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .form-group input.erro, .form-group select.erro { border-color: #ef4444 !important; background: #fff5f5; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
 
-    /* CHECKIN MODAL */
-    .checkin-flow { display: flex; flex-direction: column; gap: 14px; }
-    .checkin-step {
-      border: 2px solid #e0e2ec; border-radius: 12px; padding: 16px;
-      display: flex; align-items: center; gap: 14px; cursor: pointer; transition: .2s;
-    }
-    .checkin-step:hover { border-color: #6c3fc5; background: #f9f7ff; }
-    .checkin-step.done { border-color: #22c55e; background: #f0fdf4; }
+    /* ====== MODAL ANAMNESE / FLUXO BLOQUEADO ====== */
+    .modal-anamnese { max-width: 680px !important; }
+    .anamnese-header { background: linear-gradient(135deg,#6c3fc5,#8b5cf6); border-radius: 12px; padding: 16px 20px; color: white; margin-bottom: 22px; }
+    .anamnese-header h3 { font-size: 16px; margin-bottom: 4px; }
+    .anamnese-header p { font-size: 13px; opacity: .85; }
+    .secao-titulo { font-size: 13px; font-weight: 700; color: #6c3fc5; border-bottom: 2px solid #e8d5ff; padding-bottom: 6px; margin-bottom: 14px; margin-top: 6px; text-transform: uppercase; letter-spacing: .5px; }
+    .aviso-obrig { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #856404; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+    /* FLUXO CHECK-IN */
+    .checkin-flow { display: flex; flex-direction: column; gap: 12px; }
+    .checkin-step { border: 2px solid #e0e2ec; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: .2s; }
+    .checkin-step:hover:not(.done):not(.bloqueado) { border-color: #6c3fc5; background: #f9f7ff; }
+    .checkin-step.done { border-color: #22c55e; background: #f0fdf4; cursor: default; }
     .checkin-step.active { border-color: #3b82f6; background: #eff6ff; }
-    .step-icon { font-size: 28px; }
+    .checkin-step.bloqueado { opacity: .45; cursor: not-allowed; }
+    .step-icon { font-size: 26px; }
     .step-info { flex: 1; }
-    .step-title { font-weight: 700; font-size: 15px; }
+    .step-title { font-weight: 700; font-size: 14px; }
     .step-desc { font-size: 12px; color: #888; margin-top: 2px; }
-    .step-check { font-size: 20px; color: #22c55e; }
+    .step-badge { font-size: 11px; font-weight: 700; border-radius: 20px; padding: 2px 10px; }
+    .step-badge.ok { background: #dcfce7; color: #14532d; }
+    .step-badge.atual { background: #dbeafe; color: #1e40af; }
+    .step-badge.pend { background: #f3f4f6; color: #6b7280; }
+
+    /* MODAL REAGENDAMENTO */
+    .modal-reagend .modal { max-width: 440px; }
 
     /* TOAST */
-    .toast {
-      position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white;
-      padding: 12px 20px; border-radius: 10px; font-size: 14px;
-      opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999;
-    }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999; }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.success { background: #22c55e; }
     .toast.error { background: #ef4444; }
     .toast.info { background: #3b82f6; }
 
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main-content { margin-left: 0; padding: 14px; }
-      .form-row { flex-direction: column; gap: 0; }
+    @media(max-width:768px){
+      .sidebar{display:none;}
+      .main-content{margin-left:0;padding:14px;}
+      .form-row{flex-direction:column;gap:0;}
     }
   </style>
 </head>
@@ -262,7 +227,6 @@
       <button class="btn btn-purple" id="btn-novo">+ Novo Agendamento</button>
     </div>
 
-    <!-- INDICADORES — atualizam com a data selecionada -->
     <div class="indicadores">
       <div class="card-ind c-total"><div class="num" id="ind-total">0</div><div class="label" id="ind-label">Consultas do dia</div></div>
       <div class="card-ind c-confirm"><div class="num" id="ind-confirm">0</div><div class="label">Confirmados</div></div>
@@ -272,7 +236,6 @@
     </div>
 
     <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
-      <!-- CALENDÁRIO MINI -->
       <div style="flex-shrink:0">
         <div class="cal-mini-wrap">
           <div class="cal-mini-header">
@@ -287,8 +250,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ÁREA PRINCIPAL -->
       <div style="flex:1;min-width:300px">
         <div class="toolbar">
           <div class="modo-btns">
@@ -318,12 +279,12 @@
   </main>
 </div>
 
-<!-- MODAL AGENDAMENTO -->
+<!-- ======= MODAL AGENDAMENTO ======= -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h2 id="modal-title">📅 Novo Agendamento</h2>
     <div class="form-row">
-      <div class="form-group"><label>Nome do Paciente</label><input type="text" id="f-paciente_nome" placeholder="Nome completo"/></div>
+      <div class="form-group"><label>Nome do Paciente<span class="obrig">*</span></label><input type="text" id="f-paciente_nome" placeholder="Nome completo"/></div>
       <div class="form-group"><label>Telefone</label><input type="text" id="f-telefone" placeholder="(11) 99999-9999"/></div>
     </div>
     <div class="form-row">
@@ -350,31 +311,107 @@
   </div>
 </div>
 
-<!-- MODAL CHECKIN / FLUXO -->
+<!-- ======= MODAL FLUXO CHECK-IN ======= -->
 <div class="modal-overlay" id="modal-checkin">
-  <div class="modal">
+  <div class="modal" style="max-width:480px">
     <h2 id="checkin-titulo">📋 Fluxo do Paciente</h2>
-    <p id="checkin-paciente" style="color:#888;font-size:14px;margin-bottom:20px"></p>
+    <p class="modal-subtitle" id="checkin-subtitulo"></p>
     <div class="checkin-flow" id="checkin-flow"></div>
-    <div class="modal-footer" style="margin-top:20px">
+    <div class="modal-footer" style="margin-top:18px">
       <button class="btn btn-gray" onclick="fecharCheckin()">Fechar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL REAGENDAMENTO -->
-<div class="modal-overlay" id="modal-reagend">
-  <div class="modal">
-    <h2>🔁 Reagendar Consulta</h2>
-    <p id="reagend-paciente" style="color:#888;font-size:14px;margin-bottom:16px"></p>
-    <div class="form-row">
-      <div class="form-group"><label>Nova Data</label><input type="date" id="r-data"/></div>
-      <div class="form-group"><label>Novo Horário</label><input type="time" id="r-horario"/></div>
+<!-- ======= MODAL ANAMNESE + CADASTRO (BLOQUEADO) ======= -->
+<div class="modal-overlay" id="modal-anamnese">
+  <div class="modal modal-anamnese">
+
+    <div class="anamnese-header">
+      <h3>🧠 Anamnese + Cadastro do Paciente</h3>
+      <p id="anamnese-paciente-info">Preencha todos os campos obrigatórios para continuar o atendimento</p>
     </div>
-    <div class="form-group"><label>Motivo do Reagendamento (opcional)</label><textarea id="r-motivo" rows="2" placeholder="Ex: Paciente solicitou..."></textarea></div>
+
+    <div class="aviso-obrig">
+      ⚠️ <span>Todos os campos marcados com <strong>*</strong> são obrigatórios. O fluxo só avança após salvar.</span>
+    </div>
+
+    <!-- DADOS PESSOAIS -->
+    <div class="secao-titulo">👤 Dados Pessoais</div>
+    <div class="form-row">
+      <div class="form-group"><label>Nome Completo<span class="obrig">*</span></label><input type="text" id="a-nome" placeholder="Nome completo"/></div>
+      <div class="form-group"><label>CPF<span class="obrig">*</span></label><input type="text" id="a-cpf" placeholder="000.000.000-00" maxlength="14"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Data de Nascimento<span class="obrig">*</span></label><input type="date" id="a-nascimento"/></div>
+      <div class="form-group"><label>Gênero</label>
+        <select id="a-genero"><option value="">Selecionar</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Telefone<span class="obrig">*</span></label><input type="text" id="a-telefone" placeholder="(11) 99999-9999"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="a-email" placeholder="email@exemplo.com"/></div>
+    </div>
+
+    <!-- ENDEREÇO -->
+    <div class="secao-titulo">📍 Endereço</div>
+    <div class="form-row">
+      <div class="form-group"><label>CEP<span class="obrig">*</span></label><input type="text" id="a-cep" placeholder="00000-000" maxlength="9"/></div>
+      <div class="form-group"><label>Cidade</label><input type="text" id="a-cidade" placeholder="Cidade"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2"><label>Endereço (Rua, número)<span class="obrig">*</span></label><input type="text" id="a-endereco" placeholder="Rua, número"/></div>
+      <div class="form-group"><label>Bairro</label><input type="text" id="a-bairro" placeholder="Bairro"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Estado</label><input type="text" id="a-estado" placeholder="SP" maxlength="2"/></div>
+      <div class="form-group" style="flex:2"></div>
+    </div>
+
+    <!-- ANAMNESE CLÍNICA -->
+    <div class="secao-titulo">🩺 Anamnese Clínica</div>
+    <div class="form-group"><label>Objetivo do Tratamento<span class="obrig">*</span></label><textarea id="a-objetivo" rows="2" placeholder="O que deseja melhorar ou tratar?"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Possui alergias?</label>
+        <select id="a-tem_alergia"><option value="Não">Não</option><option value="Sim">Sim</option></select>
+      </div>
+      <div class="form-group"><label>Quais alergias?</label><input type="text" id="a-alergias" placeholder="Descreva as alergias..."/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Usa medicamentos?</label>
+        <select id="a-usa_medicamentos"><option value="Não">Não</option><option value="Sim">Sim</option></select>
+      </div>
+      <div class="form-group"><label>Quais medicamentos?</label><input type="text" id="a-medicamentos" placeholder="Liste os medicamentos..."/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Grávida ou amamentando?</label>
+        <select id="a-gravida"><option value="Não">Não</option><option value="Sim">Sim</option></select>
+      </div>
+      <div class="form-group"><label>Doenças pré-existentes</label><input type="text" id="a-doencas" placeholder="Ex: Diabetes, Hipertensão..."/></div>
+    </div>
+    <div class="form-group"><label>Tratamentos estéticos anteriores</label><textarea id="a-tratamentos_anteriores" rows="2" placeholder="Já realizou procedimentos? Quais?"></textarea></div>
+    <div class="form-group"><label>Expectativas e observações</label><textarea id="a-expectativas" rows="2" placeholder="Outras informações relevantes..."></textarea></div>
+
+    <div class="modal-footer">
+      <!-- SEM botão cancelar — fluxo obrigatório -->
+      <button class="btn btn-purple" onclick="salvarAnamnese()" id="btn-salvar-anamnese">✅ Salvar e Iniciar Atendimento</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= MODAL REAGENDAMENTO ======= -->
+<div class="modal-overlay modal-reagend" id="modal-reagend">
+  <div class="modal" style="max-width:440px">
+    <h2>🔁 Reagendar Consulta</h2>
+    <p class="modal-subtitle" id="reagend-paciente"></p>
+    <div class="form-row">
+      <div class="form-group"><label>Nova Data<span class="obrig">*</span></label><input type="date" id="r-data"/></div>
+      <div class="form-group"><label>Novo Horário<span class="obrig">*</span></label><input type="time" id="r-horario"/></div>
+    </div>
+    <div class="form-group"><label>Motivo (opcional)</label><textarea id="r-motivo" rows="2" placeholder="Ex: Paciente solicitou..."></textarea></div>
     <div class="modal-footer">
       <button class="btn btn-gray" onclick="fecharReagend()">Cancelar</button>
-      <button class="btn btn-orange" onclick="confirmarReagend()">🔁 Confirmar Reagendamento</button>
+      <button class="btn btn-orange" onclick="confirmarReagend()" style="background:#f59e0b;color:white;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">🔁 Confirmar</button>
     </div>
   </div>
 </div>
@@ -385,33 +422,33 @@
 <script src="config.js"></script>
 <script src="auth.js"></script>
 <script>
-// =========================================================
-// FERIADOS NACIONAIS
-// =========================================================
+// =====================================================================
+// FERIADOS
+// =====================================================================
 function getFeriados(ano) {
   const a=ano%19,b=Math.floor(ano/100),c=ano%100,d=Math.floor(b/4),e=b%4;
   const f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
   const i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);
   const mes=Math.floor((h+l-7*m+114)/31),dia=((h+l-7*m+114)%31)+1;
   const pascoa=new Date(ano,mes-1,dia);
-  function ad(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
-  function fmt(d){return d.toISOString().split('T')[0];}
+  const ad=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
+  const fmt=d=>d.toISOString().split('T')[0];
   return {
     [fmt(new Date(ano,0,1))]:'Confraternização Universal',
     [fmt(ad(pascoa,-47))]:'Carnaval',[fmt(ad(pascoa,-46))]:'Carnaval',
     [fmt(ad(pascoa,-2))]:'Sexta-feira Santa',[fmt(pascoa)]:'Páscoa',
     [fmt(ad(pascoa,60))]:'Corpus Christi',
     [fmt(new Date(ano,3,21))]:'Tiradentes',[fmt(new Date(ano,4,1))]:'Dia do Trabalho',
-    [fmt(new Date(ano,8,7))]:'Independência',[fmt(new Date(ano,9,12))]:'N. Sra. Aparecida',
+    [fmt(new Date(ano,8,7))]:'Independência',[fmt(new Date(ano,9,12))]:'N.Sra.Aparecida',
     [fmt(new Date(ano,10,2))]:'Finados',[fmt(new Date(ano,10,15))]:'Proclamação da República',
     [fmt(new Date(ano,11,25))]:'Natal',
   };
 }
 
-// =========================================================
-// ESTADO GLOBAL
-// =========================================================
-let rows=[], editId=null, reagendId=null, clinicaId=null;
+// =====================================================================
+// ESTADO
+// =====================================================================
+let rows=[], editId=null, reagendId=null, checkinId=null, clinicaId=null;
 let modo='diario';
 let dataAtual=new Date(); dataAtual.setHours(0,0,0,0);
 let calViewDate=new Date(dataAtual);
@@ -421,9 +458,12 @@ const HORARIOS=['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30',
   '11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30',
   '15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
 
-// =========================================================
+// Ordem do fluxo de atendimento
+const FLUXO_STATUS=['Agendado','Confirmado','Chegou','Atendimento','Finalizado'];
+
+// =====================================================================
 // INIT
-// =========================================================
+// =====================================================================
 async function init() {
   try {
     if (typeof checkAuth==='function') {
@@ -437,7 +477,6 @@ async function init() {
   } catch(e){}
 
   atualizarFeriados();
-
   document.getElementById('btn-novo').addEventListener('click',()=>abrirModal());
   document.getElementById('btn-cancelar').addEventListener('click',fecharModal);
   document.getElementById('btn-salvar').addEventListener('click',salvar);
@@ -445,18 +484,27 @@ async function init() {
   document.getElementById('filtro-status').addEventListener('input',renderView);
   document.getElementById('cal-prev').addEventListener('click',()=>{calViewDate.setMonth(calViewDate.getMonth()-1);renderCalMini();});
   document.getElementById('cal-next').addEventListener('click',()=>{calViewDate.setMonth(calViewDate.getMonth()+1);renderCalMini();});
+  // máscara CEP
+  document.getElementById('a-cep').addEventListener('blur',buscarCEP);
+  document.getElementById('a-cep').addEventListener('input',e=>{
+    e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2').slice(0,9);
+  });
+  // máscara CPF
+  document.getElementById('a-cpf').addEventListener('input',e=>{
+    e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2').slice(0,14);
+  });
 
   await load();
 }
 
-function atualizarFeriados() {
+function atualizarFeriados(){
   const y=calViewDate.getFullYear();
   feriados={...getFeriados(y),...getFeriados(y+1)};
 }
 
-// =========================================================
-// CARREGAR DADOS
-// =========================================================
+// =====================================================================
+// DADOS
+// =====================================================================
 async function load() {
   try {
     if (typeof supabaseClient!=='undefined') {
@@ -465,350 +513,438 @@ async function load() {
       const {data:res}=await q;
       rows=res||[];
     } else {
-      rows=gerarDemoData();
+      rows=demoData();
     }
-  } catch(e){ rows=gerarDemoData(); }
+  } catch(e){ rows=demoData(); }
   atualizarIndicadores();
   renderCalMini();
   renderView();
 }
 
-function gerarDemoData() {
-  const h=dataFmt(new Date());
-  const am=dataFmt(addDias(new Date(),1));
+function demoData(){
+  const h=fmt(new Date()), am=fmt(addDias(new Date(),1));
   return [
     {id:'d1',paciente_nome:'Ana Silva',telefone:'11999990001',data:h,horario:'08:00',procedimento:'Botox',status:'Confirmado',observacoes:''},
-    {id:'d2',paciente_nome:'Bruno Costa',telefone:'11999990002',data:h,horario:'09:30',procedimento:'Limpeza de Pele',status:'Agendado',observacoes:''},
+    {id:'d2',paciente_nome:'Bruno Costa',telefone:'11999990002',data:h,horario:'09:30',procedimento:'Limpeza',status:'Agendado',observacoes:''},
     {id:'d3',paciente_nome:'Carla Mendes',telefone:'11999990003',data:h,horario:'11:00',procedimento:'Preenchimento',status:'Chegou',observacoes:''},
     {id:'d4',paciente_nome:'Diego Alves',telefone:'11999990004',data:h,horario:'14:00',procedimento:'Consulta',status:'Cancelado',observacoes:''},
     {id:'d5',paciente_nome:'Eva Lima',telefone:'11999990005',data:am,horario:'10:00',procedimento:'Botox',status:'Agendado',observacoes:''},
-    {id:'d6',paciente_nome:'Fernanda Ramos',telefone:'11999990006',data:am,horario:'15:30',procedimento:'Massagem',status:'Confirmado',observacoes:''},
   ];
 }
 
-// =========================================================
-// INDICADORES — BASEADOS NA DATA SELECIONADA
-// =========================================================
-function atualizarIndicadores() {
-  const key=dataFmt(dataAtual);
-  const doDia=rows.filter(r=>r.data===key);
-  document.getElementById('ind-total').textContent=doDia.length;
-  document.getElementById('ind-confirm').textContent=doDia.filter(r=>r.status==='Confirmado').length;
-  document.getElementById('ind-atend').textContent=doDia.filter(r=>r.status==='Atendimento').length;
-  document.getElementById('ind-cancel').textContent=doDia.filter(r=>r.status==='Cancelado').length;
-  document.getElementById('ind-agendado').textContent=doDia.filter(r=>r.status==='Agendado'||r.status==='Chegou').length;
-  // Label dinâmico
-  const hoje=dataFmt(new Date());
-  document.getElementById('ind-label').textContent=key===hoje?'Consultas hoje':'Consultas do dia';
+// =====================================================================
+// INDICADORES — atualizados pela data selecionada
+// =====================================================================
+function atualizarIndicadores(){
+  const key=fmt(dataAtual);
+  const d=rows.filter(r=>r.data===key);
+  document.getElementById('ind-total').textContent=d.length;
+  document.getElementById('ind-confirm').textContent=d.filter(r=>r.status==='Confirmado').length;
+  document.getElementById('ind-atend').textContent=d.filter(r=>r.status==='Atendimento').length;
+  document.getElementById('ind-cancel').textContent=d.filter(r=>r.status==='Cancelado').length;
+  document.getElementById('ind-agendado').textContent=d.filter(r=>r.status==='Agendado'||r.status==='Chegou').length;
+  document.getElementById('ind-label').textContent=fmt(new Date())===key?'Consultas hoje':'Consultas do dia';
 }
 
-// =========================================================
+// =====================================================================
 // CALENDÁRIO MINI
-// =========================================================
-function renderCalMini() {
+// =====================================================================
+function renderCalMini(){
   atualizarFeriados();
   const y=calViewDate.getFullYear(),m=calViewDate.getMonth();
-  document.getElementById('cal-mes-label').textContent=
-    calViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-
+  document.getElementById('cal-mes-label').textContent=calViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   const grid=document.getElementById('cal-mini-grid');
   while(grid.children.length>7) grid.removeChild(grid.lastChild);
-
-  const primeiro=new Date(y,m,1);
-  const ultDia=new Date(y,m+1,0).getDate();
-  const dowPrimeiro=primeiro.getDay();
-  const hojeKey=dataFmt(new Date());
-  const selKey=dataFmt(dataAtual);
-
-  for(let i=0;i<dowPrimeiro;i++){
-    const d=new Date(y,m,-(dowPrimeiro-i-1));
-    grid.appendChild(criarDia(d,true,hojeKey,selKey));
-  }
-  for(let d=1;d<=ultDia;d++){
-    grid.appendChild(criarDia(new Date(y,m,d),false,hojeKey,selKey));
-  }
-  const total=dowPrimeiro+ultDia;
-  const resto=total%7===0?0:7-(total%7);
-  for(let i=1;i<=resto;i++){
-    grid.appendChild(criarDia(new Date(y,m+1,i),true,hojeKey,selKey));
-  }
+  const primeiro=new Date(y,m,1),ultDia=new Date(y,m+1,0).getDate(),dow=primeiro.getDay();
+  const hKey=fmt(new Date()),sKey=fmt(dataAtual);
+  for(let i=0;i<dow;i++) grid.appendChild(criarDia(new Date(y,m,-(dow-i-1)),true,hKey,sKey));
+  for(let d=1;d<=ultDia;d++) grid.appendChild(criarDia(new Date(y,m,d),false,hKey,sKey));
+  const resto=(dow+ultDia)%7===0?0:7-((dow+ultDia)%7);
+  for(let i=1;i<=resto;i++) grid.appendChild(criarDia(new Date(y,m+1,i),true,hKey,sKey));
 }
 
-function criarDia(date,outro,hojeKey,selKey) {
-  const key=dataFmt(date);
+function criarDia(date,outro,hKey,sKey){
+  const key=fmt(date);
   const el=document.createElement('div');
   el.className='cal-day';
   el.textContent=date.getDate();
   if(outro) el.classList.add('d-outro');
-  if(key===hojeKey) el.classList.add('d-hoje');
-  if(key===selKey&&!outro) el.classList.add('d-sel');
+  if(key===hKey) el.classList.add('d-hoje');
+  if(key===sKey&&!outro) el.classList.add('d-sel');
   const dw=date.getDay();
   if(dw===0||dw===6) el.classList.add('d-fds');
   if(feriados[key]){el.classList.add('d-feriado');el.setAttribute('data-feriado',feriados[key]);}
   if(rows.some(r=>r.data===key)) el.classList.add('d-temag');
   el.addEventListener('click',()=>{
-    if(!outro){
-      dataAtual=new Date(key+'T00:00:00');
-      calViewDate=new Date(dataAtual);
-      atualizarIndicadores();
-      renderCalMini();
-      renderView();
-    }
+    if(!outro){dataAtual=new Date(key+'T00:00:00');calViewDate=new Date(dataAtual);atualizarIndicadores();renderCalMini();renderView();}
   });
   return el;
 }
 
-// =========================================================
+// =====================================================================
 // MODO / NAV
-// =========================================================
+// =====================================================================
 function setModo(m){
   modo=m;
   document.getElementById('btn-diario').classList.toggle('active',m==='diario');
   document.getElementById('btn-semanal').classList.toggle('active',m==='semanal');
   renderView();
 }
-
 function navPeriodo(dir){
   dataAtual=addDias(dataAtual,modo==='diario'?dir:dir*7);
   calViewDate=new Date(dataAtual);
-  atualizarIndicadores();
-  renderCalMini();
-  renderView();
+  atualizarIndicadores();renderCalMini();renderView();
 }
 
-// =========================================================
-// RENDER VIEW
-// =========================================================
+// =====================================================================
+// RENDER
+// =====================================================================
 function renderView(){
   const busca=document.getElementById('busca').value.toLowerCase();
-  const fstatus=document.getElementById('filtro-status').value;
-  const filtrado=rows.filter(r=>
-    (!busca||r.paciente_nome?.toLowerCase().includes(busca))&&
-    (!fstatus||r.status===fstatus)
-  );
-  if(modo==='diario') renderDiario(filtrado);
-  else renderSemanal(filtrado);
+  const fs=document.getElementById('filtro-status').value;
+  const f=rows.filter(r=>(!busca||r.paciente_nome?.toLowerCase().includes(busca))&&(!fs||r.status===fs));
+  if(modo==='diario') renderDiario(f); else renderSemanal(f);
 }
 
-// =========================================================
-// MODO DIÁRIO
-// =========================================================
 function renderDiario(filtrado){
-  const key=dataFmt(dataAtual);
-  const dw=dataAtual.getDay();
-  const isFds=dw===0||dw===6;
-  const ferNome=feriados[key];
+  const key=fmt(dataAtual),dw=dataAtual.getDay(),isFds=dw===0||dw===6,ferNome=feriados[key];
   const deHoje=filtrado.filter(r=>r.data===key);
-
-  document.getElementById('label-periodo').textContent=
-    dataAtual.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
-
+  document.getElementById('label-periodo').textContent=dataAtual.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
   let hClass='dia-header';
-  if(ferNome) hClass+=' h-feriado';
-  else if(isFds) hClass+=' h-fds';
-
+  if(ferNome) hClass+=' h-feriado'; else if(isFds) hClass+=' h-fds';
   let tagExtra='';
   if(ferNome) tagExtra=`<span class="tag-feriado">🎉 ${ferNome}</span>`;
   else if(dw===0) tagExtra=`<span class="tag-fds">🟡 Domingo</span>`;
   else if(dw===6) tagExtra=`<span class="tag-fds">🟡 Sábado</span>`;
 
   const slots=HORARIOS.map(h=>{
-    const eventos=deHoje.filter(r=>(r.horario||'').startsWith(h.slice(0,5)));
-    const html=eventos.length?eventos.map(r=>cardHTML(r)).join(''):`<span class="slot-vazio">—</span>`;
-    return `<div class="horario-slot">
-      <div class="horario-label">${h}</div>
-      <div class="horario-eventos">${html}</div>
-    </div>`;
+    const ev=deHoje.filter(r=>(r.horario||'').startsWith(h.slice(0,5)));
+    const html=ev.length?ev.map(r=>cardHTML(r)).join(''):`<span class="slot-vazio">—</span>`;
+    return `<div class="horario-slot"><div class="horario-label">${h}</div><div class="horario-eventos">${html}</div></div>`;
   }).join('');
 
   document.getElementById('view-container').innerHTML=`
     <div class="agenda-diaria">
-      <div class="${hClass}">
-        ${dataAtual.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})}
-        ${tagExtra}
+      <div class="${hClass}">${dataAtual.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})}${tagExtra}
         <span style="float:right;font-size:13px;opacity:.8">${deHoje.length} consulta(s)</span>
-      </div>
-      ${slots}
+      </div>${slots}
     </div>`;
 }
 
 function cardHTML(r){
   const tel=(r.telefone||'').replace(/\D/g,'');
-  const msg=encodeURIComponent(`Olá, ${r.paciente_nome}! Você tem consulta em ${r.data?new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR'):''} às ${r.horario}. Confirme sua presença respondendo esta mensagem! 😊`);
+  const msg=encodeURIComponent(`Olá, ${r.paciente_nome}! Você tem consulta em ${r.data?new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR'):''} às ${r.horario}. Confirme sua presença! 😊`);
   const wpp=tel?`https://wa.me/55${tel}?text=${msg}`:'#';
-  const badgeCls=badgeTipo(r.status);
-  return `
-    <div class="evento-card ${r.status}">
-      <div class="evento-info">
-        <div class="evento-nome">${r.paciente_nome}</div>
-        <div class="evento-proc">${r.procedimento||''}</div>
-      </div>
-      <span class="badge ${badgeCls}">${r.status}</span>
-      <div class="evento-acoes">
-        <a href="${wpp}" target="_blank" class="btn-wpp" title="WhatsApp">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.115 1.527 5.845L.057 23.926l6.235-1.635A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.37l-.36-.214-3.7.97 1.002-3.598-.234-.37A9.818 9.818 0 1112 21.818z"/></svg>
-        </a>
-        <button class="btn-acao btn-checkin" onclick="abrirCheckin('${r.id}')" title="Check-in / Fluxo">🏥 Fluxo</button>
-        <button class="btn-acao btn-reagend" onclick="abrirReagend('${r.id}')" title="Reagendar">🔁</button>
-        <button class="btn-acao btn-editar" onclick="editar('${r.id}')">✏️</button>
-      </div>
-    </div>`;
+  const idx=FLUXO_STATUS.indexOf(r.status);
+  // Botões de ação dinâmicos conforme status
+  let acoes='';
+
+  // Botão WhatsApp sempre presente
+  acoes+=`<a href="${wpp}" target="_blank" class="btn-wpp" title="WhatsApp">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.115 1.527 5.845L.057 23.926l6.235-1.635A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.37l-.36-.214-3.7.97 1.002-3.598-.234-.37A9.818 9.818 0 1112 21.818z"/></svg>
+  </a>`;
+
+  // Check-in disponível para Agendado e Confirmado
+  if(r.status==='Agendado'||r.status==='Confirmado'){
+    acoes+=`<button class="btn-acao btn-checkin" onclick="iniciarCheckin('${r.id}')">🚪 Check-in</button>`;
+  }
+  // Botão fluxo para os que já estão em curso
+  if(idx>1){
+    acoes+=`<button class="btn-acao btn-atend" onclick="abrirCheckin('${r.id}')">🏥 Fluxo</button>`;
+  }
+  // Reagendar (exceto Finalizado/Cancelado/Realizado)
+  if(!['Finalizado','Cancelado','Realizado'].includes(r.status)){
+    acoes+=`<button class="btn-acao btn-reagend" onclick="abrirReagend('${r.id}')">🔁</button>`;
+  }
+  acoes+=`<button class="btn-acao btn-editar" onclick="editar('${r.id}')">✏️</button>`;
+
+  return `<div class="evento-card ${r.status}">
+    <div class="evento-info">
+      <div class="evento-nome">${r.paciente_nome}</div>
+      <div class="evento-proc">${r.procedimento||''}</div>
+    </div>
+    <span class="badge ${badgeTipo(r.status)}">${statusLabel(r.status)}</span>
+    <div class="evento-acoes">${acoes}</div>
+  </div>`;
 }
 
-// =========================================================
-// MODO SEMANAL
-// =========================================================
 function renderSemanal(filtrado){
   const dw=dataAtual.getDay();
   const seg=addDias(dataAtual,-(dw===0?6:dw-1));
   const dias=Array.from({length:7},(_,i)=>addDias(seg,i));
-  const hojeKey=dataFmt(new Date());
+  const hKey=fmt(new Date());
   const nomeDia=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-
   document.getElementById('label-periodo').textContent=
     dias[0].toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})+' — '+
     dias[6].toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-
-  const headerCols=dias.map(d=>{
-    const key=dataFmt(d),dw2=d.getDay(),fer=feriados[key];
+  const hCols=dias.map(d=>{
+    const key=fmt(d),dw2=d.getDay(),fer=feriados[key];
     let cls='semana-col-dia';
-    if(key===hojeKey) cls+=' s-hoje';
-    else if(fer) cls+=' s-fer';
-    else if(dw2===0||dw2===6) cls+=' s-fds';
-    return `<div class="${cls}" onclick="goToDate('${key}')">
-      <span>${nomeDia[dw2]}</span>
-      <span class="data-num">${d.getDate()}</span>
-      ${fer?`<div style="font-size:9px;margin-top:1px">${fer}</div>`:''}
-    </div>`;
+    if(key===hKey)cls+=' s-hoje';else if(fer)cls+=' s-fer';else if(dw2===0||dw2===6)cls+=' s-fds';
+    return `<div class="${cls}" onclick="goToDate('${key}')"><span>${nomeDia[dw2]}</span><span class="data-num">${d.getDate()}</span>${fer?`<div style="font-size:9px">${fer}</div>`:''}</div>`;
   }).join('');
-
-  const bodyRows=HORARIOS.map(h=>{
+  const bRows=HORARIOS.map(h=>{
     const cells=dias.map(d=>{
-      const key=dataFmt(d),dw2=d.getDay(),fer=feriados[key];
+      const key=fmt(d),dw2=d.getDay(),fer=feriados[key];
       let cls='semana-cell';
-      if(fer) cls+=' c-fer'; else if(dw2===0||dw2===6) cls+=' c-fds';
-      const eventos=filtrado.filter(r=>r.data===key&&(r.horario||'').startsWith(h.slice(0,5)));
-      const html=eventos.map(r=>{
-        const tel=(r.telefone||'').replace(/\D/g,'');
-        const msg=encodeURIComponent(`Olá, ${r.paciente_nome}! Você tem consulta às ${r.horario}. Confirme sua presença!`);
-        const wpp=tel?`https://wa.me/55${tel}?text=${msg}`:'#';
-        return `<div class="evento-mini ${r.status}" onclick="editar('${r.id}')">
-          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.paciente_nome}</span>
-          <a href="${wpp}" target="_blank" onclick="event.stopPropagation()" class="mini-wpp">💬</a>
-          <span onclick="event.stopPropagation();abrirCheckin('${r.id}')" style="cursor:pointer;font-size:10px">🏥</span>
-        </div>`;
-      }).join('');
+      if(fer)cls+=' c-fer';else if(dw2===0||dw2===6)cls+=' c-fds';
+      const ev=filtrado.filter(r=>r.data===key&&(r.horario||'').startsWith(h.slice(0,5)));
+      const html=ev.map(r=>`<div class="evento-mini ${r.status}" onclick="editar('${r.id}')">
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.paciente_nome}</span>
+        ${r.status==='Agendado'||r.status==='Confirmado'?`<span onclick="event.stopPropagation();iniciarCheckin('${r.id}')" style="cursor:pointer;font-size:10px;background:#dbeafe;border-radius:3px;padding:1px 3px;color:#1e40af">Check-in</span>`:''}
+      </div>`).join('');
       return `<div class="${cls}">${html}</div>`;
     }).join('');
     return `<div class="semana-body-row"><div class="semana-hora-label">${h}</div>${cells}</div>`;
   }).join('');
-
   document.getElementById('view-container').innerHTML=`
     <div class="agenda-semanal">
-      <div class="semana-header-row"><div class="semana-col-hora"></div>${headerCols}</div>
-      ${bodyRows}
+      <div class="semana-header-row"><div class="semana-col-hora"></div>${hCols}</div>${bRows}
     </div>`;
 }
 
-function goToDate(key){
-  dataAtual=new Date(key+'T00:00:00');
-  calViewDate=new Date(dataAtual);
-  setModo('diario');
-  atualizarIndicadores();
-  renderCalMini();
+function goToDate(key){dataAtual=new Date(key+'T00:00:00');calViewDate=new Date(dataAtual);setModo('diario');atualizarIndicadores();renderCalMini();}
+
+// =====================================================================
+// CHECK-IN → abre anamnese obrigatória
+// =====================================================================
+async function iniciarCheckin(id){
+  const r=rows.find(x=>x.id==id);
+  if(!r) return;
+  checkinId=id;
+
+  // Verificar se paciente já tem anamnese cadastrada
+  let jaTemAnamnese=false;
+  try {
+    if(typeof supabaseClient!=='undefined'){
+      const {data}=await supabaseClient.from('anamneses')
+        .select('id').eq('paciente_nome',r.paciente_nome).limit(1);
+      jaTemAnamnese=data&&data.length>0;
+    }
+  } catch(e){}
+
+  if(jaTemAnamnese){
+    // Já tem anamnese: só marca como "Chegou" e abre fluxo
+    await salvarStatus(id,'Chegou');
+    showToast('✅ Paciente já cadastrado — Check-in realizado!','success');
+    atualizarIndicadores();renderView();
+    abrirCheckin(id);
+  } else {
+    // Sem anamnese: abre formulário obrigatório
+    document.getElementById('anamnese-paciente-info').textContent=
+      `Paciente: ${r.paciente_nome}  •  ${r.procedimento||''}  •  ${r.horario||''}`;
+    // Pré-preenche nome e telefone que já estão no agendamento
+    document.getElementById('a-nome').value=r.paciente_nome||'';
+    document.getElementById('a-telefone').value=r.telefone||'';
+    document.getElementById('a-cpf').value='';
+    document.getElementById('a-nascimento').value='';
+    document.getElementById('a-genero').value='';
+    document.getElementById('a-email').value='';
+    document.getElementById('a-cep').value='';
+    document.getElementById('a-cidade').value='';
+    document.getElementById('a-endereco').value='';
+    document.getElementById('a-bairro').value='';
+    document.getElementById('a-estado').value='';
+    document.getElementById('a-objetivo').value='';
+    document.getElementById('a-tem_alergia').value='Não';
+    document.getElementById('a-alergias').value='';
+    document.getElementById('a-usa_medicamentos').value='Não';
+    document.getElementById('a-medicamentos').value='';
+    document.getElementById('a-gravida').value='Não';
+    document.getElementById('a-doencas').value='';
+    document.getElementById('a-tratamentos_anteriores').value='';
+    document.getElementById('a-expectativas').value='';
+    // Limpar erros anteriores
+    document.querySelectorAll('#modal-anamnese .erro').forEach(el=>el.classList.remove('erro'));
+    document.getElementById('modal-anamnese').classList.add('open');
+  }
 }
 
-// =========================================================
-// CHECK-IN / FLUXO DO PACIENTE
-// =========================================================
-const FLUXO=[
-  {id:'Confirmado',  icon:'✅', title:'Confirmado',        desc:'Paciente confirmou a consulta'},
-  {id:'Chegou',      icon:'🚪', title:'Paciente Chegou',   desc:'Paciente está na recepção'},
-  {id:'Atendimento', icon:'🩺', title:'Em Atendimento',    desc:'Paciente foi chamado e está sendo atendido'},
-  {id:'Finalizado',  icon:'🏁', title:'Finalizado',        desc:'Atendimento concluído'},
+// =====================================================================
+// SALVAR ANAMNESE (obrigatório — sem botão cancelar)
+// =====================================================================
+async function salvarAnamnese(){
+  // Validação dos obrigatórios
+  const obrig=[
+    {id:'a-nome',label:'Nome Completo'},
+    {id:'a-cpf',label:'CPF'},
+    {id:'a-nascimento',label:'Data de Nascimento'},
+    {id:'a-telefone',label:'Telefone'},
+    {id:'a-cep',label:'CEP'},
+    {id:'a-endereco',label:'Endereço'},
+    {id:'a-objetivo',label:'Objetivo do Tratamento'},
+  ];
+  let valido=true;
+  obrig.forEach(o=>{
+    const el=document.getElementById(o.id);
+    if(!el.value.trim()){el.classList.add('erro');valido=false;}
+    else el.classList.remove('erro');
+  });
+  if(!valido){showToast('Preencha todos os campos obrigatórios (marcados em vermelho)','error');return;}
+
+  const btn=document.getElementById('btn-salvar-anamnese');
+  btn.disabled=true; btn.textContent='💾 Salvando...';
+
+  const r=rows.find(x=>x.id==checkinId);
+  const nome=document.getElementById('a-nome').value.trim();
+
+  const payloadPaciente={
+    nome,
+    cpf:document.getElementById('a-cpf').value.trim(),
+    nascimento:document.getElementById('a-nascimento').value||null,
+    genero:document.getElementById('a-genero').value,
+    telefone:document.getElementById('a-telefone').value.trim(),
+    email:document.getElementById('a-email').value.trim(),
+    cep:document.getElementById('a-cep').value.trim(),
+    endereco:document.getElementById('a-endereco').value.trim(),
+    bairro:document.getElementById('a-bairro').value.trim(),
+    cidade:document.getElementById('a-cidade').value.trim(),
+    estado:document.getElementById('a-estado').value.trim(),
+    observacoes:'',
+    clinica_id:clinicaId,
+  };
+
+  const payloadAnamnese={
+    paciente_nome:nome,
+    data:new Date().toISOString().split('T')[0],
+    objetivo:document.getElementById('a-objetivo').value.trim(),
+    tem_alergia:document.getElementById('a-tem_alergia').value,
+    alergias:document.getElementById('a-alergias').value.trim(),
+    usa_medicamentos:document.getElementById('a-usa_medicamentos').value,
+    medicamentos:document.getElementById('a-medicamentos').value.trim(),
+    gravida:document.getElementById('a-gravida').value,
+    doencas:document.getElementById('a-doencas').value.trim(),
+    tratamentos_anteriores:document.getElementById('a-tratamentos_anteriores').value.trim(),
+    expectativas:document.getElementById('a-expectativas').value.trim(),
+    status:'em_andamento',
+    clinica_id:clinicaId,
+  };
+
+  try {
+    if(typeof supabaseClient!=='undefined'){
+      // 1. Salva/atualiza paciente
+      const {data:pacExist}=await supabaseClient.from('pacientes').select('id').eq('cpf',payloadPaciente.cpf).limit(1);
+      if(pacExist&&pacExist.length>0){
+        await supabaseClient.from('pacientes').update(payloadPaciente).eq('id',pacExist[0].id);
+      } else {
+        await supabaseClient.from('pacientes').insert(payloadPaciente);
+      }
+      // 2. Salva anamnese
+      await supabaseClient.from('anamneses').insert(payloadAnamnese);
+      // 3. Atualiza agendamento para "Chegou"
+      await supabaseClient.from('agendamentos').update({status:'Chegou',paciente_nome:nome}).eq('id',checkinId);
+    }
+    // Atualiza local
+    const idx=rows.findIndex(x=>x.id==checkinId);
+    if(idx>=0){rows[idx].status='Chegou';rows[idx].paciente_nome=nome;}
+  } catch(e){
+    btn.disabled=false; btn.textContent='✅ Salvar e Iniciar Atendimento';
+    showToast('Erro ao salvar: '+e.message,'error'); return;
+  }
+
+  btn.disabled=false; btn.textContent='✅ Salvar e Iniciar Atendimento';
+  document.getElementById('modal-anamnese').classList.remove('open');
+  showToast('✅ Paciente cadastrado e check-in realizado!','success');
+  atualizarIndicadores(); renderCalMini(); renderView();
+  // Abre automaticamente o fluxo
+  setTimeout(()=>abrirCheckin(checkinId),400);
+}
+
+// =====================================================================
+// BUSCAR CEP
+// =====================================================================
+async function buscarCEP(){
+  const cep=document.getElementById('a-cep').value.replace(/\D/g,'');
+  if(cep.length!==8) return;
+  try {
+    const res=await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data=await res.json();
+    if(!data.erro){
+      document.getElementById('a-endereco').value=data.logradouro||'';
+      document.getElementById('a-bairro').value=data.bairro||'';
+      document.getElementById('a-cidade').value=data.localidade||'';
+      document.getElementById('a-estado').value=data.uf||'';
+      showToast('CEP encontrado!','success');
+    }
+  } catch(e){}
+}
+
+// =====================================================================
+// FLUXO VISUAL (modal de acompanhamento)
+// =====================================================================
+const FLUXO_DEF=[
+  {id:'Chegou',     icon:'🚪', title:'Paciente Chegou',   desc:'Check-in realizado na recepção'},
+  {id:'Atendimento',icon:'🩺', title:'Em Atendimento',    desc:'Paciente chamado — atendimento iniciado'},
+  {id:'Finalizado', icon:'🏁', title:'Finalizado',        desc:'Atendimento concluído com sucesso'},
 ];
 
 function abrirCheckin(id){
   const r=rows.find(x=>x.id==id);
   if(!r) return;
-  editId=id;
-  document.getElementById('checkin-titulo').textContent=`📋 Fluxo — ${r.paciente_nome}`;
-  document.getElementById('checkin-paciente').textContent=
-    `${r.procedimento||''}  •  ${r.horario||''}  •  ${r.data?new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR'):''}`;
-
-  const statusAtual=r.status;
-  const idxAtual=FLUXO.findIndex(f=>f.id===statusAtual);
-
-  const html=FLUXO.map((step,i)=>{
+  checkinId=id;
+  document.getElementById('checkin-titulo').textContent=`📋 ${r.paciente_nome}`;
+  document.getElementById('checkin-subtitulo').textContent=`${r.procedimento||''}  •  ${r.horario||''}  •  ${r.data?new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR'):''}`;
+  const idxAtual=FLUXO_DEF.findIndex(f=>f.id===r.status);
+  const html=FLUXO_DEF.map((step,i)=>{
     let cls='checkin-step';
-    let extra='';
-    if(i<idxAtual){cls+=' done'; extra='<span class="step-check">✔️</span>';}
-    else if(i===idxAtual){cls+=' active'; extra='<span style="font-size:11px;color:#3b82f6;font-weight:700">▶ ATUAL</span>';}
-    const podeClicar=i>idxAtual;
-    return `<div class="${cls}" ${podeClicar?`onclick="avancarFluxo('${step.id}')"`:'style="cursor:default"'}>
+    let badge='';
+    if(i<idxAtual){cls+=' done';badge=`<span class="step-badge ok">✔ Concluído</span>`;}
+    else if(i===idxAtual){cls+=' active';badge=`<span class="step-badge atual">▶ Atual</span>`;}
+    else{cls+=' bloqueado';badge=`<span class="step-badge pend">Pendente</span>`;}
+    const podeAvancar=i===idxAtual&&i<FLUXO_DEF.length-1;
+    const onclick=podeAvancar?`onclick="avancarFluxo('${FLUXO_DEF[i+1].id}')"`:
+                  (i===idxAtual&&i===FLUXO_DEF.length-1)?`onclick="avancarFluxo('${step.id}')"`:'';
+    return `<div class="${cls}" ${onclick}>
       <div class="step-icon">${step.icon}</div>
-      <div class="step-info">
-        <div class="step-title">${step.title}</div>
-        <div class="step-desc">${step.desc}</div>
-      </div>
-      ${extra}
+      <div class="step-info"><div class="step-title">${step.title}</div><div class="step-desc">${step.desc}</div></div>
+      ${badge}
     </div>`;
   }).join('');
-
   document.getElementById('checkin-flow').innerHTML=html;
   document.getElementById('modal-checkin').classList.add('open');
 }
 
 async function avancarFluxo(novoStatus){
-  const r=rows.find(x=>x.id==editId);
-  if(!r) return;
-  await atualizarStatus(editId,novoStatus);
-  showToast(`Status atualizado: ${novoStatus}`,'success');
-  abrirCheckin(editId); // re-render
-  atualizarIndicadores();
-  renderView();
+  await salvarStatus(checkinId,novoStatus);
+  showToast(`Status: ${statusLabel(novoStatus)}`,'success');
+  atualizarIndicadores(); renderView();
+  abrirCheckin(checkinId);
 }
 
 function fecharCheckin(){document.getElementById('modal-checkin').classList.remove('open');}
 
-// =========================================================
+// =====================================================================
 // REAGENDAMENTO
-// =========================================================
+// =====================================================================
 function abrirReagend(id){
   const r=rows.find(x=>x.id==id);
   if(!r) return;
   reagendId=id;
   document.getElementById('reagend-paciente').textContent=
-    `Paciente: ${r.paciente_nome}  •  Data atual: ${r.data?new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR'):'-'}  às ${r.horario||'-'}`;
+    `${r.paciente_nome}  •  Data atual: ${r.data?new Date(r.data+'T00:00:00').toLocaleDateString('pt-BR'):'-'} às ${r.horario||'-'}`;
   document.getElementById('r-data').value='';
   document.getElementById('r-horario').value='';
   document.getElementById('r-motivo').value='';
   document.getElementById('modal-reagend').classList.add('open');
 }
-
 async function confirmarReagend(){
-  const novaData=document.getElementById('r-data').value;
-  const novoHorario=document.getElementById('r-horario').value;
-  if(!novaData||!novoHorario){showToast('Informe data e horário!','error');return;}
-  await atualizarStatus(reagendId,'Agendado',{data:novaData,horario:novoHorario});
+  const nd=document.getElementById('r-data').value,nh=document.getElementById('r-horario').value;
+  if(!nd||!nh){showToast('Informe data e horário!','error');return;}
+  await salvarStatus(reagendId,'Agendado',{data:nd,horario:nh});
   showToast('Consulta reagendada!','success');
-  fecharReagend();
-  atualizarIndicadores();
-  renderCalMini();
-  renderView();
+  fecharReagend();atualizarIndicadores();renderCalMini();renderView();
 }
-
 function fecharReagend(){document.getElementById('modal-reagend').classList.remove('open');}
 
-// =========================================================
+// =====================================================================
 // MODAL AGENDAMENTO
-// =========================================================
+// =====================================================================
 function abrirModal(dados=null){
   editId=dados?.id||null;
   document.getElementById('modal-title').textContent=editId?'✏️ Editar Agendamento':'📅 Novo Agendamento';
   document.getElementById('f-paciente_nome').value=dados?.paciente_nome||'';
   document.getElementById('f-telefone').value=dados?.telefone||'';
-  document.getElementById('f-data').value=dados?.data||dataFmt(dataAtual);
+  document.getElementById('f-data').value=dados?.data||fmt(dataAtual);
   document.getElementById('f-horario').value=dados?.horario||'';
   document.getElementById('f-procedimento').value=dados?.procedimento||'';
   document.getElementById('f-status').value=dados?.status||'Agendado';
@@ -839,17 +975,16 @@ async function salvar(){
       if(editId){const i=rows.findIndex(r=>r.id==editId);if(i>=0)rows[i]={...rows[i],...payload};}
       else{rows.push({id:'d'+Date.now(),...payload});}
     }
-    showToast('Salvo!','success');fecharModal();
-    atualizarIndicadores();renderCalMini();renderView();
+    showToast('Salvo!','success');fecharModal();atualizarIndicadores();renderCalMini();renderView();
   } catch(e){showToast('Erro ao salvar','error');}
 }
 
 function editar(id){abrirModal(rows.find(r=>r.id==id));}
 
-// =========================================================
-// ATUALIZAR STATUS (helper)
-// =========================================================
-async function atualizarStatus(id,status,extra={}){
+// =====================================================================
+// HELPER — SALVAR STATUS
+// =====================================================================
+async function salvarStatus(id,status,extra={}){
   const payload={status,...extra};
   const idx=rows.findIndex(r=>r.id==id);
   if(typeof supabaseClient!=='undefined'){
@@ -858,11 +993,16 @@ async function atualizarStatus(id,status,extra={}){
   if(idx>=0) rows[idx]={...rows[idx],...payload};
 }
 
-// =========================================================
+// =====================================================================
 // UTILS
-// =========================================================
-function dataFmt(d){return d.toISOString().split('T')[0];}
+// =====================================================================
+function fmt(d){return d.toISOString().split('T')[0];}
 function addDias(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function statusLabel(s){
+  const m={Agendado:'Agendado',Confirmado:'Confirmado',Cancelado:'Cancelado',
+    Realizado:'Realizado',Chegou:'Chegou',Atendimento:'Em Atend.',Finalizado:'Finalizado'};
+  return m[s]||s;
+}
 function badgeTipo(s){
   const m={Agendado:'b-agendado',Confirmado:'b-confirmado',Cancelado:'b-cancelado',
     Realizado:'b-realizado',Chegou:'b-chegou',Atendimento:'b-atendimento',Finalizado:'b-finalizado'};
