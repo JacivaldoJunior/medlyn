@@ -648,9 +648,12 @@ function cardHTML(r){
   if(r.status==='Agendado'||r.status==='Confirmado'){
     acoes+=`<button class="btn-acao btn-checkin" onclick="iniciarCheckin('${r.id}')">🚪 Check-in</button>`;
   }
-  // Botão fluxo para os que já estão em curso
-  if(idx>1){
-    acoes+=`<button class="btn-acao btn-atend" onclick="abrirCheckin('${r.id}')">🏥 Fluxo</button>`;
+  // Botão atendimento para os que já fizeram check-in
+  if(r.status==='Chegou'||r.status==='Atendimento'){
+    acoes+=`<button class="btn-acao btn-atend" onclick="window.location.href='atendimento.html?id=${r.id}'">🩺 Atendimento</button>`;
+  }
+  if(r.status==='Finalizado'){
+    acoes+=`<button class="btn-acao btn-atend" onclick="window.location.href='atendimento.html?id=${r.id}'">📋 Ver</button>`;
   }
   // Reagendar (exceto Finalizado/Cancelado/Realizado)
   if(!['Finalizado','Cancelado','Realizado'].includes(r.status)){
@@ -724,11 +727,11 @@ async function iniciarCheckin(id){
   } catch(e){}
 
   if(jaTemAnamnese){
-    // Já tem anamnese: só marca como "Chegou" e abre fluxo
+    // Já tem anamnese: marca como "Chegou" e redireciona para atendimento
     await salvarStatus(id,'Chegou');
-    showToast('✅ Paciente já cadastrado — Check-in realizado!','success');
+    showToast('✅ Check-in realizado! Abrindo atendimento...','success');
     atualizarIndicadores();renderView();
-    abrirCheckin(id);
+    setTimeout(()=>{ window.location.href='atendimento.html?id='+id; }, 700);
   } else {
     // Sem anamnese: abre formulário obrigatório
     document.getElementById('anamnese-paciente-info').textContent=
@@ -844,10 +847,10 @@ async function salvarAnamnese(){
 
   btn.disabled=false; btn.textContent='✅ Salvar e Iniciar Atendimento';
   document.getElementById('modal-anamnese').classList.remove('open');
-  showToast('✅ Paciente cadastrado e check-in realizado!','success');
+  showToast('✅ Paciente cadastrado! Abrindo atendimento...','success');
   atualizarIndicadores(); renderCalMini(); renderView();
-  // Abre automaticamente o fluxo
-  setTimeout(()=>abrirCheckin(checkinId),400);
+  // Redireciona para tela de atendimento
+  setTimeout(()=>{ window.location.href='atendimento.html?id='+checkinId; }, 900);
 }
 
 // =====================================================================
