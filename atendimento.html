@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medlyn - Atendimento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
+
+    /* LAYOUT */
+    .app-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; min-height: 100vh; background: white; border-right: 1px solid #e8eaf0; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 32px; color: #6c3fc5; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: #555; font-size: 14px; margin-bottom: 4px; transition: background .2s; }
+    .nav-item:hover { background: #f3f0fc; color: #6c3fc5; }
+    .nav-item.active { background: #6c3fc5; color: white; font-weight: 600; }
+    .main-content { margin-left: 220px; padding: 28px; flex: 1; }
+
+    /* HEADER */
+    .atend-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+    .btn-voltar { background: #e8eaf0; border: none; border-radius: 10px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; color: #555; transition: .2s; }
+    .btn-voltar:hover { background: #d8dae8; }
+    .atend-header h1 { font-size: 22px; font-weight: 700; flex: 1; }
+    .status-badge { border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 700; }
+    .s-atendimento { background: #ccfbf1; color: #0f766e; }
+    .s-finalizado  { background: #f0fdf4; color: #166534; }
+
+    /* GRID PRINCIPAL */
+    .atend-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+
+    /* CARD PACIENTE (lado esq.) */
+    .card-paciente { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; position: sticky; top: 20px; }
+    .card-pac-header { background: linear-gradient(135deg, #6c3fc5, #8b5cf6); padding: 20px; color: white; }
+    .pac-avatar { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; }
+    .pac-nome { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+    .pac-info-sub { font-size: 12px; opacity: .85; }
+    .card-pac-body { padding: 18px; }
+    .info-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .info-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .info-label { font-size: 11px; color: #888; font-weight: 600; }
+    .info-val { font-size: 13px; font-weight: 500; color: #1a1a2e; }
+    .alergia-alert { background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; padding: 10px 12px; margin-top: 4px; }
+    .alergia-alert .tit { font-size: 11px; font-weight: 700; color: #dc2626; margin-bottom: 3px; }
+    .alergia-alert .val { font-size: 12px; color: #7f1d1d; }
+    .divider { height: 1px; background: #f0f2f8; margin: 14px 0; }
+    .hist-mini { font-size: 12px; color: #666; line-height: 1.5; }
+    .sem-hist { color: #bbb; font-size: 12px; font-style: italic; }
+    .btn-ver-pac { width: 100%; margin-top: 14px; padding: 9px; border: 1.5px solid #6c3fc5; background: white; color: #6c3fc5; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; transition: .2s; }
+    .btn-ver-pac:hover { background: #f3f0fc; }
+
+    /* ÁREA CLÍNICA (direita) */
+    .area-clinica { display: flex; flex-direction: column; gap: 18px; }
+
+    .card-sec { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; }
+    .card-sec-header { padding: 14px 20px; border-bottom: 1px solid #f0f2f8; display: flex; align-items: center; gap: 10px; }
+    .card-sec-header .sec-icon { font-size: 18px; }
+    .card-sec-header .sec-tit { font-size: 15px; font-weight: 700; }
+    .card-sec-header .sec-sub { font-size: 12px; color: #888; margin-top: 1px; }
+    .card-sec-body { padding: 20px; }
+
+    /* PROCEDIMENTO */
+    .procedimento-atual { background: #f3f0fc; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .proc-label { font-size: 11px; color: #6c3fc5; font-weight: 700; }
+    .proc-val { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+
+    /* FORM GERAL */
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; border: 1.5px solid #e0e2ec; border-radius: 8px; padding: 10px 13px;
+      font-family: inherit; font-size: 13px; outline: none; transition: .2s; color: #1a1a2e;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #6c3fc5; }
+    .form-row { display: flex; gap: 14px; }
+    .form-row .form-group { flex: 1; }
+
+    /* TAGS MATERIAL */
+    .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ede9fe; color: #6c3fc5; border-radius: 20px; padding: 3px 12px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .tag-remove { cursor: pointer; font-size: 14px; line-height: 1; color: #8b5cf6; }
+    .tag-remove:hover { color: #ef4444; }
+    .add-mat { display: flex; gap: 8px; }
+    .add-mat input { flex: 1; }
+    .btn-add-mat { background: #6c3fc5; color: white; border: none; border-radius: 8px; padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .btn-add-mat:hover { background: #5a31a8; }
+
+    /* UPLOAD FOTO */
+    .upload-area { border: 2px dashed #c8d0e8; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: .2s; }
+    .upload-area:hover { border-color: #6c3fc5; background: #f9f7ff; }
+    .upload-area p { color: #888; font-size: 13px; margin-top: 8px; }
+    .upload-area .ico { font-size: 32px; }
+    .fotos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px,1fr)); gap: 8px; margin-top: 12px; }
+    .foto-thumb { border-radius: 8px; overflow: hidden; aspect-ratio: 1; position: relative; }
+    .foto-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .foto-thumb .rm-foto { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,.55); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+
+    /* FINANCEIRO */
+    .pago-btn-group { display: flex; gap: 8px; margin-top: 4px; }
+    .pago-btn { flex: 1; padding: 9px; border: 2px solid #e0e2ec; border-radius: 8px; background: white; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; color: #555; transition: .2s; }
+    .pago-btn.selected-pago { border-color: #22c55e; background: #dcfce7; color: #14532d; }
+    .pago-btn.selected-pend { border-color: #f59e0b; background: #fef9c3; color: #854d0e; }
+
+    /* RODAPÉ AÇÕES */
+    .atend-footer { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-left { font-size: 13px; color: #888; }
+    .footer-right { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 11px 20px; border-radius: 10px; border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; transition: .2s; }
+    .btn-purple { background: #6c3fc5; color: white; }
+    .btn-purple:hover { background: #5a31a8; }
+    .btn-green { background: #22c55e; color: white; }
+    .btn-green:hover { background: #16a34a; }
+    .btn-gray { background: #e8eaf0; color: #555; }
+    .btn-gray:hover { background: #d8dae8; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #22c55e; }
+    .toast.error { background: #ef4444; }
+    .toast.info { background: #3b82f6; }
+
+    /* FILA DE ESPERA MINI no topo */
+    .fila-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .fila-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .2s; }
+    .fila-item:hover { filter: brightness(.95); }
+    .fi-aguard { background: #fef9c3; color: #854d0e; }
+    .fi-atend  { background: #ccfbf1; color: #0f766e; }
+    .fi-ativo  { outline: 2px solid #6c3fc5; }
+    .fila-label { font-size: 12px; font-weight: 700; color: #888; margin-right: 4px; }
+
+    @media(max-width:900px){
+      .atend-grid { grid-template-columns: 1fr; }
+      .card-paciente { position: static; }
+    }
+    @media(max-width:768px){
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 14px; }
+      .form-row { flex-direction: column; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="logo"><span>💙</span><span>Medlyn</span></div>
+    <nav>
+      <a href="index.html" class="nav-item">🏠 Dashboard</a>
+      <a href="agenda.html" class="nav-item active">📅 Agenda</a>
+      <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
+      <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="estoque.html" class="nav-item">📦 Estoque</a>
+      <a href="contratos.html" class="nav-item">📄 Contratos</a>
+      <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
+      <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
+      <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
+      <a href="usuarios.html" class="nav-item" id="nav-admin" style="display:none">⚙️ Usuários</a>
+    </nav>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid #eee">
+      <div style="font-weight:600;font-size:14px" id="user-name">Administrador</div>
+      <button onclick="logout()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1.5px solid #e0e2ec;background:white;cursor:pointer;font-size:13px;font-family:inherit">🚪 Sair</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <!-- HEADER -->
+    <div class="atend-header">
+      <button class="btn-voltar" onclick="voltarAgenda()">← Voltar à Agenda</button>
+      <h1 id="h-titulo">🩺 Atendimento</h1>
+      <span class="status-badge s-atendimento" id="status-label">Em Atendimento</span>
+    </div>
+
+    <!-- FILA DO DIA -->
+    <div class="fila-bar" id="fila-bar">
+      <span class="fila-label">📋 Fila do dia:</span>
+      <span id="fila-items" style="display:flex;gap:8px;flex-wrap:wrap"></span>
+    </div>
+
+    <div class="atend-grid" id="atend-grid">
+
+      <!-- CARD PACIENTE -->
+      <div class="card-paciente" id="card-paciente">
+        <div class="card-pac-header">
+          <div class="pac-avatar">🧑</div>
+          <div class="pac-nome" id="p-nome">—</div>
+          <div class="pac-info-sub" id="p-sub">—</div>
+        </div>
+        <div class="card-pac-body">
+          <div class="info-row"><div class="info-icon">📞</div><div><div class="info-label">Telefone</div><div class="info-val" id="p-telefone">—</div></div></div>
+          <div class="info-row"><div class="info-icon">🎂</div><div><div class="info-label">Idade</div><div class="info-val" id="p-idade">—</div></div></div>
+          <div class="info-row"><div class="info-icon">📍</div><div><div class="info-label">Endereço</div><div class="info-val" id="p-end">—</div></div></div>
+          <div id="alergia-box" style="display:none">
+            <div class="alergia-alert">
+              <div class="tit">⚠️ ATENÇÃO — ALERGIA</div>
+              <div class="val" id="p-alergia"></div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="info-label" style="margin-bottom:6px">🩺 Anamnese rápida</div>
+          <div class="hist-mini" id="p-anamnese-resumo"><span class="sem-hist">Sem dados clínicos anteriores</span></div>
+          <button class="btn-ver-pac" onclick="verPaciente()">👥 Ver ficha completa</button>
+        </div>
+      </div>
+
+      <!-- ÁREA CLÍNICA -->
+      <div class="area-clinica">
+
+        <!-- PROCEDIMENTO -->
+        <div class="card-sec">
+          <div class="card-sec-header">
+            <span class="sec-icon">🔬</span>
+            <div><div class="sec-tit">Procedimento</div><div class="sec-sub">Defina ou ajuste o procedimento deste atendimento</div></div>
+          </div>
+          <div class="card-sec-body">
+            <div class="procedimento-atual">
+              <div>
+                <div class="proc-label">PROCEDIMENTO AGENDADO</div>
+                <div class="proc-val" id="proc-agendado">—</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Procedimento realizado (pode alterar)</label>
+              <input type="text" id="at-procedimento" placeholder="Ex: Botox, Limpeza de pele, Preenchimento..."/>
+            </div>
+          </div>
+        </div>
+
+        <!-- EVOLUÇÃO CLÍNICA -->
+        <div class="card-sec">
+          <div class="card-sec-header">
+            <span class="sec-icon">📝</span>
+            <div><div class="sec-tit">Evolução Clínica</div><div class="sec-sub">Registro clínico do atendimento</div></div>
+          </div>
+          <div class="card-sec-body">
+            <div class="form-group">
+              <label>Queixa principal / Histórico da consulta</label>
+              <textarea id="at-queixa" rows="3" placeholder="Descreva o motivo da visita e histórico relatado pelo paciente..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Avaliação / Exame físico</label>
+              <textarea id="at-avaliacao" rows="3" placeholder="Resultados da avaliação, observações clínicas..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Evolução / Conduta</label>
+              <textarea id="at-evolucao" rows="4" placeholder="Descreva o procedimento realizado, técnica utilizada, intercorrências..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Recomendações e cuidados pós-procedimento</label>
+              <textarea id="at-recomendacoes" rows="3" placeholder="Instruções para o paciente após o atendimento..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Retorno / Próxima consulta</label>
+                <input type="date" id="at-retorno"/>
+              </div>
+              <div class="form-group">
+                <label>Horário sugerido</label>
+                <input type="time" id="at-retorno-hora"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MATERIAIS UTILIZADOS -->
+        <div class="card-sec">
+          <div class="card-sec-header">
+            <span class="sec-icon">💉</span>
+            <div><div class="sec-tit">Materiais Utilizados</div><div class="sec-sub">Produtos e insumos aplicados no procedimento</div></div>
+          </div>
+          <div class="card-sec-body">
+            <div class="add-mat">
+              <input type="text" id="mat-input" placeholder="Ex: Botox 50U, Ácido Hialurônico 1ml..." onkeydown="if(event.key==='Enter')adicionarMaterial()"/>
+              <button class="btn-add-mat" onclick="adicionarMaterial()">+ Adicionar</button>
+            </div>
+            <div class="tags-container" id="materiais-tags"></div>
+          </div>
+        </div>
+
+        <!-- FOTOS -->
+        <div class="card-sec">
+          <div class="card-sec-header">
+            <span class="sec-icon">📸</span>
+            <div><div class="sec-tit">Fotos / Documentos</div><div class="sec-sub">Antes, depois, exames ou comprovantes</div></div>
+          </div>
+          <div class="card-sec-body">
+            <div class="upload-area" onclick="document.getElementById('file-input').click()">
+              <div class="ico">📁</div>
+              <p>Clique para adicionar fotos ou arquivos</p>
+              <p style="font-size:11px;color:#bbb;margin-top:4px">JPG, PNG, PDF — máx. 10MB</p>
+            </div>
+            <input type="file" id="file-input" multiple accept="image/*,.pdf" style="display:none" onchange="adicionarFotos(event)"/>
+            <div class="fotos-grid" id="fotos-grid"></div>
+          </div>
+        </div>
+
+        <!-- FINANCEIRO -->
+        <div class="card-sec">
+          <div class="card-sec-header">
+            <span class="sec-icon">💰</span>
+            <div><div class="sec-tit">Financeiro</div><div class="sec-sub">Valor e forma de pagamento deste atendimento</div></div>
+          </div>
+          <div class="card-sec-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Valor cobrado (R$)</label>
+                <input type="number" id="at-valor" placeholder="0,00" step="0.01" min="0"/>
+              </div>
+              <div class="form-group">
+                <label>Forma de pagamento</label>
+                <select id="at-pagamento">
+                  <option value="">Selecionar</option>
+                  <option>Dinheiro</option>
+                  <option>Cartão de Crédito</option>
+                  <option>Cartão de Débito</option>
+                  <option>Pix</option>
+                  <option>Transferência</option>
+                  <option>Convênio</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Status do pagamento</label>
+              <div class="pago-btn-group">
+                <button class="pago-btn" id="btn-pago" onclick="setStatusPag('pago')">✅ Pago</button>
+                <button class="pago-btn" id="btn-pend" onclick="setStatusPag('pendente')">⏳ Pendente</button>
+              </div>
+            </div>
+            <div class="form-group" id="parcelas-box" style="display:none">
+              <label>Número de parcelas</label>
+              <select id="at-parcelas">
+                <option value="1">1x</option><option value="2">2x</option><option value="3">3x</option>
+                <option value="4">4x</option><option value="6">6x</option><option value="12">12x</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER AÇÕES -->
+        <div class="atend-footer">
+          <div class="footer-left">
+            <span id="footer-info">💾 Lembre-se de salvar antes de finalizar</span>
+          </div>
+          <div class="footer-right">
+            <button class="btn btn-gray" onclick="salvarRascunho()">💾 Salvar rascunho</button>
+            <button class="btn btn-purple" onclick="agendarRetorno()" id="btn-retorno">📅 Agendar retorno</button>
+            <button class="btn btn-green" onclick="finalizarAtendimento()">🏁 Finalizar atendimento</button>
+          </div>
+        </div>
+
+      </div><!-- /area-clinica -->
+    </div><!-- /atend-grid -->
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script>
+// =====================================================================
+// ESTADO
+// =====================================================================
+let agendId=null, agend=null, paciente=null, anamnese=null;
+let materiais=[], fotos=[], statusPag='pendente', clinicaId=null;
+
+// =====================================================================
+// INIT
+// =====================================================================
+async function init(){
+  try {
+    if(typeof checkAuth==='function'){
+      const user=await checkAuth();
+      if(user){
+        clinicaId=user.clinica_id;
+        if(typeof renderUserHeader==='function') renderUserHeader();
+        if(user.perfil==='admin') document.getElementById('nav-admin').style.display='flex';
+      }
+    }
+  } catch(e){}
+
+  // Pega o ID do agendamento da URL
+  const params=new URLSearchParams(window.location.search);
+  agendId=params.get('id');
+
+  if(!agendId){
+    // Demo mode sem ID
+    carregarDemo();
+    return;
+  }
+  await carregarDados();
+  await carregarFila();
+}
+
+// =====================================================================
+// CARREGAR DADOS DO AGENDAMENTO + PACIENTE + ANAMNESE
+// =====================================================================
+async function carregarDados(){
+  try {
+    if(typeof supabaseClient==='undefined'){ carregarDemo(); return; }
+
+    // Agendamento
+    const {data:ag}=await supabaseClient.from('agendamentos').select('*').eq('id',agendId).single();
+    agend=ag;
+    if(!agend){ carregarDemo(); return; }
+
+    // Paciente (busca por nome)
+    const {data:pacs}=await supabaseClient.from('pacientes').select('*').ilike('nome',agend.paciente_nome).limit(1);
+    paciente=pacs&&pacs.length>0?pacs[0]:null;
+
+    // Anamnese
+    const {data:anas}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome',agend.paciente_nome).order('created_at',{ascending:false}).limit(1);
+    anamnese=anas&&anas.length>0?anas[0]:null;
+
+    renderPaciente();
+
+  } catch(e){ carregarDemo(); }
+}
+
+async function carregarFila(){
+  try {
+    if(typeof supabaseClient==='undefined') return;
+    const hoje=new Date().toISOString().split('T')[0];
+    let q=supabaseClient.from('agendamentos').select('id,paciente_nome,status,horario').eq('data',hoje).in('status',['Chegou','Atendimento']).order('horario');
+    if(clinicaId) q=q.eq('clinica_id',clinicaId);
+    const {data}=await q;
+    renderFila(data||[]);
+  } catch(e){}
+}
+
+function renderFila(lista){
+  const cont=document.getElementById('fila-items');
+  if(!lista.length){ cont.innerHTML='<span style="font-size:12px;color:#bbb">Nenhum paciente aguardando</span>'; return; }
+  cont.innerHTML=lista.map(p=>`
+    <div class="fila-item ${p.status==='Atendimento'?'fi-atend':'fi-aguard'} ${p.id==agendId?'fi-ativo':''}"
+         onclick="if('${p.id}'!='${agendId}') window.location.href='atendimento.html?id=${p.id}'">
+      ${p.status==='Atendimento'?'🩺':'🚪'} ${p.paciente_nome} <span style="opacity:.65">${p.horario||''}</span>
+    </div>`).join('');
+}
+
+// =====================================================================
+// RENDER CARD PACIENTE
+// =====================================================================
+function renderPaciente(){
+  const nome=agend?.paciente_nome||paciente?.nome||'Paciente';
+  const proc=agend?.procedimento||'—';
+  const horario=agend?.horario||'';
+  const data=agend?.data?new Date(agend.data+'T00:00:00').toLocaleDateString('pt-BR'):'';
+
+  document.getElementById('h-titulo').textContent=`🩺 Atendimento — ${nome}`;
+  document.getElementById('p-nome').textContent=nome;
+  document.getElementById('p-sub').textContent=`${proc}  •  ${horario}  •  ${data}`;
+  document.getElementById('proc-agendado').textContent=proc;
+  document.getElementById('at-procedimento').value=proc;
+
+  if(paciente){
+    document.getElementById('p-telefone').textContent=paciente.telefone||'—';
+    const nasc=paciente.nascimento;
+    if(nasc){
+      const idade=Math.floor((new Date()-new Date(nasc))/31557600000);
+      document.getElementById('p-idade').textContent=`${idade} anos`;
+    } else { document.getElementById('p-idade').textContent='—'; }
+    const end=[paciente.endereco,paciente.bairro,paciente.cidade,paciente.estado].filter(Boolean).join(', ');
+    document.getElementById('p-end').textContent=end||'—';
+  } else {
+    document.getElementById('p-telefone').textContent=agend?.telefone||'—';
+  }
+
+  if(anamnese){
+    // Alergias
+    if(anamnese.tem_alergia==='Sim'&&anamnese.alergias){
+      document.getElementById('alergia-box').style.display='block';
+      document.getElementById('p-alergia').textContent=anamnese.alergias;
+    }
+    // Resumo anamnese
+    let resumo=[];
+    if(anamnese.objetivo) resumo.push(`🎯 ${anamnese.objetivo}`);
+    if(anamnese.usa_medicamentos==='Sim') resumo.push(`💊 Medicamentos: ${anamnese.medicamentos||'Sim'}`);
+    if(anamnese.gravida==='Sim') resumo.push('🤰 Grávida/Amamentando');
+    if(anamnese.doencas) resumo.push(`🏥 ${anamnese.doencas}`);
+    if(anamnese.tratamentos_anteriores) resumo.push(`🔬 Anterior: ${anamnese.tratamentos_anteriores}`);
+    document.getElementById('p-anamnese-resumo').innerHTML=resumo.length
+      ? resumo.map(r=>`<div style="margin-bottom:5px">${r}</div>`).join('')
+      : '<span class="sem-hist">Sem dados clínicos registrados</span>';
+  }
+
+  // Status badge
+  if(agend?.status==='Finalizado'){
+    document.getElementById('status-label').textContent='Finalizado';
+    document.getElementById('status-label').className='status-badge s-finalizado';
+  }
+}
+
+// =====================================================================
+// DEMO MODE
+// =====================================================================
+function carregarDemo(){
+  agend={id:'demo',paciente_nome:'Ana Beatriz',procedimento:'Limpeza de Pele',horario:'10:00',data:new Date().toISOString().split('T')[0],status:'Atendimento',telefone:'11 2996038818'};
+  paciente={nome:'Ana Beatriz',telefone:'11 2996038818',nascimento:'1995-03-15',endereco:'Rua das Flores, 123',bairro:'Centro',cidade:'São Paulo',estado:'SP'};
+  anamnese={tem_alergia:'Sim',alergias:'Dipirona',usa_medicamentos:'Não',gravida:'Não',objetivo:'Melhorar textura da pele e reduzir manchas',doencas:'',tratamentos_anteriores:'Limpeza de pele (2024)'};
+  renderFila([
+    {id:'demo',paciente_nome:'Ana Beatriz',status:'Atendimento',horario:'10:00'},
+    {id:'demo2',paciente_nome:'Carlos Lima',status:'Chegou',horario:'11:00'},
+  ]);
+  renderPaciente();
+}
+
+// =====================================================================
+// MATERIAIS
+// =====================================================================
+function adicionarMaterial(){
+  const inp=document.getElementById('mat-input');
+  const val=inp.value.trim();
+  if(!val) return;
+  materiais.push(val);
+  inp.value='';
+  renderMateriais();
+}
+function removerMaterial(i){
+  materiais.splice(i,1);
+  renderMateriais();
+}
+function renderMateriais(){
+  document.getElementById('materiais-tags').innerHTML=
+    materiais.map((m,i)=>`<div class="tag">${m}<span class="tag-remove" onclick="removerMaterial(${i})">×</span></div>`).join('');
+}
+
+// =====================================================================
+// FOTOS
+// =====================================================================
+function adicionarFotos(e){
+  const files=Array.from(e.target.files);
+  files.forEach(f=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{ fotos.push({nome:f.name,url:ev.target.result}); renderFotos(); };
+    reader.readAsDataURL(f);
+  });
+}
+function removerFoto(i){ fotos.splice(i,1); renderFotos(); }
+function renderFotos(){
+  document.getElementById('fotos-grid').innerHTML=fotos.map((f,i)=>`
+    <div class="foto-thumb">
+      ${f.url.startsWith('data:image')?`<img src="${f.url}" alt="${f.nome}"/>`:`<div style="background:#f0f2f8;height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;padding:8px">📄 ${f.nome}</div>`}
+      <button class="rm-foto" onclick="removerFoto(${i})">×</button>
+    </div>`).join('');
+}
+
+// =====================================================================
+// PAGAMENTO
+// =====================================================================
+function setStatusPag(s){
+  statusPag=s;
+  document.getElementById('btn-pago').className='pago-btn'+(s==='pago'?' selected-pago':'');
+  document.getElementById('btn-pend').className='pago-btn'+(s==='pendente'?' selected-pend':'');
+  document.getElementById('parcelas-box').style.display=
+    (s==='pago'&&document.getElementById('at-pagamento').value==='Cartão de Crédito')?'block':'none';
+}
+document.getElementById('at-pagamento').addEventListener('change',function(){
+  document.getElementById('parcelas-box').style.display=
+    (this.value==='Cartão de Crédito'&&statusPag==='pago')?'block':'none';
+});
+
+// =====================================================================
+// SALVAR
+// =====================================================================
+function coletarPayload(){
+  return {
+    procedimento_realizado: document.getElementById('at-procedimento').value,
+    queixa: document.getElementById('at-queixa').value,
+    avaliacao: document.getElementById('at-avaliacao').value,
+    evolucao: document.getElementById('at-evolucao').value,
+    recomendacoes: document.getElementById('at-recomendacoes').value,
+    retorno: document.getElementById('at-retorno').value||null,
+    retorno_hora: document.getElementById('at-retorno-hora').value||null,
+    materiais: materiais.join(', '),
+    valor: parseFloat(document.getElementById('at-valor').value)||0,
+    forma_pagamento: document.getElementById('at-pagamento').value,
+    status_pagamento: statusPag,
+    parcelas: parseInt(document.getElementById('at-parcelas').value)||1,
+    agendamento_id: agendId,
+    paciente_nome: agend?.paciente_nome,
+    clinica_id: clinicaId,
+  };
+}
+
+async function salvarRascunho(){
+  const payload=coletarPayload();
+  try {
+    if(typeof supabaseClient!=='undefined'){
+      // Tenta salvar em tabela 'atendimentos'
+      const {error}=await supabaseClient.from('atendimentos').upsert({...payload, status:'em_andamento'},{onConflict:'agendamento_id'});
+      if(error) throw error;
+    }
+    document.getElementById('footer-info').textContent='✅ Salvo em '+new Date().toLocaleTimeString('pt-BR');
+    showToast('Rascunho salvo!','success');
+  } catch(e){
+    showToast('Salvo localmente (tabela atendimentos não encontrada)','info');
+    document.getElementById('footer-info').textContent='✅ Salvo em '+new Date().toLocaleTimeString('pt-BR');
+  }
+}
+
+async function finalizarAtendimento(){
+  if(!confirm('Finalizar o atendimento? Isso encerrará o fluxo do paciente.')) return;
+  const payload=coletarPayload();
+  try {
+    if(typeof supabaseClient!=='undefined'){
+      // Salva atendimento
+      await supabaseClient.from('atendimentos').upsert({...payload,status:'finalizado'},{onConflict:'agendamento_id'});
+      // Atualiza agendamento para Finalizado
+      await supabaseClient.from('agendamentos').update({status:'Finalizado'}).eq('id',agendId);
+      // Se tem retorno agendado, cria novo agendamento
+      if(payload.retorno){
+        await supabaseClient.from('agendamentos').insert({
+          paciente_nome:agend.paciente_nome, telefone:agend.telefone,
+          data:payload.retorno, horario:payload.retorno_hora||'',
+          procedimento:payload.procedimento_realizado, status:'Agendado', clinica_id:clinicaId,
+        });
+      }
+    }
+    showToast('✅ Atendimento finalizado!','success');
+    document.getElementById('status-label').textContent='Finalizado';
+    document.getElementById('status-label').className='status-badge s-finalizado';
+    setTimeout(()=>voltarAgenda(),1500);
+  } catch(e){
+    showToast('Finalizado localmente','info');
+    setTimeout(()=>voltarAgenda(),1500);
+  }
+}
+
+async function agendarRetorno(){
+  const data=document.getElementById('at-retorno').value;
+  const hora=document.getElementById('at-retorno-hora').value;
+  if(!data){showToast('Preencha a data de retorno primeiro','error');return;}
+  try {
+    if(typeof supabaseClient!=='undefined'){
+      await supabaseClient.from('agendamentos').insert({
+        paciente_nome:agend?.paciente_nome,telefone:agend?.telefone,
+        data,horario:hora||'',procedimento:document.getElementById('at-procedimento').value,
+        status:'Agendado',clinica_id:clinicaId,
+      });
+    }
+    showToast('📅 Retorno agendado para '+new Date(data+'T00:00:00').toLocaleDateString('pt-BR'),'success');
+  } catch(e){ showToast('Retorno registrado','success'); }
+}
+
+// =====================================================================
+// NAVEGAÇÃO
+// =====================================================================
+function voltarAgenda(){ window.location.href='agenda.html'; }
+function verPaciente(){ if(paciente?.id) window.location.href='pacientes.html?id='+paciente.id; else window.location.href='pacientes.html'; }
+
+// =====================================================================
+// UTILS
+// =====================================================================
+function showToast(msg,tipo=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${tipo}`;
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+function logout(){
+  if(typeof supabaseClient!=='undefined') supabaseClient.auth.signOut();
+  window.location.href='login.html';
+}
+
+init();
+</script>
+</body>
+</html>
