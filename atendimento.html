@@ -629,20 +629,25 @@ async function finalizarAtendimento(){
     }
     if(erroAtend){ showToast('Erro ao salvar atendimento: '+erroAtend.message,'error'); return; }
 
-    // 2. SALVAR NO FINANCEIRO (tabela financeiro se existir)
+    // 2. SALVAR NO FINANCEIRO — usando nomes reais das colunas
     if(payload.valor>0){
       try {
-        await supabaseClient.from('financeiro').insert({
+        const {error:efin}=await supabaseClient.from('financeiro').insert({
           descricao: 'Atendimento — '+(payload.procedimento_realizado||agend?.procedimento||'Consulta'),
           valor: payload.valor,
           tipo: 'receita',
-          forma_pagamento: payload.forma_pagamento,
+          categoria: 'Atendimento',
+          forma_pagamento: payload.forma_pagamento||'',
+          status_pgto: payload.status_pagamento==='pago'?'pago':'pendente',
           status: payload.status_pagamento==='pago'?'pago':'pendente',
           data: new Date().toISOString().split('T')[0],
-          paciente_nome: payload.paciente_nome,
+          paciente: payload.paciente_nome||'',
+          paciente_nome: payload.paciente_nome||'',
           clinica_id: clinicaId,
         });
-      } catch(ef){ console.warn('Tabela financeiro não encontrada:', ef); }
+        if(efin) console.warn('Financeiro erro:', efin.message);
+        else console.log('Financeiro salvo!');
+      } catch(ef){ console.warn('Financeiro catch:', ef); }
     }
 
     // 3. ATUALIZAR AGENDAMENTO para Finalizado
