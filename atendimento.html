@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Atendimento</title>
+  <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -565,6 +566,7 @@ document.getElementById('at-pagamento').addEventListener('change',function(){
 // SALVAR
 // =====================================================================
 function coletarPayload(){
+  const valorRaw = document.getElementById('at-valor').value.replace(',','.');
   return {
     procedimento_realizado: document.getElementById('at-procedimento').value,
     queixa: document.getElementById('at-queixa').value,
@@ -574,12 +576,13 @@ function coletarPayload(){
     retorno: document.getElementById('at-retorno').value||null,
     retorno_hora: document.getElementById('at-retorno-hora').value||null,
     materiais: materiais.join(', '),
-    valor: parseFloat(document.getElementById('at-valor').value)||0,
+    valor: parseFloat(valorRaw)||0,
     forma_pagamento: document.getElementById('at-pagamento').value,
     status_pagamento: statusPag,
     parcelas: parseInt(document.getElementById('at-parcelas').value)||1,
     agendamento_id: agendId,
-    paciente_nome: agend?.paciente_nome,
+    paciente_id: paciente?.id||null,
+    paciente_nome: agend?.paciente_nome||'',
     clinica_id: clinicaId,
   };
 }
@@ -588,43 +591,91 @@ async function salvarRascunho(){
   const payload=coletarPayload();
   try {
     if(typeof supabaseClient!=='undefined'){
-      // Tenta salvar em tabela 'atendimentos'
-      const {error}=await supabaseClient.from('atendimentos').upsert({...payload, status:'em_andamento'},{onConflict:'agendamento_id'});
-      if(error) throw error;
+      // Verificar se já existe atendimento para esse agendamento
+      const {data:existe}=await supabaseClient.from('atendimentos').select('id').eq('agendamento_id',agendId).maybeSingle();
+      let erro;
+      if(existe?.id){
+        ({error:erro}=await supabaseClient.from('atendimentos').update({...payload,status:'em_andamento'}).eq('id',existe.id));
+      } else {
+        ({error:erro}=await supabaseClient.from('atendimentos').insert({...payload,status:'em_andamento'}));
+      }
+      if(erro){ showToast('Erro ao salvar: '+erro.message,'error'); return; }
     }
     document.getElementById('footer-info').textContent='✅ Salvo em '+new Date().toLocaleTimeString('pt-BR');
     showToast('Rascunho salvo!','success');
   } catch(e){
-    showToast('Salvo localmente (tabela atendimentos não encontrada)','info');
-    document.getElementById('footer-info').textContent='✅ Salvo em '+new Date().toLocaleTimeString('pt-BR');
+    showToast('Erro: '+e.message,'error');
+    console.error(e);
   }
 }
 
 async function finalizarAtendimento(){
   if(!confirm('Finalizar o atendimento? Isso encerrará o fluxo do paciente.')) return;
   const payload=coletarPayload();
+
+  if(typeof supabaseClient==='undefined'){
+    showToast('✅ Atendimento finalizado (demo)!','success');
+    setTimeout(()=>voltarAgenda(),1500); return;
+  }
+
   try {
-    if(typeof supabaseClient!=='undefined'){
-      // Salva atendimento
-      await supabaseClient.from('atendimentos').upsert({...payload,status:'finalizado'},{onConflict:'agendamento_id'});
-      // Atualiza agendamento para Finalizado
-      await supabaseClient.from('agendamentos').update({status:'Finalizado'}).eq('id',agendId);
-      // Se tem retorno agendado, cria novo agendamento
-      if(payload.retorno){
-        await supabaseClient.from('agendamentos').insert({
-          paciente_nome:agend.paciente_nome, telefone:agend.telefone,
-          data:payload.retorno, horario:payload.retorno_hora||'',
-          procedimento:payload.procedimento_realizado, status:'Agendado', clinica_id:clinicaId,
-        });
-      }
+    // 1. SALVAR ATENDIMENTO (insert ou update)
+    const {data:existe}=await supabaseClient.from('atendimentos').select('id').eq('agendamento_id',agendId).maybeSingle();
+    let erroAtend;
+    if(existe?.id){
+      ({error:erroAtend}=await supabaseClient.from('atendimentos').update({...payload,status:'finalizado'}).eq('id',existe.id));
+    } else {
+      ({error:erroAtend}=await supabaseClient.from('atendimentos').insert({...payload,status:'finalizado'}));
     }
-    showToast('✅ Atendimento finalizado!','success');
+    if(erroAtend){ showToast('Erro ao salvar atendimento: '+erroAtend.message,'error'); return; }
+
+    // 2. SALVAR NO FINANCEIRO (tabela financeiro se existir)
+    if(payload.valor>0){
+      try {
+        await supabaseClient.from('financeiro').insert({
+          descricao: 'Atendimento — '+(payload.procedimento_realizado||agend?.procedimento||'Consulta'),
+          valor: payload.valor,
+          tipo: 'receita',
+          forma_pagamento: payload.forma_pagamento,
+          status: payload.status_pagamento==='pago'?'pago':'pendente',
+          data: new Date().toISOString().split('T')[0],
+          paciente_nome: payload.paciente_nome,
+          clinica_id: clinicaId,
+        });
+      } catch(ef){ console.warn('Tabela financeiro não encontrada:', ef); }
+    }
+
+    // 3. ATUALIZAR AGENDAMENTO para Finalizado
+    await supabaseClient.from('agendamentos').update({status:'Finalizado'}).eq('id',agendId);
+
+    // 4. GARANTIR PACIENTE SALVO (atualiza telefone se necessário)
+    if(paciente?.id){
+      await supabaseClient.from('pacientes').update({
+        telefone: agend?.telefone||paciente.telefone,
+      }).eq('id',paciente.id);
+    }
+
+    // 5. AGENDAR RETORNO automaticamente se preenchido
+    if(payload.retorno){
+      await supabaseClient.from('agendamentos').insert({
+        paciente_nome: agend.paciente_nome,
+        telefone: agend.telefone,
+        data: payload.retorno,
+        horario: payload.retorno_hora||'',
+        procedimento: payload.procedimento_realizado,
+        status: 'Agendado',
+        clinica_id: clinicaId,
+      });
+    }
+
+    showToast('✅ Atendimento finalizado e salvo!','success');
     document.getElementById('status-label').textContent='Finalizado';
     document.getElementById('status-label').className='status-badge s-finalizado';
-    setTimeout(()=>voltarAgenda(),1500);
+    setTimeout(()=>voltarAgenda(),1800);
+
   } catch(e){
-    showToast('Finalizado localmente','info');
-    setTimeout(()=>voltarAgenda(),1500);
+    showToast('Erro: '+e.message,'error');
+    console.error('finalizarAtendimento erro:', e);
   }
 }
 
