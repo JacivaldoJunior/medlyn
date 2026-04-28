@@ -1801,6 +1801,7 @@ async function deletarCamp(id){if(!confirm('Excluir?'))return;await supabaseClie
 // ATENDIMENTO INTEGRADO
 // =====================================================================
 function goAtendimento(id){
+  console.log('[Medlyn] goAtendimento chamado com id:', id);
   agendId=id; agend=null; pacPaciente=null; pacAnamnese=null;
   materiais=[]; fotos=[]; statusPag='pendente';
   ['at-procedimento','at-queixa','at-avaliacao','at-evolucao','at-recomendacoes',
@@ -1812,6 +1813,12 @@ function goAtendimento(id){
   var fi=document.getElementById('fila-items'); if(fi) fi.innerHTML='<span style="font-size:12px;color:#bbb">Carregando...</span>';
   var ar=document.getElementById('p-anamnese-resumo'); if(ar) ar.innerHTML='<span class="sem-hist">Carregando...</span>';
   var ab=document.getElementById('alergia-box'); if(ab) ab.style.display='none';
+  // Reset visual para evitar flash de nome anterior
+  var pn=document.getElementById('p-nome'); if(pn) pn.textContent='Carregando...';
+  var ps=document.getElementById('p-sub'); if(ps) ps.textContent='';
+  var ht=document.getElementById('h-titulo'); if(ht) ht.textContent='🩺 Atendimento';
+  var pa=document.getElementById('proc-agendado'); if(pa) pa.textContent='—';
+  var sl=document.getElementById('status-label'); if(sl){ sl.textContent='Em Atendimento'; sl.className='status-badge s-atendimento'; }
   document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active');});
   document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');});
   document.getElementById('page-atendimento').classList.add('active');
@@ -1830,11 +1837,15 @@ let materiais=[], fotos=[], statusPag='pendente', atClinicaId=null;
 // INIT
 // =====================================================================
 async function initAtend(){
+  console.log('[Medlyn] initAtend - agendId atual:', agendId);
   const _u=getUser(); if(!_u){ goPage('dashboard'); return; } atClinicaId=_u.clinica_id||null;
 
-  // Pega o ID do agendamento da URL
-  const params=new URLSearchParams(window.location.search);
-  agendId=params.get('id');
+  // agendId já foi definido por goAtendimento(id)
+  // Fallback: tentar pegar da URL apenas se ainda não tiver sido definido
+  if(!agendId){
+    const params=new URLSearchParams(window.location.search);
+    agendId=params.get('id');
+  }
 
   if(!agendId){
     // Demo mode sem ID
@@ -1849,6 +1860,7 @@ async function initAtend(){
 // CARREGAR DADOS DO AGENDAMENTO + PACIENTE + ANAMNESE
 // =====================================================================
 async function carregarDados(){
+  console.log('[Medlyn] carregarDados - agendId:', agendId);
   try {
     if(typeof supabaseClient==='undefined'){ await carregarDemo(); return; }
 
@@ -1862,7 +1874,7 @@ async function carregarDados(){
       const {data:pp}=await supabaseClient.from('pacientes').select('*').eq('id',agend.paciente_id).single();
       pacPaciente=pp||null;
     }
-    if(!paciente && agend.paciente_nome){
+    if(!pacPaciente && agend.paciente_nome){
       const {data:pacs}=await supabaseClient.from('pacientes').select('*').eq('nome',agend.paciente_nome).limit(1);
       pacPaciente=pacs&&pacs.length>0?pacs[0]:null;
     }
@@ -1987,8 +1999,8 @@ async function renderPaciente(){
 // =====================================================================
 async function carregarDemo(){
   agend={id:'demo',paciente_nome:'Ana Beatriz',procedimento:'Limpeza de Pele',horario:'10:00',data:new Date().toISOString().split('T')[0],status:'Atendimento',telefone:'11 2996038818'};
-  paciente={nome:'Ana Beatriz',telefone:'11 2996038818',nascimento:'1995-03-15',endereco:'Rua das Flores, 123',bairro:'Centro',cidade:'São Paulo',estado:'SP'};
-  anamnese={tem_alergia:'Sim',alergias:'Dipirona',usa_medicamentos:'Não',gravida:'Não',objetivo:'Melhorar textura da pele e reduzir manchas',doencas:'',tratamentos_anteriores:'Limpeza de pele (2024)'};
+  pacPaciente={nome:'Ana Beatriz',telefone:'11 2996038818',nascimento:'1995-03-15',endereco:'Rua das Flores, 123',bairro:'Centro',cidade:'São Paulo',estado:'SP'};
+  pacAnamnese={tem_alergia:'Sim',alergias:'Dipirona',usa_medicamentos:'Não',gravida:'Não',objetivo:'Melhorar textura da pele e reduzir manchas',doencas:'',tratamentos_anteriores:'Limpeza de pele (2024)'};
   renderFila([
     {id:'demo',paciente_nome:'Ana Beatriz',status:'Atendimento',horario:'10:00'},
     {id:'demo2',paciente_nome:'Carlos Lima',status:'Chegou',horario:'11:00'},
