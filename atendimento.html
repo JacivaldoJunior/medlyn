@@ -4,8 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medlyn - Atendimento</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
@@ -148,13 +147,13 @@
     <div class="logo"><span>💙</span><span>Medlyn</span></div>
     <nav>
       <a href="index.html" class="nav-item">🏠 Dashboard</a>
-      <a href="agenda.html" class="nav-item active">📅 Agenda</a>
+      <a href="index.html" class="nav-item">📅 Agenda</a>
       <a href="prontuario.html" class="nav-item">🧾 Prontuário</a>
-      <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
+      <a href="index.html" class="nav-item">💰 Financeiro</a>
       <a href="estoque.html" class="nav-item">📦 Estoque</a>
       <a href="contratos.html" class="nav-item">📄 Contratos</a>
       <a href="campanhas.html" class="nav-item">📢 Campanhas</a>
-      <a href="pacientes.html" class="nav-item">👥 Pacientes</a>
+      <a href="index.html" class="nav-item">👥 Pacientes</a>
       <a href="anamnese.html" class="nav-item">🧠 Anamnese</a>
       <a href="usuarios.html" class="nav-item" id="nav-admin" style="display:none">⚙️ Usuários</a>
     </nav>
@@ -357,8 +356,14 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="auth.js"></script>
+<script>
+const SUPABASE_URL='https://mqwdjveqaapzrbfgxxvw.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xd2RqdmVxYWFwenJiZmd4eHZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NDIxMDEsImV4cCI6MjA5MTMxODEwMX0.KQV-CSc19rzqzx4wLs_AFzsC-w0XXpWoLKLR0bNjXi0';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+function getUser(){return JSON.parse(localStorage.getItem('medlyn_user')||'null');}
+function getClinicaId(){const u=getUser();return u?u.clinica_id||null:null;}
+</script>
+
 <script>
 // =====================================================================
 // ESTADO
@@ -746,8 +751,8 @@ async function agendarRetorno(){
 // =====================================================================
 // NAVEGAÇÃO
 // =====================================================================
-function voltarAgenda(){ window.location.href='agenda.html'; }
-function verPaciente(){ if(paciente?.id) window.location.href='pacientes.html?id='+paciente.id; else window.location.href='pacientes.html'; }
+function voltarAgenda(){ window.location.href='index.html'; }
+function verPaciente(){ window.location.href='index.html'; }
 
 // =====================================================================
 // UTILS
@@ -759,7 +764,7 @@ function showToast(msg,tipo=''){
 }
 function logout(){
   if(typeof supabaseClient!=='undefined') supabaseClient.auth.signOut();
-  window.location.href='login.html';
+  window.location.href='index.html';
 }
 
 init();
