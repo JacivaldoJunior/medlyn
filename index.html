@@ -1162,7 +1162,7 @@ async function buscarCEPPac(){
 // FINANCEIRO
 // =====================================================================
 async function loadFin(){
-  const mes=document.getElementById('fin-mes').value||new Date().toISOString().slice(0,7);
+  const _finMesEl=document.getElementById('fin-mes'); const mes=(_finMesEl?_finMesEl.value:'')||new Date().toISOString().slice(0,7);
   try{
     let q=supabaseClient.from('financeiro').select('*').gte('data',mes+'-01').lte('data',mes+'-31').order('data',{ascending:false});
     if(clinicaId)q=q.eq('clinica_id',clinicaId);
@@ -1480,7 +1480,7 @@ async function deletarCamp(id){if(!confirm('Excluir?'))return;await supabaseClie
     document.getElementById('app-screen').style.display='none';
   }
   // Mês padrão financeiro
-  document.getElementById('fin-mes').value=new Date().toISOString().slice(0,7);
+  const finMes=document.getElementById('fin-mes'); if(finMes) finMes.value=new Date().toISOString().slice(0,7);
   // Enter no login
   document.getElementById('l-senha').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
 })();
