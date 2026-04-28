@@ -406,13 +406,21 @@ async function carregarDados(){
     agend=ag;
     if(!agend){ carregarDemo(); return; }
 
-    // Paciente (busca por nome)
-    const {data:pacs}=await supabaseClient.from('pacientes').select('*').ilike('nome',agend.paciente_nome).limit(1);
-    paciente=pacs&&pacs.length>0?pacs[0]:null;
+    // Paciente — busca por paciente_id (preferencial) ou nome exato do agendamento
+    if(agend.paciente_id){
+      const {data:pp}=await supabaseClient.from('pacientes').select('*').eq('id',agend.paciente_id).single();
+      paciente=pp||null;
+    }
+    if(!paciente && agend.paciente_nome){
+      const {data:pacs}=await supabaseClient.from('pacientes').select('*').eq('nome',agend.paciente_nome).limit(1);
+      paciente=pacs&&pacs.length>0?pacs[0]:null;
+    }
 
-    // Anamnese
-    const {data:anas}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome',agend.paciente_nome).order('created_at',{ascending:false}).limit(1);
-    anamnese=anas&&anas.length>0?anas[0]:null;
+    // Anamnese — busca pelo nome EXATO do agendamento (não ilike que pode pegar outro)
+    if(agend.paciente_nome){
+      const {data:anas}=await supabaseClient.from('anamneses').select('*').eq('paciente_nome',agend.paciente_nome).order('created_at',{ascending:false}).limit(1);
+      anamnese=anas&&anas.length>0?anas[0]:null;
+    }
 
     renderPaciente();
 
@@ -491,6 +499,36 @@ function renderPaciente(){
     document.getElementById('status-label').textContent='Finalizado';
     document.getElementById('status-label').className='status-badge s-finalizado';
   }
+
+  // Carregar campos de atendimento já salvo
+  try{
+    if(typeof supabaseClient!=='undefined' && agendId && agendId!=='demo'){
+      const{data:at}=await supabaseClient.from('atendimentos').select('*').eq('agendamento_id',agendId).maybeSingle();
+      if(at){
+        document.getElementById('at-procedimento').value=at.procedimento_realizado||proc;
+        document.getElementById('at-queixa').value=at.queixa||'';
+        document.getElementById('at-avaliacao').value=at.avaliacao||'';
+        document.getElementById('at-evolucao').value=at.evolucao||'';
+        document.getElementById('at-recomendacoes').value=at.recomendacoes||'';
+        document.getElementById('at-retorno').value=at.retorno||'';
+        document.getElementById('at-retorno-hora').value=at.retorno_hora||'';
+        document.getElementById('at-valor').value=at.valor||'';
+        if(document.getElementById('at-pagamento')) document.getElementById('at-pagamento').value=at.forma_pagamento||'';
+        if(document.getElementById('at-diagnostico')) document.getElementById('at-diagnostico').value=at.diagnostico||'';
+        if(document.getElementById('at-tecnica')) document.getElementById('at-tecnica').value=at.tecnica||'';
+        if(document.getElementById('at-intercorrencias')) document.getElementById('at-intercorrencias').value=at.intercorrencias||'';
+        if(document.getElementById('at-resultado')) document.getElementById('at-resultado').value=at.resultado_esperado||'';
+        if(at.materiais) materiais=at.materiais.split(', ').filter(Boolean);
+        renderMateriais();
+        statusPag=at.status_pagamento||'pendente';
+        document.querySelectorAll('.pago-btn').forEach(b=>{
+          b.classList.remove('selected-pago','selected-pend');
+          if(statusPag==='pago') document.querySelectorAll('.pago-btn')[0]?.classList.add('selected-pago');
+          else document.querySelectorAll('.pago-btn')[1]?.classList.add('selected-pend');
+        });
+      }
+    }
+  }catch(e){ console.warn('Atendimento existente:', e); }
 }
 
 // =====================================================================
@@ -584,6 +622,11 @@ function coletarPayload(){
     paciente_id: paciente?.id||null,
     paciente_nome: agend?.paciente_nome||'',
     clinica_id: clinicaId,
+    // Complemento clínico do profissional
+    diagnostico: document.getElementById('at-diagnostico')?.value||'',
+    tecnica: document.getElementById('at-tecnica')?.value||'',
+    intercorrencias: document.getElementById('at-intercorrencias')?.value||'',
+    resultado_esperado: document.getElementById('at-resultado')?.value||'',
   };
 }
 
