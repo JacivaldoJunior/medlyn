@@ -1838,7 +1838,7 @@ async function initAtend(){
 
   if(!agendId){
     // Demo mode sem ID
-    carregarDemo();
+    await carregarDemo();
     return;
   }
   await carregarDados();
@@ -1850,12 +1850,12 @@ async function initAtend(){
 // =====================================================================
 async function carregarDados(){
   try {
-    if(typeof supabaseClient==='undefined'){ carregarDemo(); return; }
+    if(typeof supabaseClient==='undefined'){ await carregarDemo(); return; }
 
     // Agendamento
     const {data:ag}=await supabaseClient.from('agendamentos').select('*').eq('id',agendId).single();
     agend=ag;
-    if(!agend){ carregarDemo(); return; }
+    if(!agend){ await carregarDemo(); return; }
 
     // Paciente — busca por paciente_id (preferencial) ou nome exato do agendamento
     if(agend.paciente_id){
@@ -1873,9 +1873,9 @@ async function carregarDados(){
       pacAnamnese=anas&&anas.length>0?anas[0]:null;
     }
 
-    renderPaciente();
+    await renderPaciente();
 
-  } catch(e){ carregarDemo(); }
+  } catch(e){ await carregarDemo(); }
 }
 
 async function carregarFila(){
@@ -1902,8 +1902,8 @@ function renderFila(lista){
 // =====================================================================
 // RENDER CARD PACIENTE
 // =====================================================================
-function renderPaciente(){
-  const nome=agend?.paciente_nome||paciente?.nome||'Paciente';
+async function renderPaciente(){
+  const nome=agend?.paciente_nome||pacPaciente?.nome||'Paciente';
   const proc=agend?.procedimento||'—';
   const horario=agend?.horario||'';
   const data=agend?.data?new Date(agend.data+'T00:00:00').toLocaleDateString('pt-BR'):'';
@@ -1985,7 +1985,7 @@ function renderPaciente(){
 // =====================================================================
 // DEMO MODE
 // =====================================================================
-function carregarDemo(){
+async function carregarDemo(){
   agend={id:'demo',paciente_nome:'Ana Beatriz',procedimento:'Limpeza de Pele',horario:'10:00',data:new Date().toISOString().split('T')[0],status:'Atendimento',telefone:'11 2996038818'};
   paciente={nome:'Ana Beatriz',telefone:'11 2996038818',nascimento:'1995-03-15',endereco:'Rua das Flores, 123',bairro:'Centro',cidade:'São Paulo',estado:'SP'};
   anamnese={tem_alergia:'Sim',alergias:'Dipirona',usa_medicamentos:'Não',gravida:'Não',objetivo:'Melhorar textura da pele e reduzir manchas',doencas:'',tratamentos_anteriores:'Limpeza de pele (2024)'};
@@ -1993,7 +1993,7 @@ function carregarDemo(){
     {id:'demo',paciente_nome:'Ana Beatriz',status:'Atendimento',horario:'10:00'},
     {id:'demo2',paciente_nome:'Carlos Lima',status:'Chegou',horario:'11:00'},
   ]);
-  renderPaciente();
+  await renderPaciente();
 }
 
 // =====================================================================
