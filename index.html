@@ -556,7 +556,7 @@ nav{display:flex;flex-direction:column;gap:4px;}
     <div class="form-group"><label>Expectativas e observações</label><textarea id="ck-expectativas" rows="2" placeholder="Outras informações..."></textarea></div>
 
     <div class="modal-footer">
-      <button class="btn btn-purple" id="btn-salvar-checkin" onclick="salvarCheckin()">✅ Salvar e Iniciar Atendimento</button>
+      <button class="btn btn-purple" id="btn-salvar-checkin" onclick="salvarCheckin()">💾 Salvar e Finalizar Check-in</button>
     </div>
   </div>
 </div>
@@ -999,7 +999,8 @@ function evCardHTML(r){
   const wppLink=tel?`https://wa.me/55${tel}?text=${msg}`:'#';
   let acoes=`<a href="${wppLink}" target="_blank" class="btn-wpp" title="WhatsApp"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.115 1.527 5.845L.057 23.926l6.235-1.635A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.37l-.36-.214-3.7.97 1.002-3.598-.234-.37A9.818 9.818 0 1112 21.818z"/></svg></a>`;
   if(r.status==='Agendado'||r.status==='Confirmado') acoes+=`<button class="btn-ev btn-ev-checkin" onclick="iniciarCheckin('${r.id}')">🚪 Check-in</button>`;
-  if(r.status==='Chegou'||r.status==='Atendimento') acoes+=`<button class="btn-ev btn-ev-atend" onclick="irAtendimento('${r.id}')">🩺 Atendimento</button>`;
+  if(r.status==='Chegou') acoes+=`<button class="btn-ev btn-ev-atend" onclick="irAtendimento('${r.id}')">📢 Chamar</button>`;
+  if(r.status==='Atendimento') acoes+=`<button class="btn-ev btn-ev-atend" onclick="irAtendimento('${r.id}')">🩺 Ver Atendimento</button>`;
   if(r.status==='Finalizado') acoes+=`<button class="btn-ev btn-ev-edit" onclick="irAtendimento('${r.id}')">📋 Ver</button>`;
   if(!['Finalizado','Cancelado','Realizado'].includes(r.status)) acoes+=`<button class="btn-ev btn-ev-reagend" onclick="abrirReagend('${r.id}')">🔁</button>`;
   acoes+=`<button class="btn-ev btn-ev-edit" onclick="editarAgend('${r.id}')">✏️</button>`;
@@ -1072,8 +1073,8 @@ async function iniciarCheckin(id){
       // Já tem — faz check-in direto
       await supabaseClient.from('agendamentos').update({status:'Chegou'}).eq('id',id);
       const i=agRows.findIndex(x=>x.id==id);if(i>=0)agRows[i].status='Chegou';
-      showToast('✅ Check-in realizado!','success');
-      atualizarIndicadores();renderAgView();
+      showToast('✅ Check-in realizado! Paciente na fila de espera.','success');
+      atualizarIndicadores();renderCalMini();renderAgView();
       return;
     }
   }catch(e){}
@@ -1107,20 +1108,25 @@ async function salvarCheckin(){
     else{await supabaseClient.from('pacientes').insert(ppac);}
     // 2. Salvar anamnese
     await supabaseClient.from('anamneses').insert({paciente_nome:nome,data:new Date().toISOString().split('T')[0],objetivo:document.getElementById('ck-objetivo').value,tem_alergia:document.getElementById('ck-alergia').value,alergias:document.getElementById('ck-alergia-desc').value,usa_medicamentos:document.getElementById('ck-meds').value,medicamentos:document.getElementById('ck-meds-desc').value,gravida:document.getElementById('ck-gravida').value,doencas:document.getElementById('ck-doencas').value,tratamentos_anteriores:document.getElementById('ck-tratamentos').value,expectativas:document.getElementById('ck-expectativas').value,status:'em_andamento',clinica_id:clinicaId});
-    // 3. Atualizar agendamento
+    // 3. Atualizar agendamento para 'Chegou' (entra na fila de espera)
     await supabaseClient.from('agendamentos').update({status:'Chegou',paciente_nome:nome}).eq('id',checkinAgendId);
     const i=agRows.findIndex(x=>x.id==checkinAgendId);if(i>=0){agRows[i].status='Chegou';agRows[i].paciente_nome=nome;}
-    btn.disabled=false;btn.textContent='✅ Salvar e Iniciar Atendimento';
+    btn.disabled=false;btn.textContent='💾 Salvar e Finalizar Check-in';
     fecharModal('modal-checkin');
-    showToast('✅ Paciente cadastrado e check-in realizado!','success');
-    atualizarIndicadores();renderAgView();
+    showToast('✅ Check-in finalizado! Paciente aguardando na fila.','success');
+    atualizarIndicadores();renderCalMini();renderAgView();
   }catch(e){
     btn.disabled=false;btn.textContent='✅ Salvar e Iniciar Atendimento';
     showToast('Erro: '+e.message,'error');
   }
 }
 
-function irAtendimento(id){
+async function irAtendimento(id){
+  // Muda status para Atendimento antes de abrir a tela
+  try{
+    await supabaseClient.from('agendamentos').update({status:'Atendimento'}).eq('id',id);
+    const i=agRows.findIndex(x=>x.id==id);if(i>=0)agRows[i].status='Atendimento';
+  }catch(e){}
   window.location.href='atendimento.html?id='+id;
 }
 
