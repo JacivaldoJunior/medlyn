@@ -1112,7 +1112,7 @@ async function iniciarCheckin(id){
   document.getElementById('checkin-info').textContent=`Paciente: ${r.paciente_nome}  •  ${r.procedimento||''}  •  ${r.horario||''}`;
   document.getElementById('ck-nome').value=r.paciente_nome||'';
   document.getElementById('ck-tel').value=r.telefone||'';
-  ['ck-cpf','ck-nasc','ck-email','ck-cep','ck-cidade','ck-end','ck-bairro','ck-estado','ck-objetivo','ck-alergia-desc','ck-meds-desc','ck-doencas','ck-tratamentos','ck-expectativas'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['ck-cpf','ck-nasc','ck-email','ck-cep','ck-cidade','ck-end','ck-bairro','ck-estado','ck-objetivo','ck-alergia-desc','ck-meds-desc','ck-doencas','ck-tratamentos','ck-expectativas'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('ck-genero').value='';
   document.getElementById('ck-alergia').value='Não';
   document.getElementById('ck-meds').value='Não';
@@ -1160,7 +1160,7 @@ function abrirReagend(id){
   const r=agRows.find(x=>x.id==id);if(!r)return;
   reagendId=id;
   document.getElementById('reagend-info').textContent=`${r.paciente_nome}  •  Atual: ${fmtData(r.data)} às ${r.horario||'-'}`;
-  ['rg-data','rg-hora','rg-motivo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('rg-data').value='';document.getElementById('rg-hora').value='';document.getElementById('rg-motivo').value='';
   document.getElementById('modal-reagend').classList.add('open');
 }
 async function confirmarReagend(){
@@ -1328,7 +1328,7 @@ function renderPac(lista){
 function abrirModalPac(dados=null){
   pacEditId=dados?.id||null;
   document.getElementById('pac-modal-title').textContent=pacEditId?'✏️ Editar Paciente':'👥 Novo Paciente';
-  ['pac-f-nome','pac-f-cpf','pac-f-tel','pac-f-email','pac-f-cep','pac-f-cidade','pac-f-end','pac-f-bairro','pac-f-est','pac-f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=dados?.[id.replace('pac-f-','').replace('tel','telefone').replace('nasc','nascimento').replace('gen','genero').replace('end','endereco').replace('est','estado')]||dados?.[id.replace('pac-f-','')]||'';});
+  ['pac-f-nome','pac-f-cpf','pac-f-tel','pac-f-email','pac-f-cep','pac-f-cidade','pac-f-end','pac-f-bairro','pac-f-est','pac-f-obs'].forEach(id=>document.getElementById(id).value=dados?.[id.replace('pac-f-','').replace('tel','telefone').replace('nasc','nascimento').replace('gen','genero').replace('end','endereco').replace('est','estado')]||dados?.[id.replace('pac-f-','')]||'');
   document.getElementById('pac-f-nome').value=dados?.nome||'';
   document.getElementById('pac-f-cpf').value=dados?.cpf||'';
   document.getElementById('pac-f-tel').value=dados?.telefone||'';
@@ -1604,7 +1604,7 @@ async function salvarUsuario(){
     document.getElementById('app-screen').style.display='none';
   }
   // Mês padrão financeiro
-  const finMesEl=document.getElementById('fin-mes');if(finMesEl)finMesEl.value=new Date().toISOString().slice(0,7);
+  document.getElementById('fin-mes').value=new Date().toISOString().slice(0,7);
   // Enter no login
   document.getElementById('l-senha').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
 })();
