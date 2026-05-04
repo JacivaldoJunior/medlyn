@@ -1151,7 +1151,12 @@ async function salvarCheckin(){
   }
 }
 
-function irAtendimento(id){
+async function irAtendimento(id){
+  // Muda status para Atendimento antes de abrir a tela
+  try{
+    await supabaseClient.from('agendamentos').update({status:'Atendimento'}).eq('id',id);
+    const i=agRows.findIndex(x=>x.id==id);if(i>=0)agRows[i].status='Atendimento';
+  }catch(e){}
   window.location.href='atendimento.html?id='+id;
 }
 
