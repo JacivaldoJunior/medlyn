@@ -1966,9 +1966,11 @@ async function initAtendimento(){
     }
   } catch(e){}
 
-  // Pega o ID do agendamento da URL
-  const params=new URLSearchParams(window.location.search);
-  agendId=params.get('id');
+  // Pega o ID do agendamento da URL (só usa URL se não foi passado direto)
+  if(!agendId){
+    const params=new URLSearchParams(window.location.search);
+    agendId=params.get('id');
+  }
 
   if(!agendId){
     // Demo mode sem ID
