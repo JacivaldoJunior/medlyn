@@ -35,8 +35,22 @@ nav{display:flex;flex-direction:column;gap:4px;}
 .main-content{margin-left:220px;flex:1;padding:28px 32px;min-height:100vh;overflow-x:hidden;}
 
 /* ===== PAGES ===== */
-.page{display:none;}
-.page.active{display:block;}
+.page{
+  display:none !important;
+  visibility:hidden;
+  height:0;
+  overflow:hidden;
+  position:absolute;
+  pointer-events:none;
+}
+.page.active{
+  display:block !important;
+  visibility:visible;
+  height:auto;
+  overflow:visible;
+  position:relative;
+  pointer-events:auto;
+}
 
 /* ===== TOP BAR ===== */
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
