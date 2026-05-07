@@ -1993,13 +1993,33 @@ async function carregarDados(){
     agend=ag;
     if(!agend){ carregarDemo(); return; }
 
-    // Paciente (busca por nome)
-    const {data:pacs}=await supabaseClient.from('pacientes').select('*').ilike('nome',agend.paciente_nome).limit(1);
-    paciente=pacs&&pacs.length>0?pacs[0]:null;
+    // Paciente — tenta por ID primeiro, depois por nome exato, depois parcial
+    let pacienteData=null;
+    if(agend.paciente_id){
+      const {data:pp}=await supabaseClient.from('pacientes').select('*').eq('id',agend.paciente_id).single();
+      pacienteData=pp;
+    }
+    if(!pacienteData && agend.paciente_nome){
+      const {data:pp}=await supabaseClient.from('pacientes').select('*').eq('nome',agend.paciente_nome).limit(1);
+      pacienteData=pp&&pp.length>0?pp[0]:null;
+    }
+    if(!pacienteData && agend.paciente_nome){
+      const {data:pp}=await supabaseClient.from('pacientes').select('*').ilike('nome','%'+agend.paciente_nome+'%').limit(1);
+      pacienteData=pp&&pp.length>0?pp[0]:null;
+    }
+    paciente=pacienteData;
 
     // Anamnese
-    const {data:anas}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome',agend.paciente_nome).order('created_at',{ascending:false}).limit(1);
-    anamnese=anas&&anas.length>0?anas[0]:null;
+    let anamneseData=null;
+    if(paciente?.id){
+      const {data:aa}=await supabaseClient.from('anamneses').select('*').eq('paciente_id',paciente.id).order('created_at',{ascending:false}).limit(1);
+      anamneseData=aa&&aa.length>0?aa[0]:null;
+    }
+    if(!anamneseData && agend.paciente_nome){
+      const {data:aa}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome','%'+agend.paciente_nome+'%').order('created_at',{ascending:false}).limit(1);
+      anamneseData=aa&&aa.length>0?aa[0]:null;
+    }
+    anamnese=anamneseData;
 
     renderPaciente();
 
@@ -2032,13 +2052,14 @@ function renderFila(lista){
 // =====================================================================
 function renderPaciente(){
   const nome=agend?.paciente_nome||paciente?.nome||'Paciente';
-  const proc=agend?.procedimento||'—';
+  const proc=agend?.procedimento||agend?.servico||'—';
   const horario=agend?.horario||'';
   const data=agend?.data?new Date(agend.data+'T00:00:00').toLocaleDateString('pt-BR'):'';
 
-  document.getElementById('h-titulo').textContent=`🩺 Atendimento — ${nome}`;
-  document.getElementById('p-nome').textContent=nome;
-  document.getElementById('p-sub').textContent=`${proc}  •  ${horario}  •  ${data}`;
+  // Atualiza título e card mesmo sem paciente completo
+  try{ document.getElementById('h-titulo').textContent=`🩺 Atendimento — ${nome}`; }catch(e){}
+  try{ document.getElementById('p-nome').textContent=nome; }catch(e){}
+  try{ document.getElementById('p-sub').textContent=`${proc}  •  ${horario}  •  ${data}`; }catch(e){}
   document.getElementById('proc-agendado').textContent=proc;
   document.getElementById('at-procedimento').value=proc;
 
