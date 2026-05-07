@@ -32,7 +32,7 @@ nav{display:flex;flex-direction:column;gap:4px;}
 .btn-sair{width:100%;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:.2s;}
 .btn-sair:hover{background:#f0f0f5;}
 
-.main-content{margin-left:220px;flex:1;padding:28px 32px;min-height:100vh;}
+.main-content{margin-left:220px;flex:1;padding:28px 32px;min-height:100vh;overflow-x:hidden;}
 
 /* ===== PAGES ===== */
 .page{display:none;}
@@ -1300,6 +1300,8 @@ async function iniciarApp(user){
 // =====================================================================
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  // Scroll ao topo ao trocar de página
+  const mc=document.querySelector('.main-content'); if(mc) mc.scrollTop=0; window.scrollTo(0,0);
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p)?.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(el=>{
@@ -2638,7 +2640,8 @@ async function finalizarAtendimento(){
       // Lançar receita automaticamente no financeiro
       const valAtend=parseFloat(document.getElementById('at-valor')?.value)||0;
       const pgtoAtend=document.getElementById('at-pagamento')?.value||'PIX';
-      const stPgtoAtend=(statusPag==='pago')?'Pago':'Pendente';
+      const pgtoAutoStatus=['PIX','Dinheiro','Transferência','Débito'];
+      const stPgtoAtend = pgtoAutoStatus.includes(pgtoAtend) ? 'Pago' : ((statusPag==='pago')?'Pago':'Pendente');
       await registrarReceitaAtendimento(agend?.paciente_nome||paciente?.nome, agend?.procedimento||agend?.servico, valAtend, pgtoAtend, stPgtoAtend, agendId);
       // Se tem retorno agendado, cria novo agendamento
       if(payload.retorno){
