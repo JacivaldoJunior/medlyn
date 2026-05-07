@@ -230,26 +230,22 @@ nav{display:flex;flex-direction:column;gap:4px;}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
-#page-atendimento /* LAYOUT */
-    .app-layout { display: flex; min-height: 100vh; }
+#page-atendimento .app-layout { display: flex; min-height: 100vh; }
 #page-atendimento .sidebar { width: 220px; min-height: 100vh; background: white; border-right: 1px solid #e8eaf0; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
 #page-atendimento .logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 32px; color: #6c3fc5; }
 #page-atendimento .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: #555; font-size: 14px; margin-bottom: 4px; transition: background .2s; }
 #page-atendimento .nav-item:hover { background: #f3f0fc; color: #6c3fc5; }
 #page-atendimento .nav-item.active { background: #6c3fc5; color: white; font-weight: 600; }
 #page-atendimento .main-content { margin-left: 220px; padding: 28px; flex: 1; }
-#page-atendimento /* HEADER */
-    .atend-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+#page-atendimento .atend-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
 #page-atendimento .btn-voltar { background: #e8eaf0; border: none; border-radius: 10px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; color: #555; transition: .2s; }
 #page-atendimento .btn-voltar:hover { background: #d8dae8; }
 #page-atendimento .atend-header h1 { font-size: 22px; font-weight: 700; flex: 1; }
 #page-atendimento .status-badge { border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 700; }
 #page-atendimento .s-atendimento { background: #ccfbf1; color: #0f766e; }
 #page-atendimento .s-finalizado { background: #f0fdf4; color: #166534; }
-#page-atendimento /* GRID PRINCIPAL */
-    .atend-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
-#page-atendimento /* CARD PACIENTE (lado esq.) */
-    .card-paciente { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; position: sticky; top: 20px; }
+#page-atendimento .atend-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+#page-atendimento .card-paciente { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; position: sticky; top: 20px; }
 #page-atendimento .card-pac-header { background: linear-gradient(135deg, #6c3fc5, #8b5cf6); padding: 20px; color: white; }
 #page-atendimento .pac-avatar { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; }
 #page-atendimento .pac-nome { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
@@ -267,20 +263,17 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .sem-hist { color: #bbb; font-size: 12px; font-style: italic; }
 #page-atendimento .btn-ver-pac { width: 100%; margin-top: 14px; padding: 9px; border: 1.5px solid #6c3fc5; background: white; color: #6c3fc5; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; transition: .2s; }
 #page-atendimento .btn-ver-pac:hover { background: #f3f0fc; }
-#page-atendimento /* ÁREA CLÍNICA (direita) */
-    .area-clinica { display: flex; flex-direction: column; gap: 18px; }
+#page-atendimento .area-clinica { display: flex; flex-direction: column; gap: 18px; }
 #page-atendimento .card-sec { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; }
 #page-atendimento .card-sec-header { padding: 14px 20px; border-bottom: 1px solid #f0f2f8; display: flex; align-items: center; gap: 10px; }
 #page-atendimento .card-sec-header .sec-icon { font-size: 18px; }
 #page-atendimento .card-sec-header .sec-tit { font-size: 15px; font-weight: 700; }
 #page-atendimento .card-sec-header .sec-sub { font-size: 12px; color: #888; margin-top: 1px; }
 #page-atendimento .card-sec-body { padding: 20px; }
-#page-atendimento /* PROCEDIMENTO */
-    .procedimento-atual { background: #f3f0fc; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+#page-atendimento .procedimento-atual { background: #f3f0fc; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 #page-atendimento .proc-label { font-size: 11px; color: #6c3fc5; font-weight: 700; }
 #page-atendimento .proc-val { font-size: 15px; font-weight: 700; color: #1a1a2e; }
-#page-atendimento /* FORM GERAL */
-    .form-group { margin-bottom: 16px; }
+#page-atendimento .form-group { margin-bottom: 16px; }
 #page-atendimento .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; }
 #page-atendimento .form-group input, #page-atendimento .form-group select, #page-atendimento .form-group textarea {
 
@@ -290,8 +283,7 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
     .form-group input:focus, #page-atendimento .form-group select:focus, #page-atendimento .form-group textarea:focus { border-color: #6c3fc5; }
 #page-atendimento .form-row { display: flex; gap: 14px; }
 #page-atendimento .form-row .form-group { flex: 1; }
-#page-atendimento /* TAGS MATERIAL */
-    .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+#page-atendimento .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 #page-atendimento .tag { background: #ede9fe; color: #6c3fc5; border-radius: 20px; padding: 3px 12px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 #page-atendimento .tag-remove { cursor: pointer; font-size: 14px; line-height: 1; color: #8b5cf6; }
 #page-atendimento .tag-remove:hover { color: #ef4444; }
@@ -299,8 +291,7 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .add-mat input { flex: 1; }
 #page-atendimento .btn-add-mat { background: #6c3fc5; color: white; border: none; border-radius: 8px; padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
 #page-atendimento .btn-add-mat:hover { background: #5a31a8; }
-#page-atendimento /* UPLOAD FOTO */
-    .upload-area { border: 2px dashed #c8d0e8; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: .2s; }
+#page-atendimento .upload-area { border: 2px dashed #c8d0e8; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: .2s; }
 #page-atendimento .upload-area:hover { border-color: #6c3fc5; background: #f9f7ff; }
 #page-atendimento .upload-area p { color: #888; font-size: 13px; margin-top: 8px; }
 #page-atendimento .upload-area .ico { font-size: 32px; }
@@ -308,13 +299,11 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .foto-thumb { border-radius: 8px; overflow: hidden; aspect-ratio: 1; position: relative; }
 #page-atendimento .foto-thumb img { width: 100%; height: 100%; object-fit: cover; }
 #page-atendimento .foto-thumb .rm-foto { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,.55); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
-#page-atendimento /* FINANCEIRO */
-    .pago-btn-group { display: flex; gap: 8px; margin-top: 4px; }
+#page-atendimento .pago-btn-group { display: flex; gap: 8px; margin-top: 4px; }
 #page-atendimento .pago-btn { flex: 1; padding: 9px; border: 2px solid #e0e2ec; border-radius: 8px; background: white; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; color: #555; transition: .2s; }
 #page-atendimento .pago-btn.selected-pago { border-color: #22c55e; background: #dcfce7; color: #14532d; }
 #page-atendimento .pago-btn.selected-pend { border-color: #f59e0b; background: #fef9c3; color: #854d0e; }
-#page-atendimento /* RODAPÉ AÇÕES */
-    .atend-footer { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+#page-atendimento .atend-footer { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 #page-atendimento .footer-left { font-size: 13px; color: #888; }
 #page-atendimento .footer-right { display: flex; gap: 10px; flex-wrap: wrap; }
 #page-atendimento .btn { padding: 11px 20px; border-radius: 10px; border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; transition: .2s; }
@@ -324,14 +313,12 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .btn-green:hover { background: #16a34a; }
 #page-atendimento .btn-gray { background: #e8eaf0; color: #555; }
 #page-atendimento .btn-gray:hover { background: #d8dae8; }
-#page-atendimento /* TOAST */
-    .toast { position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999; }
+#page-atendimento .toast { position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999; }
 #page-atendimento .toast.show { opacity: 1; transform: translateY(0); }
 #page-atendimento .toast.success { background: #22c55e; }
 #page-atendimento .toast.error { background: #ef4444; }
 #page-atendimento .toast.info { background: #3b82f6; }
-#page-atendimento /* FILA DE ESPERA MINI no topo */
-    .fila-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+#page-atendimento .fila-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 #page-atendimento .fila-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .2s; }
 #page-atendimento .fila-item:hover { filter: brightness(.95); }
 #page-atendimento .fi-aguard { background: #fef9c3; color: #854d0e; }
@@ -1884,22 +1871,28 @@ function editarFin(id){ abrirModalFin(finRows.find(r=>r.id==id)); }
 // ── Integração Atendimento → Financeiro ──────────────────────────────
 async function registrarReceitaAtendimento(pacienteNome, procedimento, valor, formaPgto, statusPgto, agendId){
   try {
-    if(!valor||valor<=0) return;
+    if(!valor||valor<=0){ console.log('registrarReceita: valor zero, abortando'); return; }
+    const clinId = clinicaId_at||clinicaId||null;
     const hoje = fmt(new Date());
     const payload = {
       tipo: 'receita',
       data: hoje,
       descricao: procedimento||'Atendimento',
       categoria: 'Atendimento',
-      paciente: pacienteNome,
-      paciente_nome: pacienteNome,
+      paciente: pacienteNome||'',
+      paciente_nome: pacienteNome||'',
       valor: parseFloat(valor)||0,
       forma_pagamento: formaPgto||'PIX',
       status_pgto: statusPgto||'Pago',
-      agendamento_id: agendId,
-      clinica_id: clinicaId_at||clinicaId
+      clinica_id: clinId
     };
-    // Verificar se já existe registro para esse agendamento
+    console.log('registrarReceita payload:', payload);
+    // Tenta inserir (sem agendamento_id para evitar erro se coluna não existe)
+    const {error:e} = await supabaseClient.from('financeiro').insert(payload);
+    if(e){ console.error('Erro ao registrar receita:', e.message); }
+    else { console.log('✅ Receita registrada no financeiro!'); }
+    return;
+    // Código abaixo desativado — reservado para futuro
     if(agendId){
       const {data:ex} = await supabaseClient.from('financeiro').select('id').eq('agendamento_id',agendId).limit(1);
       if(ex&&ex.length>0){
@@ -2642,11 +2635,11 @@ async function finalizarAtendimento(){
       await supabaseClient.from('atendimentos').upsert({...payload,status:'finalizado'},{onConflict:'agendamento_id'});
       // Atualiza agendamento para Finalizado
       await supabaseClient.from('agendamentos').update({status:'Finalizado'}).eq('id',agendId);
-    // Lançar receita automaticamente no financeiro
-    const valAtend=parseFloat(document.getElementById('at-valor')?.value)||0;
-    const pgtoAtend=document.getElementById('at-pagamento')?.value||'PIX';
-    const stPgtoAtend=(statusPag==='pago')?'Pago':'Pendente';
-    await registrarReceitaAtendimento(agend?.paciente_nome||paciente?.nome, agend?.procedimento, valAtend, pgtoAtend, stPgtoAtend, agendId);
+      // Lançar receita automaticamente no financeiro
+      const valAtend=parseFloat(document.getElementById('at-valor')?.value)||0;
+      const pgtoAtend=document.getElementById('at-pagamento')?.value||'PIX';
+      const stPgtoAtend=(statusPag==='pago')?'Pago':'Pendente';
+      await registrarReceitaAtendimento(agend?.paciente_nome||paciente?.nome, agend?.procedimento||agend?.servico, valAtend, pgtoAtend, stPgtoAtend, agendId);
       // Se tem retorno agendado, cria novo agendamento
       if(payload.retorno){
         await supabaseClient.from('agendamentos').insert({
