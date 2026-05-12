@@ -35,22 +35,8 @@ nav{display:flex;flex-direction:column;gap:4px;}
 .main-content{margin-left:220px;flex:1;padding:28px 32px;min-height:100vh;overflow-x:hidden;}
 
 /* ===== PAGES ===== */
-.page{
-  display:none !important;
-  visibility:hidden;
-  height:0;
-  overflow:hidden;
-  position:absolute;
-  pointer-events:none;
-}
-.page.active{
-  display:block !important;
-  visibility:visible;
-  height:auto;
-  overflow:visible;
-  position:relative;
-  pointer-events:auto;
-}
+.page{display:none !important;}
+.page.active{display:block !important;}
 
 /* ===== TOP BAR ===== */
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
@@ -1313,11 +1299,20 @@ async function iniciarApp(user){
 // NAVEGAÇÃO
 // =====================================================================
 function goPage(p){
-  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  // Esconder TODOS os pages via style inline (garantia máxima)
+  document.querySelectorAll('.page').forEach(el=>{
+    el.classList.remove('active');
+    el.setAttribute('style','display:none !important;');
+  });
   // Scroll ao topo ao trocar de página
   const mc=document.querySelector('.main-content'); if(mc) mc.scrollTop=0; window.scrollTo(0,0);
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  document.getElementById('page-'+p)?.classList.add('active');
+  // Mostrar APENAS o page solicitado
+  const targetPage=document.getElementById('page-'+p);
+  if(targetPage){
+    targetPage.classList.add('active');
+    targetPage.setAttribute('style','display:block !important;');
+  }
   document.querySelectorAll('.nav-item').forEach(el=>{
     if(el.getAttribute('onclick')?.includes("'"+p+"'")) el.classList.add('active');
   });
@@ -2371,8 +2366,16 @@ async function salvarUsuario(){
 // ATENDIMENTO EMBEDDED
 // =====================================================================
 function abrirAtendimento(id){
-  // Seta o ID e abre a página de atendimento
+  // Resetar estado do atendimento antes de abrir
   agendId = id;
+  agend = null; paciente = null; anamnese = null;
+  materiais = []; fotos = []; statusPag = 'pendente';
+  // Mostrar loading no card do paciente
+  try {
+    document.getElementById('p-nome').textContent = 'Carregando...';
+    document.getElementById('p-sub').textContent = '';
+    document.getElementById('h-titulo').textContent = '🩺 Atendimento';
+  } catch(e) {}
   goPage('atendimento');
   initAtendimento();
 }
@@ -2381,6 +2384,7 @@ function abrirAtendimento(id){
 // =====================================================================
 // ESTADO
 // =====================================================================
+let agendId=null;
 let agend=null, paciente=null, anamnese=null;
 let materiais=[], fotos=[], statusPag='pendente', clinicaId_at=null;
 
@@ -2419,12 +2423,16 @@ async function initAtendimento(){
 // =====================================================================
 async function carregarDados(){
   try {
-    if(typeof supabaseClient==='undefined'){ carregarDemo(); return; }
+    if(typeof supabaseClient==='undefined'){ console.error('[Medlyn] supabaseClient undefined!'); carregarDemo(); return; }
+    if(!agendId){ console.error('[Medlyn] agendId é null/undefined!'); carregarDemo(); return; }
+
+    console.log('[Medlyn] carregarDados: agendId=', agendId);
 
     // Agendamento
-    const {data:ag}=await supabaseClient.from('agendamentos').select('*').eq('id',agendId).single();
+    const {data:ag, error:agErr}=await supabaseClient.from('agendamentos').select('*').eq('id',agendId).single();
+    if(agErr){ console.error('[Medlyn] Erro ao buscar agendamento:', agErr); }
     agend=ag;
-    if(!agend){ carregarDemo(); return; }
+    if(!agend){ console.warn('[Medlyn] Agendamento não encontrado, usando demo'); carregarDemo(); return; }
 
     // Paciente — tenta por ID primeiro, depois por nome exato, depois parcial
     let pacienteData=null;
