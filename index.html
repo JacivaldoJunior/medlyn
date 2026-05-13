@@ -32,11 +32,11 @@ nav{display:flex;flex-direction:column;gap:4px;}
 .btn-sair{width:100%;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:.2s;}
 .btn-sair:hover{background:#f0f0f5;}
 
-.main-content{margin-left:220px;flex:1;padding:28px 32px;min-height:100vh;overflow-x:hidden;}
+.main-content{margin-left:220px;flex:1;padding:28px 32px;min-height:100vh;}
 
 /* ===== PAGES ===== */
-.page{display:none !important;}
-.page.active{display:block !important;}
+.page{display:none;}
+.page.active{display:block;}
 
 /* ===== TOP BAR ===== */
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
@@ -230,22 +230,26 @@ nav{display:flex;flex-direction:column;gap:4px;}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
-#page-atendimento .app-layout { display: flex; min-height: 100vh; }
+#page-atendimento /* LAYOUT */
+    .app-layout { display: flex; min-height: 100vh; }
 #page-atendimento .sidebar { width: 220px; min-height: 100vh; background: white; border-right: 1px solid #e8eaf0; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
 #page-atendimento .logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 32px; color: #6c3fc5; }
 #page-atendimento .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: #555; font-size: 14px; margin-bottom: 4px; transition: background .2s; }
 #page-atendimento .nav-item:hover { background: #f3f0fc; color: #6c3fc5; }
 #page-atendimento .nav-item.active { background: #6c3fc5; color: white; font-weight: 600; }
 #page-atendimento .main-content { margin-left: 220px; padding: 28px; flex: 1; }
-#page-atendimento .atend-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+#page-atendimento /* HEADER */
+    .atend-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
 #page-atendimento .btn-voltar { background: #e8eaf0; border: none; border-radius: 10px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; color: #555; transition: .2s; }
 #page-atendimento .btn-voltar:hover { background: #d8dae8; }
 #page-atendimento .atend-header h1 { font-size: 22px; font-weight: 700; flex: 1; }
 #page-atendimento .status-badge { border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 700; }
 #page-atendimento .s-atendimento { background: #ccfbf1; color: #0f766e; }
 #page-atendimento .s-finalizado { background: #f0fdf4; color: #166534; }
-#page-atendimento .atend-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
-#page-atendimento .card-paciente { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; position: sticky; top: 20px; }
+#page-atendimento /* GRID PRINCIPAL */
+    .atend-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+#page-atendimento /* CARD PACIENTE (lado esq.) */
+    .card-paciente { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; position: sticky; top: 20px; }
 #page-atendimento .card-pac-header { background: linear-gradient(135deg, #6c3fc5, #8b5cf6); padding: 20px; color: white; }
 #page-atendimento .pac-avatar { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; }
 #page-atendimento .pac-nome { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
@@ -263,17 +267,20 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .sem-hist { color: #bbb; font-size: 12px; font-style: italic; }
 #page-atendimento .btn-ver-pac { width: 100%; margin-top: 14px; padding: 9px; border: 1.5px solid #6c3fc5; background: white; color: #6c3fc5; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; transition: .2s; }
 #page-atendimento .btn-ver-pac:hover { background: #f3f0fc; }
-#page-atendimento .area-clinica { display: flex; flex-direction: column; gap: 18px; }
+#page-atendimento /* ÁREA CLÍNICA (direita) */
+    .area-clinica { display: flex; flex-direction: column; gap: 18px; }
 #page-atendimento .card-sec { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; }
 #page-atendimento .card-sec-header { padding: 14px 20px; border-bottom: 1px solid #f0f2f8; display: flex; align-items: center; gap: 10px; }
 #page-atendimento .card-sec-header .sec-icon { font-size: 18px; }
 #page-atendimento .card-sec-header .sec-tit { font-size: 15px; font-weight: 700; }
 #page-atendimento .card-sec-header .sec-sub { font-size: 12px; color: #888; margin-top: 1px; }
 #page-atendimento .card-sec-body { padding: 20px; }
-#page-atendimento .procedimento-atual { background: #f3f0fc; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+#page-atendimento /* PROCEDIMENTO */
+    .procedimento-atual { background: #f3f0fc; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 #page-atendimento .proc-label { font-size: 11px; color: #6c3fc5; font-weight: 700; }
 #page-atendimento .proc-val { font-size: 15px; font-weight: 700; color: #1a1a2e; }
-#page-atendimento .form-group { margin-bottom: 16px; }
+#page-atendimento /* FORM GERAL */
+    .form-group { margin-bottom: 16px; }
 #page-atendimento .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; }
 #page-atendimento .form-group input, #page-atendimento .form-group select, #page-atendimento .form-group textarea {
 
@@ -283,7 +290,8 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
     .form-group input:focus, #page-atendimento .form-group select:focus, #page-atendimento .form-group textarea:focus { border-color: #6c3fc5; }
 #page-atendimento .form-row { display: flex; gap: 14px; }
 #page-atendimento .form-row .form-group { flex: 1; }
-#page-atendimento .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+#page-atendimento /* TAGS MATERIAL */
+    .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 #page-atendimento .tag { background: #ede9fe; color: #6c3fc5; border-radius: 20px; padding: 3px 12px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 #page-atendimento .tag-remove { cursor: pointer; font-size: 14px; line-height: 1; color: #8b5cf6; }
 #page-atendimento .tag-remove:hover { color: #ef4444; }
@@ -291,7 +299,8 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .add-mat input { flex: 1; }
 #page-atendimento .btn-add-mat { background: #6c3fc5; color: white; border: none; border-radius: 8px; padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
 #page-atendimento .btn-add-mat:hover { background: #5a31a8; }
-#page-atendimento .upload-area { border: 2px dashed #c8d0e8; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: .2s; }
+#page-atendimento /* UPLOAD FOTO */
+    .upload-area { border: 2px dashed #c8d0e8; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: .2s; }
 #page-atendimento .upload-area:hover { border-color: #6c3fc5; background: #f9f7ff; }
 #page-atendimento .upload-area p { color: #888; font-size: 13px; margin-top: 8px; }
 #page-atendimento .upload-area .ico { font-size: 32px; }
@@ -299,11 +308,13 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .foto-thumb { border-radius: 8px; overflow: hidden; aspect-ratio: 1; position: relative; }
 #page-atendimento .foto-thumb img { width: 100%; height: 100%; object-fit: cover; }
 #page-atendimento .foto-thumb .rm-foto { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,.55); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
-#page-atendimento .pago-btn-group { display: flex; gap: 8px; margin-top: 4px; }
+#page-atendimento /* FINANCEIRO */
+    .pago-btn-group { display: flex; gap: 8px; margin-top: 4px; }
 #page-atendimento .pago-btn { flex: 1; padding: 9px; border: 2px solid #e0e2ec; border-radius: 8px; background: white; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; color: #555; transition: .2s; }
 #page-atendimento .pago-btn.selected-pago { border-color: #22c55e; background: #dcfce7; color: #14532d; }
 #page-atendimento .pago-btn.selected-pend { border-color: #f59e0b; background: #fef9c3; color: #854d0e; }
-#page-atendimento .atend-footer { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+#page-atendimento /* RODAPÉ AÇÕES */
+    .atend-footer { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 #page-atendimento .footer-left { font-size: 13px; color: #888; }
 #page-atendimento .footer-right { display: flex; gap: 10px; flex-wrap: wrap; }
 #page-atendimento .btn { padding: 11px 20px; border-radius: 10px; border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; transition: .2s; }
@@ -313,12 +324,14 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
 #page-atendimento .btn-green:hover { background: #16a34a; }
 #page-atendimento .btn-gray { background: #e8eaf0; color: #555; }
 #page-atendimento .btn-gray:hover { background: #d8dae8; }
-#page-atendimento .toast { position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999; }
+#page-atendimento /* TOAST */
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; transform: translateY(10px); transition: .3s; z-index: 999; }
 #page-atendimento .toast.show { opacity: 1; transform: translateY(0); }
 #page-atendimento .toast.success { background: #22c55e; }
 #page-atendimento .toast.error { background: #ef4444; }
 #page-atendimento .toast.info { background: #3b82f6; }
-#page-atendimento .fila-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+#page-atendimento /* FILA DE ESPERA MINI no topo */
+    .fila-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 #page-atendimento .fila-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .2s; }
 #page-atendimento .fila-item:hover { filter: brightness(.95); }
 #page-atendimento .fi-aguard { background: #fef9c3; color: #854d0e; }
@@ -338,14 +351,6 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
     }
   
 #page-atendimento .main-content{margin-left:0;padding:20px;}
-
-/* ===== FINANCEIRO TABS ===== */
-.fin-tab-btn{padding:10px 20px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:.2s;margin-bottom:-2px;}
-.fin-tab-btn.active{color:#7c3aed;border-bottom-color:#7c3aed;}
-.fin-tab-btn:hover{color:#7c3aed;}
-.pgto-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0f2f8;font-size:13px;}
-.pgto-row:last-child{border-bottom:none;}
-.pgto-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);margin-top:4px;}
 </style>
 </head>
 <body>
@@ -484,129 +489,26 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
     <!-- ===== FINANCEIRO ===== */
     <div class="page" id="page-financeiro">
       <div class="page-header">
-        <h1>💰 Financeiro</h1>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-outline" onclick="finAba('despesa')">📉 Nova Despesa</button>
-          <button class="btn btn-purple" onclick="abrirModalFin('receita')">📈 Nova Receita</button>
-        </div>
+        <h1>💰 Controle Financeiro</h1>
+        <button class="btn btn-purple" onclick="abrirModalFin()">+ Nova Transação</button>
       </div>
-
-      <!-- ABAS -->
-      <div style="display:flex;gap:4px;margin-bottom:18px;border-bottom:2px solid #e8eaf0;padding-bottom:0;">
-        <button class="fin-tab-btn active" id="ftab-resumo"   onclick="finTab('resumo')">📊 Resumo</button>
-        <button class="fin-tab-btn"        id="ftab-receitas" onclick="finTab('receitas')">📈 Receitas</button>
-        <button class="fin-tab-btn"        id="ftab-despesas" onclick="finTab('despesas')">📉 Despesas</button>
-        <button class="fin-tab-btn"        id="ftab-relatorio" onclick="finTab('relatorio')">📋 Relatório</button>
+      <div class="fin-cards">
+        <div class="fin-card"><div class="fin-lbl">📈 Receitas do Mês</div><div class="fin-val text-green" id="fin-rec">R$ 0,00</div></div>
+        <div class="fin-card"><div class="fin-lbl">📉 Despesas do Mês</div><div class="fin-val text-red" id="fin-desp">R$ 0,00</div></div>
+        <div class="fin-card"><div class="fin-lbl">💎 Lucro Líquido</div><div class="fin-val" id="fin-lucro">R$ 0,00</div></div>
       </div>
-
-      <!-- ── ABA RESUMO ── -->
-      <div id="fin-aba-resumo">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px;">
-          <div class="fin-card" style="border-left:4px solid #10b981">
-            <div class="fin-lbl">📈 Receitas do Mês</div>
-            <div class="fin-val text-green" id="fin-rec">R$ 0,00</div>
-            <div style="font-size:11px;color:#888;margin-top:4px" id="fin-rec-qtd">0 atendimentos</div>
-          </div>
-          <div class="fin-card" style="border-left:4px solid #ef4444">
-            <div class="fin-lbl">📉 Despesas do Mês</div>
-            <div class="fin-val text-red" id="fin-desp">R$ 0,00</div>
-            <div style="font-size:11px;color:#888;margin-top:4px" id="fin-desp-qtd">0 lançamentos</div>
-          </div>
-          <div class="fin-card" style="border-left:4px solid #7c3aed">
-            <div class="fin-lbl">💎 Lucro Líquido</div>
-            <div class="fin-val" id="fin-lucro">R$ 0,00</div>
-            <div style="font-size:11px;color:#888;margin-top:4px" id="fin-margem">Margem: 0%</div>
-          </div>
-          <div class="fin-card" style="border-left:4px solid #f59e0b">
-            <div class="fin-lbl">⏳ A Receber</div>
-            <div class="fin-val" id="fin-pendente" style="color:#f59e0b">R$ 0,00</div>
-            <div style="font-size:11px;color:#888;margin-top:4px" id="fin-pend-qtd">0 pendentes</div>
-          </div>
-        </div>
-
-        <!-- Receitas por forma de pagamento -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;">
-          <div style="background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-            <div style="font-weight:700;margin-bottom:12px;color:#1a1a2e">💳 Receitas por Forma de Pagamento</div>
-            <div id="fin-pgto-breakdown"></div>
-          </div>
-          <div style="background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-            <div style="font-weight:700;margin-bottom:12px;color:#1a1a2e">🏷️ Despesas por Categoria</div>
-            <div id="fin-cat-breakdown"></div>
-          </div>
-        </div>
-
-        <!-- Últimas movimentações -->
-        <div style="background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div style="font-weight:700;color:#1a1a2e">🕐 Últimas Movimentações</div>
-            <input type="month" id="fin-mes" onchange="loadFin()" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none;"/>
-          </div>
-          <table class="data-table">
-            <thead><tr><th>Descrição</th><th>Paciente</th><th>Data</th><th>Tipo</th><th>Pagamento</th><th>Valor Bruto</th><th>Taxa</th><th>Valor Líquido</th><th>Status</th><th>Ações</th></tr></thead>
-            <tbody id="fin-tabela-resumo"></tbody>
-          </table>
-        </div>
+      <div class="search-bar">
+        <input type="text" id="fin-busca" placeholder="Buscar descrição ou paciente..." oninput="filtrarFin()"/>
+        <select id="fin-tipo" onchange="filtrarFin()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none;">
+          <option value="">Todos</option><option value="receita">Receitas</option><option value="despesa">Despesas</option>
+        </select>
+        <input type="month" id="fin-mes" onchange="loadFin()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none;"/>
       </div>
-
-      <!-- ── ABA RECEITAS ── -->
-      <div id="fin-aba-receitas" style="display:none">
-        <div class="search-bar">
-          <input type="text" id="fin-busca-rec" placeholder="Buscar paciente ou procedimento..." oninput="filtrarFinRec()"/>
-          <select id="fin-pgto-fil" onchange="filtrarFinRec()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none;">
-            <option value="">Todas as formas</option>
-            <option>PIX</option><option>Dinheiro</option><option>Débito</option>
-            <option>Crédito à Vista</option><option>Crédito 2x</option><option>Crédito 3x</option>
-            <option>Crédito 4x</option><option>Crédito 5x</option><option>Crédito 6x</option>
-            <option>Crédito 7x</option><option>Crédito 8x</option><option>Crédito 9x</option>
-            <option>Crédito 10x</option><option>Crédito 11x</option><option>Crédito 12x</option>
-            <option>Transferência</option><option>Cheque</option>
-          </select>
-          <select id="fin-status-fil" onchange="filtrarFinRec()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none;">
-            <option value="">Todos status</option><option>Pago</option><option>Pendente</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead><tr><th>Paciente</th><th>Procedimento</th><th>Data</th><th>Forma Pgto</th><th>Valor Bruto</th><th>Taxa Bandeira</th><th>Valor Líquido</th><th>Status</th><th>Ações</th></tr></thead>
-            <tbody id="fin-tabela-rec"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ── ABA DESPESAS ── -->
-      <div id="fin-aba-despesas" style="display:none">
-        <div class="search-bar">
-          <input type="text" id="fin-busca-desp" placeholder="Buscar despesa..." oninput="filtrarFinDesp()"/>
-          <select id="fin-cat-fil" onchange="filtrarFinDesp()" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none;">
-            <option value="">Todas categorias</option>
-            <option>Aluguel</option><option>Energia</option><option>Água</option><option>Internet</option>
-            <option>Salários</option><option>Insumos</option><option>Equipamentos</option>
-            <option>Marketing</option><option>Manutenção</option><option>Impostos</option><option>Outros</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Forma Pgto</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead>
-            <tbody id="fin-tabela-desp"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ── ABA RELATÓRIO ── -->
-      <div id="fin-aba-relatorio" style="display:none">
-        <div style="background:white;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px">
-          <div style="font-weight:700;font-size:15px;margin-bottom:16px;color:#1a1a2e">📋 Relatório Financeiro Detalhado</div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
-            <div><label style="font-size:12px;font-weight:600;color:#555;display:block;margin-bottom:4px">De</label>
-              <input type="date" id="rel-de" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px"/></div>
-            <div><label style="font-size:12px;font-weight:600;color:#555;display:block;margin-bottom:4px">Até</label>
-              <input type="date" id="rel-ate" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px"/></div>
-            <button class="btn btn-purple" onclick="gerarRelatorio()" style="margin-top:18px">Gerar Relatório</button>
-            <button class="btn btn-outline" onclick="imprimirRelatorio()" style="margin-top:18px">🖨️ Imprimir</button>
-          </div>
-          <div id="rel-resultado"></div>
-        </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Tipo</th><th>Pgto</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody id="fin-tabela"></tbody>
+        </table>
       </div>
     </div>
 
@@ -871,30 +773,18 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
             <div class="form-row">
               <div class="form-group">
                 <label>Valor cobrado (R$)</label>
-                <input type="number" id="at-valor" placeholder="0,00" step="0.01" min="0" oninput="atualizarPreviewTaxaAtend()"/>
+                <input type="number" id="at-valor" placeholder="0,00" step="0.01" min="0"/>
               </div>
-                <div id="at-taxa-preview" style="margin-top:5px;min-height:16px"></div>
               <div class="form-group">
                 <label>Forma de pagamento</label>
-                <select id="at-pagamento" onchange="atualizarPreviewTaxaAtend()">
+                <select id="at-pagamento">
                   <option value="">Selecionar</option>
-                  <option>PIX</option>
                   <option>Dinheiro</option>
+                  <option>Cartão de Crédito</option>
+                  <option>Cartão de Débito</option>
+                  <option>Pix</option>
                   <option>Transferência</option>
-                  <option>Débito</option>
-                  <option>Crédito à Vista</option>
-                  <option>Crédito 2x</option>
-                  <option>Crédito 3x</option>
-                  <option>Crédito 4x</option>
-                  <option>Crédito 5x</option>
-                  <option>Crédito 6x</option>
-                  <option>Crédito 7x</option>
-                  <option>Crédito 8x</option>
-                  <option>Crédito 9x</option>
-                  <option>Crédito 10x</option>
-                  <option>Crédito 11x</option>
-                  <option>Crédito 12x</option>
-                  <option>Cheque</option>
+                  <option>Convênio</option>
                 </select>
               </div>
             </div>
@@ -1050,19 +940,11 @@ body { font-family: 'Inter', sans-serif; background: #f0f2f8; color: #1a1a2e; }
     <div class="form-group"><label>Descrição <span class="req">*</span></label><input type="text" id="fin-f-desc" placeholder="Ex: Consulta Botox - Maria"/></div>
     <div class="form-row">
       <div class="form-group"><label>Categoria</label><input type="text" id="fin-f-cat" placeholder="Ex: Procedimento, Aluguel..."/></div>
-      <div class="form-group"><label>Valor (R$) <span class="req">*</span></label><input type="number" id="fin-f-valor" placeholder="0,00" step="0.01" oninput="atualizarPreviewTaxa()"/></div>
+      <div class="form-group"><label>Valor (R$) <span class="req">*</span></label><input type="number" id="fin-f-valor" placeholder="0,00" step="0.01"/></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label>Forma de Pagamento</label>
-        <select id="fin-f-pgto" onchange="atualizarPreviewTaxa()" oninput="atualizarPreviewTaxa()">
-            <option>PIX</option><option>Dinheiro</option><option>Transferência</option><option>Cheque</option>
-            <option>Débito</option>
-            <option>Crédito à Vista</option><option>Crédito 2x</option><option>Crédito 3x</option>
-            <option>Crédito 4x</option><option>Crédito 5x</option><option>Crédito 6x</option>
-            <option>Crédito 7x</option><option>Crédito 8x</option><option>Crédito 9x</option>
-            <option>Crédito 10x</option><option>Crédito 11x</option><option>Crédito 12x</option>
-          </select>
-          <div id="fin-taxa-preview" style="margin-top:6px;min-height:18px"></div>
+        <select id="fin-f-pgto"><option>Dinheiro</option><option>PIX</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Transferência</option></select>
       </div>
       <div class="form-group"><label>Status</label>
         <select id="fin-f-status"><option>Pago</option><option>Pendente</option><option>Cancelado</option></select>
@@ -1299,20 +1181,9 @@ async function iniciarApp(user){
 // NAVEGAÇÃO
 // =====================================================================
 function goPage(p){
-  // Esconder TODOS os pages via style inline (garantia máxima)
-  document.querySelectorAll('.page').forEach(el=>{
-    el.classList.remove('active');
-    el.setAttribute('style','display:none !important;');
-  });
-  // Scroll ao topo ao trocar de página
-  const mc=document.querySelector('.main-content'); if(mc) mc.scrollTop=0; window.scrollTo(0,0);
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  // Mostrar APENAS o page solicitado
-  const targetPage=document.getElementById('page-'+p);
-  if(targetPage){
-    targetPage.classList.add('active');
-    targetPage.setAttribute('style','display:block !important;');
-  }
+  document.getElementById('page-'+p)?.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(el=>{
     if(el.getAttribute('onclick')?.includes("'"+p+"'")) el.classList.add('active');
   });
@@ -1640,189 +1511,35 @@ async function buscarCEPPac(){
 // =====================================================================
 // FINANCEIRO
 // =====================================================================
-// =====================================================================
-// FINANCEIRO — TAXAS DE BANDEIRAS
-// =====================================================================
-const TAXAS_PGTO = {
-  'PIX':           0,
-  'Dinheiro':      0,
-  'Transferência': 0,
-  'Cheque':        0,
-  'Débito':        1.5,
-  'Crédito à Vista': 2.5,
-  'Crédito 2x':    3.0,
-  'Crédito 3x':    3.2,
-  'Crédito 4x':    3.5,
-  'Crédito 5x':    3.8,
-  'Crédito 6x':    4.0,
-  'Crédito 7x':    4.2,
-  'Crédito 8x':    4.5,
-  'Crédito 9x':    4.8,
-  'Crédito 10x':   5.0,
-  'Crédito 11x':   5.3,
-  'Crédito 12x':   5.5,
-};
-function calcLiquido(valor, forma){
-  const taxa = TAXAS_PGTO[forma] || 0;
-  return { liquido: valor*(1-taxa/100), taxa, desconto: valor*(taxa/100) };
-}
-function taxaBadge(forma){
-  const t = TAXAS_PGTO[forma]||0;
-  if(t===0) return `<span style="color:#10b981;font-size:11px;font-weight:600">Sem taxa</span>`;
-  return `<span style="color:#f59e0b;font-size:11px;font-weight:600">-${t}%</span>`;
-}
-
-// ── Abas ──────────────────────────────────────────────────────────────
-let finAbaAtual = 'resumo';
-function finTab(aba){
-  finAbaAtual = aba;
-  ['resumo','receitas','despesas','relatorio'].forEach(a=>{
-    document.getElementById('fin-aba-'+a).style.display = a===aba?'block':'none';
-    document.getElementById('ftab-'+a).classList.toggle('active', a===aba);
-  });
-  if(aba==='relatorio') preencherDatasRel();
-}
-function finAba(tipo){
-  abrirModalFin(tipo);
-}
-
-// ── Carregar dados ────────────────────────────────────────────────────
 async function loadFin(){
-  const mes = (document.getElementById('fin-mes')?document.getElementById('fin-mes').value:null) || new Date().toISOString().slice(0,7);
+  const mes=document.getElementById('fin-mes').value||new Date().toISOString().slice(0,7);
   try{
-    let q = supabaseClient.from('financeiro').select('*').gte('data',mes+'-01').lte('data',mes+'-31').order('data',{ascending:false});
-    if(clinicaId) q = q.eq('clinica_id',clinicaId);
-    const {data} = await q;
-    finRows = data||[];
-    renderFinResumo();
-    filtrarFinRec();
-    filtrarFinDesp();
-  }catch(e){ console.error('financeiro',e); }
+    let q=supabaseClient.from('financeiro').select('*').gte('data',mes+'-01').lte('data',mes+'-31').order('data',{ascending:false});
+    if(clinicaId)q=q.eq('clinica_id',clinicaId);
+    const{data}=await q;
+    finRows=data||[];
+    const rec=finRows.filter(r=>r.tipo==='receita').reduce((a,r)=>a+(r.valor||0),0);
+    const desp=finRows.filter(r=>r.tipo==='despesa').reduce((a,r)=>a+(r.valor||0),0);
+    document.getElementById('fin-rec').textContent=fmtMoeda(rec);
+    document.getElementById('fin-desp').textContent=fmtMoeda(desp);
+    document.getElementById('fin-lucro').textContent=fmtMoeda(rec-desp);
+    filtrarFin();
+  }catch(e){console.error('financeiro',e);}
 }
-
-function renderFinResumo(){
-  const rec   = finRows.filter(r=>r.tipo==='receita');
-  const desp  = finRows.filter(r=>r.tipo==='despesa');
-  const totRec  = rec.reduce((a,r)=>a+(r.valor||0),0);
-  const totDesp = desp.reduce((a,r)=>a+(r.valor||0),0);
-  const lucro   = totRec-totDesp;
-  const pendente = rec.filter(r=>r.status_pgto==='Pendente').reduce((a,r)=>a+(r.valor||0),0);
-  const pendQtd  = rec.filter(r=>r.status_pgto==='Pendente').length;
-  const margem   = totRec>0 ? ((lucro/totRec)*100).toFixed(1) : 0;
-
-  document.getElementById('fin-rec').textContent    = fmtMoeda(totRec);
-  document.getElementById('fin-desp').textContent   = fmtMoeda(totDesp);
-  document.getElementById('fin-lucro').textContent  = fmtMoeda(lucro);
-  document.getElementById('fin-lucro').style.color  = lucro>=0?'var(--success)':'var(--danger)';
-  document.getElementById('fin-pendente').textContent = fmtMoeda(pendente);
-  document.getElementById('fin-rec-qtd').textContent  = rec.length+' receitas';
-  document.getElementById('fin-desp-qtd').textContent = desp.length+' despesas';
-  document.getElementById('fin-pend-qtd').textContent = pendQtd+' pendentes';
-  document.getElementById('fin-margem').textContent    = 'Margem: '+margem+'%';
-
-  // Breakdown por forma de pagamento
-  const pgtoMap = {};
-  rec.forEach(r=>{ const f=r.forma_pagamento||'Outros'; pgtoMap[f]=(pgtoMap[f]||0)+(r.valor||0); });
-  const pgtoDiv = document.getElementById('fin-pgto-breakdown');
-  if(Object.keys(pgtoMap).length===0){ pgtoDiv.innerHTML='<div style="color:#bbb;font-size:12px;text-align:center;padding:16px">Sem receitas</div>'; }
-  else {
-    const maxPgto = Math.max(...Object.values(pgtoMap));
-    pgtoDiv.innerHTML = Object.entries(pgtoMap).sort((a,b)=>b[1]-a[1]).map(([f,v])=>`
-      <div class="pgto-row">
-        <div>
-          <div style="font-weight:600">${f} ${taxaBadge(f)}</div>
-          <div class="pgto-bar" style="width:${Math.round((v/maxPgto)*120)}px"></div>
-        </div>
-        <div style="font-weight:700;color:#1a1a2e">${fmtMoeda(v)}</div>
-      </div>`).join('');
-  }
-
-  // Breakdown despesas por categoria
-  const catMap = {};
-  desp.forEach(r=>{ const c=r.categoria||'Outros'; catMap[c]=(catMap[c]||0)+(r.valor||0); });
-  const catDiv = document.getElementById('fin-cat-breakdown');
-  if(Object.keys(catMap).length===0){ catDiv.innerHTML='<div style="color:#bbb;font-size:12px;text-align:center;padding:16px">Sem despesas</div>'; }
-  else {
-    const maxCat = Math.max(...Object.values(catMap));
-    catDiv.innerHTML = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`
-      <div class="pgto-row">
-        <div>
-          <div style="font-weight:600">${c}</div>
-          <div class="pgto-bar" style="width:${Math.round((v/maxCat)*120)}px;background:linear-gradient(90deg,#ef4444,#fca5a5)"></div>
-        </div>
-        <div style="font-weight:700;color:#ef4444">${fmtMoeda(v)}</div>
-      </div>`).join('');
-  }
-
-  // Tabela resumo (últimas movimentações)
-  const tbody = document.getElementById('fin-tabela-resumo');
-  const ultimas = [...finRows].slice(0,15);
-  if(!ultimas.length){ tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:30px;color:#aaa">Nenhum registro no mês</td></tr>'; return; }
-  tbody.innerHTML = ultimas.map(r=>{
-    const {liquido,taxa,desconto} = calcLiquido(r.valor||0, r.forma_pagamento||'');
-    return `<tr>
-      <td><strong>${r.descricao||r.paciente_nome||'-'}</strong></td>
-      <td>${r.paciente_nome||r.paciente||'-'}</td>
-      <td>${fmtData(r.data)}</td>
-      <td><span class="badge ${r.tipo==='receita'?'badge-success':'badge-danger'}">${r.tipo==='receita'?'📈':'📉'} ${r.tipo}</span></td>
-      <td>${r.forma_pagamento||'-'}</td>
-      <td>${fmtMoeda(r.valor)}</td>
-      <td style="color:${taxa>0?'#f59e0b':'#10b981'};font-size:12px">${taxa>0?'-'+taxa+'% ('+fmtMoeda(desconto)+')':'—'}</td>
-      <td style="font-weight:700;color:${r.tipo==='receita'?'var(--success)':'var(--danger)'}">${fmtMoeda(r.tipo==='receita'?liquido:r.valor)}</td>
-      <td><span class="badge ${r.status_pgto==='Pago'?'badge-success':'badge-warning'}">${r.status_pgto||'-'}</span></td>
-      <td>
-        <button class="btn-sm btn-outline" onclick="editarFin('${r.id}')">✏️</button>
-        <button class="btn-sm btn-outline" onclick="deletarFin('${r.id}')" style="margin-left:4px">🗑️</button>
-      </td>
-    </tr>`;
-  }).join('');
+function filtrarFin(){
+  const q=document.getElementById('fin-busca').value.toLowerCase(),t=document.getElementById('fin-tipo').value;
+  renderFin(finRows.filter(r=>(!t||r.tipo===t)&&(!q||r.descricao?.toLowerCase().includes(q)||r.paciente?.toLowerCase().includes(q)||r.paciente_nome?.toLowerCase().includes(q))));
 }
-
-function filtrarFinRec(){
-  const q   = (document.getElementById('fin-busca-rec')?document.getElementById('fin-busca-rec').value.toLowerCase():'');
-  const pgto= (document.getElementById('fin-pgto-fil')?document.getElementById('fin-pgto-fil').value:'');
-  const st  = (document.getElementById('fin-status-fil')?document.getElementById('fin-status-fil').value:'');
-  const lista = finRows.filter(r=>r.tipo==='receita'
-    && (!q||r.descricao?.toLowerCase().includes(q)||r.paciente_nome?.toLowerCase().includes(q)||r.paciente?.toLowerCase().includes(q))
-    && (!pgto||r.forma_pagamento===pgto)
-    && (!st||r.status_pgto===st));
-  const tbody = document.getElementById('fin-tabela-rec');
-  if(!tbody)return;
-  if(!lista.length){ tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:30px;color:#aaa">Nenhuma receita encontrada</td></tr>'; return; }
-  tbody.innerHTML = lista.map(r=>{
-    const {liquido,taxa,desconto} = calcLiquido(r.valor||0, r.forma_pagamento||'');
-    return `<tr>
-      <td><strong>${r.paciente_nome||r.paciente||'-'}</strong></td>
-      <td>${r.descricao||r.categoria||'-'}</td>
-      <td>${fmtData(r.data)}</td>
-      <td><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600">${r.forma_pagamento||'-'}</span></td>
-      <td>${fmtMoeda(r.valor)}</td>
-      <td style="color:${taxa>0?'#f59e0b':'#10b981'};font-weight:600">${taxa>0?`-${taxa}%<br><small style="font-size:10px">${fmtMoeda(desconto)}</small>`:`<span style="color:#10b981">Sem taxa</span>`}</td>
-      <td style="font-weight:700;color:var(--success)">${fmtMoeda(liquido)}</td>
-      <td><span class="badge ${r.status_pgto==='Pago'?'badge-success':'badge-warning'}">${r.status_pgto||'-'}</span></td>
-      <td>
-        <button class="btn-sm btn-outline" onclick="editarFin('${r.id}')">✏️</button>
-        <button class="btn-sm btn-outline" onclick="deletarFin('${r.id}')" style="margin-left:4px">🗑️</button>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-function filtrarFinDesp(){
-  const q   = (document.getElementById('fin-busca-desp')?document.getElementById('fin-busca-desp').value.toLowerCase():'');
-  const cat = (document.getElementById('fin-cat-fil')?document.getElementById('fin-cat-fil').value:'');
-  const lista = finRows.filter(r=>r.tipo==='despesa'
-    && (!q||r.descricao?.toLowerCase().includes(q))
-    && (!cat||r.categoria===cat));
-  const tbody = document.getElementById('fin-tabela-desp');
-  if(!tbody)return;
-  if(!lista.length){ tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;color:#aaa">Nenhuma despesa encontrada</td></tr>'; return; }
-  tbody.innerHTML = lista.map(r=>`<tr>
+function renderFin(lista){
+  const tbody=document.getElementById('fin-tabela');
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa">Nenhum registro</td></tr>';return;}
+  tbody.innerHTML=lista.map(r=>`<tr>
     <td><strong>${r.descricao||'-'}</strong></td>
     <td>${r.categoria||'-'}</td>
     <td>${fmtData(r.data)}</td>
+    <td><span class="badge ${r.tipo==='receita'?'badge-success':'badge-danger'}">${r.tipo==='receita'?'📈 Receita':'📉 Despesa'}</span></td>
     <td>${r.forma_pagamento||'-'}</td>
-    <td style="font-weight:700;color:var(--danger)">${fmtMoeda(r.valor)}</td>
+    <td><strong style="color:${r.tipo==='receita'?'var(--success)':'var(--danger)'}">${fmtMoeda(r.valor)}</strong></td>
     <td><span class="badge ${r.status_pgto==='Pago'?'badge-success':'badge-warning'}">${r.status_pgto||'-'}</span></td>
     <td>
       <button class="btn-sm btn-outline" onclick="editarFin('${r.id}')">✏️</button>
@@ -1830,175 +1547,30 @@ function filtrarFinDesp(){
     </td>
   </tr>`).join('');
 }
-
-// ── Modal Nova Transação ──────────────────────────────────────────────
-function abrirModalFin(tipoOuDados=null){
-  let dados = null, tipo = 'receita';
-  if(tipoOuDados && typeof tipoOuDados==='object'){ dados=tipoOuDados; tipo=dados.tipo||'receita'; }
-  else if(typeof tipoOuDados==='string'){ tipo=tipoOuDados; }
-  finEditId = dados?.id||null;
-  document.getElementById('fin-modal-title').textContent = finEditId?'✏️ Editar':'💰 Nova Transação';
-  document.getElementById('fin-f-tipo').value    = tipo;
-  document.getElementById('fin-f-data').value    = dados?.data||fmt(new Date());
-  document.getElementById('fin-f-desc').value    = dados?.descricao||'';
-  document.getElementById('fin-f-cat').value     = dados?.categoria||'';
-  document.getElementById('fin-f-valor').value   = dados?.valor||'';
-  document.getElementById('fin-f-pgto').value    = dados?.forma_pagamento||'PIX';
-  document.getElementById('fin-f-status').value  = dados?.status_pgto||'Pago';
-  document.getElementById('fin-f-pac').value     = dados?.paciente||dados?.paciente_nome||'';
-  atualizarPreviewTaxa();
+function abrirModalFin(dados=null){
+  finEditId=dados?.id||null;
+  document.getElementById('fin-modal-title').textContent=finEditId?'✏️ Editar Transação':'💰 Nova Transação';
+  document.getElementById('fin-f-tipo').value=dados?.tipo||'receita';
+  document.getElementById('fin-f-data').value=dados?.data||fmt(new Date());
+  document.getElementById('fin-f-desc').value=dados?.descricao||'';
+  document.getElementById('fin-f-cat').value=dados?.categoria||'';
+  document.getElementById('fin-f-valor').value=dados?.valor||'';
+  document.getElementById('fin-f-pgto').value=dados?.forma_pagamento||'PIX';
+  document.getElementById('fin-f-status').value=dados?.status_pgto||'Pago';
+  document.getElementById('fin-f-pac').value=dados?.paciente||dados?.paciente_nome||'';
   document.getElementById('modal-fin').classList.add('open');
 }
-
-
-function atualizarPreviewTaxaAtend(){
-  const valor = parseFloat(document.getElementById('at-valor')?.value)||0;
-  const forma = document.getElementById('at-pagamento')?.value||'';
-  const prev  = document.getElementById('at-taxa-preview');
-  if(!prev) return;
-  if(valor>0 && forma){
-    const taxa = (typeof TAXAS_PGTO!=='undefined' && TAXAS_PGTO[forma]) ? TAXAS_PGTO[forma] : 0;
-    const desconto = valor*(taxa/100);
-    const liquido  = valor - desconto;
-    if(taxa>0) prev.innerHTML=`<span style="color:#f59e0b;font-size:11px">⚠️ Taxa ${taxa}% = R$ ${desconto.toFixed(2)} → Líquido: <strong>R$ ${liquido.toFixed(2)}</strong></span>`;
-    else prev.innerHTML=`<span style="color:#10b981;font-size:11px">✅ Sem taxa → Líquido: <strong>R$ ${valor.toFixed(2)}</strong></span>`;
-  } else { if(prev) prev.innerHTML=''; }
-}
-function atualizarPreviewTaxa(){
-  const valor = parseFloat(document.getElementById('fin-f-valor').value)||0;
-  const forma = document.getElementById('fin-f-pgto').value;
-  const tipo  = document.getElementById('fin-f-tipo').value;
-  const prev  = document.getElementById('fin-taxa-preview');
-  if(!prev) return;
-  if(tipo==='receita' && valor>0){
-    const {liquido,taxa,desconto} = calcLiquido(valor, forma);
-    if(taxa>0) prev.innerHTML=`<span style="color:#f59e0b;font-size:12px">⚠️ Taxa ${taxa}% = ${fmtMoeda(desconto)} → Líquido: <strong>${fmtMoeda(liquido)}</strong></span>`;
-    else prev.innerHTML=`<span style="color:#10b981;font-size:12px">✅ Sem taxa de bandeira → Líquido: <strong>${fmtMoeda(valor)}</strong></span>`;
-  } else { prev.innerHTML=''; }
-}
-
-function editarFin(id){ abrirModalFin(finRows.find(r=>r.id==id)); }
-
-// ── Integração Atendimento → Financeiro ──────────────────────────────
-async function registrarReceitaAtendimento(pacienteNome, procedimento, valor, formaPgto, statusPgto, agendId){
-  try {
-    if(!valor||valor<=0){ console.log('registrarReceita: valor zero, abortando'); return; }
-    const clinId = clinicaId_at||clinicaId||null;
-    const hoje = fmt(new Date());
-    const payload = {
-      tipo: 'receita',
-      data: hoje,
-      descricao: procedimento||'Atendimento',
-      categoria: 'Atendimento',
-      paciente: pacienteNome||'',
-      paciente_nome: pacienteNome||'',
-      valor: parseFloat(valor)||0,
-      forma_pagamento: formaPgto||'PIX',
-      status_pgto: statusPgto||'Pago',
-      clinica_id: clinId
-    };
-    console.log('registrarReceita payload:', payload);
-    // Tenta inserir (sem agendamento_id para evitar erro se coluna não existe)
-    const {error:e} = await supabaseClient.from('financeiro').insert(payload);
-    if(e){ console.error('Erro ao registrar receita:', e.message); }
-    else { console.log('✅ Receita registrada no financeiro!'); }
-    return;
-    // Código abaixo desativado — reservado para futuro
-    if(agendId){
-      const {data:ex} = await supabaseClient.from('financeiro').select('id').eq('agendamento_id',agendId).limit(1);
-      if(ex&&ex.length>0){
-        await supabaseClient.from('financeiro').update(payload).eq('agendamento_id',agendId);
-        return;
-      }
-    }
-    await supabaseClient.from('financeiro').insert(payload);
-  } catch(e){ console.error('registrarReceita',e); }
-}
-
+function editarFin(id){abrirModalFin(finRows.find(r=>r.id==id));}
 async function salvarFin(){
-  const payload = {
-    tipo: document.getElementById('fin-f-tipo').value,
-    data: document.getElementById('fin-f-data').value,
-    descricao: document.getElementById('fin-f-desc').value,
-    categoria: document.getElementById('fin-f-cat').value,
-    valor: parseFloat(document.getElementById('fin-f-valor').value)||0,
-    forma_pagamento: document.getElementById('fin-f-pgto').value,
-    status_pgto: document.getElementById('fin-f-status').value,
-    paciente: document.getElementById('fin-f-pac').value,
-    paciente_nome: document.getElementById('fin-f-pac').value,
-    clinica_id: clinicaId
-  };
-  if(!payload.descricao){ showToast('Informe a descrição!','error'); return; }
+  const payload={tipo:document.getElementById('fin-f-tipo').value,data:document.getElementById('fin-f-data').value,descricao:document.getElementById('fin-f-desc').value,categoria:document.getElementById('fin-f-cat').value,valor:parseFloat(document.getElementById('fin-f-valor').value)||0,forma_pagamento:document.getElementById('fin-f-pgto').value,status_pgto:document.getElementById('fin-f-status').value,paciente:document.getElementById('fin-f-pac').value,paciente_nome:document.getElementById('fin-f-pac').value,clinica_id:clinicaId};
+  if(!payload.descricao){showToast('Informe a descrição!','error');return;}
   let e;
-  if(finEditId){ ({error:e}=await supabaseClient.from('financeiro').update(payload).eq('id',finEditId)); }
-  else { ({error:e}=await supabaseClient.from('financeiro').insert(payload)); }
-  if(e){ showToast('Erro: '+e.message,'error'); return; }
-  showToast('Salvo!','success'); fecharModal('modal-fin'); loadFin();
+  if(finEditId){({error:e}=await supabaseClient.from('financeiro').update(payload).eq('id',finEditId));}
+  else{({error:e}=await supabaseClient.from('financeiro').insert(payload));}
+  if(e){showToast('Erro: '+e.message,'error');return;}
+  showToast('Salvo!','success');fecharModal('modal-fin');loadFin();
 }
-
-async function deletarFin(id){ if(!confirm('Excluir?'))return; await supabaseClient.from('financeiro').delete().eq('id',id); showToast('Removido!'); loadFin(); }
-
-// ── Relatório ─────────────────────────────────────────────────────────
-function preencherDatasRel(){
-  const hoje = new Date();
-  const ini  = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-  document.getElementById('rel-de').value  = ini.toISOString().split('T')[0];
-  document.getElementById('rel-ate').value = hoje.toISOString().split('T')[0];
-}
-async function gerarRelatorio(){
-  const de  = document.getElementById('rel-de').value;
-  const ate = document.getElementById('rel-ate').value;
-  if(!de||!ate){ showToast('Selecione o período!','error'); return; }
-  let q = supabaseClient.from('financeiro').select('*').gte('data',de).lte('data',ate).order('data',{ascending:false});
-  if(clinicaId) q=q.eq('clinica_id',clinicaId);
-  const {data} = await q;
-  const rows = data||[];
-  const rec  = rows.filter(r=>r.tipo==='receita');
-  const desp = rows.filter(r=>r.tipo==='despesa');
-  const totRec  = rec.reduce((a,r)=>a+(r.valor||0),0);
-  const totDesp = desp.reduce((a,r)=>a+(r.valor||0),0);
-  const totLiq  = rec.reduce((a,r)=>{ const {liquido}=calcLiquido(r.valor||0,r.forma_pagamento||''); return a+liquido; },0);
-  const taxaTotal = totRec - totLiq;
-  // Por forma de pagamento
-  const pgtoMap={};
-  rec.forEach(r=>{ const f=r.forma_pagamento||'Outros'; pgtoMap[f]=(pgtoMap[f]||0)+(r.valor||0); });
-  const pgtoRows = Object.entries(pgtoMap).sort((a,b)=>b[1]-a[1]).map(([f,v])=>{
-    const {liquido,taxa,desconto}=calcLiquido(v,f);
-    return `<tr><td>${f}</td><td>${fmtMoeda(v)}</td><td style="color:#f59e0b">${taxa}%</td><td style="color:#ef4444">${fmtMoeda(desconto)}</td><td style="color:#10b981;font-weight:700">${fmtMoeda(liquido)}</td></tr>`;
-  }).join('');
-  document.getElementById('rel-resultado').innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
-      <div style="background:#f0fdf4;border-radius:10px;padding:14px;text-align:center"><div style="font-size:11px;color:#555;margin-bottom:4px">Total Receitas</div><div style="font-size:18px;font-weight:700;color:#10b981">${fmtMoeda(totRec)}</div></div>
-      <div style="background:#fef2f2;border-radius:10px;padding:14px;text-align:center"><div style="font-size:11px;color:#555;margin-bottom:4px">Total Despesas</div><div style="font-size:18px;font-weight:700;color:#ef4444">${fmtMoeda(totDesp)}</div></div>
-      <div style="background:#fefce8;border-radius:10px;padding:14px;text-align:center"><div style="font-size:11px;color:#555;margin-bottom:4px">Taxas Bandeiras</div><div style="font-size:18px;font-weight:700;color:#f59e0b">${fmtMoeda(taxaTotal)}</div></div>
-      <div style="background:#f5f3ff;border-radius:10px;padding:14px;text-align:center"><div style="font-size:11px;color:#555;margin-bottom:4px">Lucro Líquido</div><div style="font-size:18px;font-weight:700;color:#7c3aed">${fmtMoeda(totLiq-totDesp)}</div></div>
-    </div>
-    <div style="font-weight:700;margin-bottom:10px">💳 Detalhamento por Forma de Pagamento</div>
-    <table class="data-table" style="margin-bottom:20px">
-      <thead><tr><th>Forma</th><th>Receita Bruta</th><th>Taxa</th><th>Desconto</th><th>Receita Líquida</th></tr></thead>
-      <tbody>${pgtoRows||'<tr><td colspan="5" style="text-align:center;color:#aaa">Sem receitas</td></tr>'}</tbody>
-    </table>
-    <div style="font-weight:700;margin-bottom:10px">📋 Todas as Movimentações (${de} a ${ate})</div>
-    <table class="data-table">
-      <thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th>Paciente</th><th>Forma</th><th>Valor</th><th>Status</th></tr></thead>
-      <tbody>${rows.map(r=>`<tr>
-        <td>${fmtData(r.data)}</td>
-        <td><span class="badge ${r.tipo==='receita'?'badge-success':'badge-danger'}">${r.tipo==='receita'?'📈':'📉'} ${r.tipo}</span></td>
-        <td>${r.descricao||'-'}</td>
-        <td>${r.paciente_nome||r.paciente||'-'}</td>
-        <td>${r.forma_pagamento||'-'}</td>
-        <td style="font-weight:700;color:${r.tipo==='receita'?'var(--success)':'var(--danger)'}">${fmtMoeda(r.valor)}</td>
-        <td><span class="badge ${r.status_pgto==='Pago'?'badge-success':'badge-warning'}">${r.status_pgto||'-'}</span></td>
-      </tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:#aaa">Sem registros</td></tr>'}</tbody>
-    </table>`;
-}
-function imprimirRelatorio(){
-  const conteudo = document.getElementById('rel-resultado').innerHTML;
-  if(!conteudo){ showToast('Gere o relatório primeiro!','error'); return; }
-  const w = window.open('','_blank');
-  w.document.write(`<html><head><title>Relatório Financeiro</title><style>body{font-family:Arial,sans-serif;padding:24px}table{width:100%;border-collapse:collapse;margin-bottom:16px}th,td{border:1px solid #ddd;padding:8px;font-size:12px}th{background:#7c3aed;color:white}.badge{padding:2px 8px;border-radius:20px;font-size:11px}</style></head><body><h2>📊 Relatório Financeiro — Medlyn</h2>${conteudo}</body></html>`);
-  w.document.close(); w.print();
-}
+async function deletarFin(id){if(!confirm('Excluir?'))return;await supabaseClient.from('financeiro').delete().eq('id',id);showToast('Removido!');loadFin();}
 
 // =====================================================================
 // ESTOQUE
@@ -2366,16 +1938,8 @@ async function salvarUsuario(){
 // ATENDIMENTO EMBEDDED
 // =====================================================================
 function abrirAtendimento(id){
-  // Resetar estado do atendimento antes de abrir
+  // Seta o ID e abre a página de atendimento
   agendId = id;
-  agend = null; paciente = null; anamnese = null;
-  materiais = []; fotos = []; statusPag = 'pendente';
-  // Mostrar loading no card do paciente
-  try {
-    document.getElementById('p-nome').textContent = 'Carregando...';
-    document.getElementById('p-sub').textContent = '';
-    document.getElementById('h-titulo').textContent = '🩺 Atendimento';
-  } catch(e) {}
   goPage('atendimento');
   initAtendimento();
 }
@@ -2384,7 +1948,6 @@ function abrirAtendimento(id){
 // =====================================================================
 // ESTADO
 // =====================================================================
-let agendId=null;
 let agend=null, paciente=null, anamnese=null;
 let materiais=[], fotos=[], statusPag='pendente', clinicaId_at=null;
 
@@ -2403,11 +1966,9 @@ async function initAtendimento(){
     }
   } catch(e){}
 
-  // Pega o ID do agendamento da URL (só usa URL se não foi passado direto)
-  if(!agendId){
-    const params=new URLSearchParams(window.location.search);
-    agendId=params.get('id');
-  }
+  // Pega o ID do agendamento da URL
+  const params=new URLSearchParams(window.location.search);
+  agendId=params.get('id');
 
   if(!agendId){
     // Demo mode sem ID
@@ -2423,44 +1984,20 @@ async function initAtendimento(){
 // =====================================================================
 async function carregarDados(){
   try {
-    if(typeof supabaseClient==='undefined'){ console.error('[Medlyn] supabaseClient undefined!'); carregarDemo(); return; }
-    if(!agendId){ console.error('[Medlyn] agendId é null/undefined!'); carregarDemo(); return; }
-
-    console.log('[Medlyn] carregarDados: agendId=', agendId);
+    if(typeof supabaseClient==='undefined'){ carregarDemo(); return; }
 
     // Agendamento
-    const {data:ag, error:agErr}=await supabaseClient.from('agendamentos').select('*').eq('id',agendId).single();
-    if(agErr){ console.error('[Medlyn] Erro ao buscar agendamento:', agErr); }
+    const {data:ag}=await supabaseClient.from('agendamentos').select('*').eq('id',agendId).single();
     agend=ag;
-    if(!agend){ console.warn('[Medlyn] Agendamento não encontrado, usando demo'); carregarDemo(); return; }
+    if(!agend){ carregarDemo(); return; }
 
-    // Paciente — tenta por ID primeiro, depois por nome exato, depois parcial
-    let pacienteData=null;
-    if(agend.paciente_id){
-      const {data:pp}=await supabaseClient.from('pacientes').select('*').eq('id',agend.paciente_id).single();
-      pacienteData=pp;
-    }
-    if(!pacienteData && agend.paciente_nome){
-      const {data:pp}=await supabaseClient.from('pacientes').select('*').eq('nome',agend.paciente_nome).limit(1);
-      pacienteData=pp&&pp.length>0?pp[0]:null;
-    }
-    if(!pacienteData && agend.paciente_nome){
-      const {data:pp}=await supabaseClient.from('pacientes').select('*').ilike('nome','%'+agend.paciente_nome+'%').limit(1);
-      pacienteData=pp&&pp.length>0?pp[0]:null;
-    }
-    paciente=pacienteData;
+    // Paciente (busca por nome)
+    const {data:pacs}=await supabaseClient.from('pacientes').select('*').ilike('nome',agend.paciente_nome).limit(1);
+    paciente=pacs&&pacs.length>0?pacs[0]:null;
 
     // Anamnese
-    let anamneseData=null;
-    if(paciente?.id){
-      const {data:aa}=await supabaseClient.from('anamneses').select('*').eq('paciente_id',paciente.id).order('created_at',{ascending:false}).limit(1);
-      anamneseData=aa&&aa.length>0?aa[0]:null;
-    }
-    if(!anamneseData && agend.paciente_nome){
-      const {data:aa}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome','%'+agend.paciente_nome+'%').order('created_at',{ascending:false}).limit(1);
-      anamneseData=aa&&aa.length>0?aa[0]:null;
-    }
-    anamnese=anamneseData;
+    const {data:anas}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome',agend.paciente_nome).order('created_at',{ascending:false}).limit(1);
+    anamnese=anas&&anas.length>0?anas[0]:null;
 
     renderPaciente();
 
@@ -2493,14 +2030,13 @@ function renderFila(lista){
 // =====================================================================
 function renderPaciente(){
   const nome=agend?.paciente_nome||paciente?.nome||'Paciente';
-  const proc=agend?.procedimento||agend?.servico||'—';
+  const proc=agend?.procedimento||'—';
   const horario=agend?.horario||'';
   const data=agend?.data?new Date(agend.data+'T00:00:00').toLocaleDateString('pt-BR'):'';
 
-  // Atualiza título e card mesmo sem paciente completo
-  try{ document.getElementById('h-titulo').textContent=`🩺 Atendimento — ${nome}`; }catch(e){}
-  try{ document.getElementById('p-nome').textContent=nome; }catch(e){}
-  try{ document.getElementById('p-sub').textContent=`${proc}  •  ${horario}  •  ${data}`; }catch(e){}
+  document.getElementById('h-titulo').textContent=`🩺 Atendimento — ${nome}`;
+  document.getElementById('p-nome').textContent=nome;
+  document.getElementById('p-sub').textContent=`${proc}  •  ${horario}  •  ${data}`;
   document.getElementById('proc-agendado').textContent=proc;
   document.getElementById('at-procedimento').value=proc;
 
@@ -2659,12 +2195,6 @@ async function finalizarAtendimento(){
       await supabaseClient.from('atendimentos').upsert({...payload,status:'finalizado'},{onConflict:'agendamento_id'});
       // Atualiza agendamento para Finalizado
       await supabaseClient.from('agendamentos').update({status:'Finalizado'}).eq('id',agendId);
-      // Lançar receita automaticamente no financeiro
-      const valAtend=parseFloat(document.getElementById('at-valor')?.value)||0;
-      const pgtoAtend=document.getElementById('at-pagamento')?.value||'PIX';
-      const pgtoAutoStatus=['PIX','Dinheiro','Transferência','Débito'];
-      const stPgtoAtend = pgtoAutoStatus.includes(pgtoAtend) ? 'Pago' : ((statusPag==='pago')?'Pago':'Pendente');
-      await registrarReceitaAtendimento(agend?.paciente_nome||paciente?.nome, agend?.procedimento||agend?.servico, valAtend, pgtoAtend, stPgtoAtend, agendId);
       // Se tem retorno agendado, cria novo agendamento
       if(payload.retorno){
         await supabaseClient.from('agendamentos').insert({
