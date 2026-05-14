@@ -1940,6 +1940,9 @@ async function salvarUsuario(){
 function abrirAtendimento(id){
   // Seta o ID e abre a página de atendimento
   agendId = id;
+  // Guarda dados do agendamento já carregados para uso imediato no atendimento
+  const agFromRows = agRows ? agRows.find(x=>x.id==id) : null;
+  if(agFromRows) window._agendAtual = agFromRows;
   goPage('atendimento');
   initAtendimento();
 }
@@ -1948,27 +1951,30 @@ function abrirAtendimento(id){
 // =====================================================================
 // ESTADO
 // =====================================================================
-let agend=null, paciente=null, anamnese=null;
-let materiais=[], fotos=[], statusPag='pendente', clinicaId_at=null;
+var agend=null, paciente=null, anamnese=null;
+var materiais=[], fotos=[], statusPag='pendente', clinicaId_at=null;
 
 // =====================================================================
 // INIT
 // =====================================================================
 async function initAtendimento(){
   try {
-    if(typeof checkAuth==='function'){
-      const user=await checkAuth();
-      if(user){
-        clinicaId_at=user.clinica_id;
-        if(typeof renderUserHeader==='function') renderUserHeader();
-        if(user.perfil==='admin') document.getElementById('nav-admin').style.display='flex';
+    // Usa o usuário já autenticado no localStorage (padrão do sistema)
+    const user = currentUser || getUser();
+    if(user){
+      clinicaId_at = user.clinica_id || clinicaId || null;
+      if(user.perfil==='admin'){
+        const navAdmin = document.getElementById('nav-admin');
+        if(navAdmin) navAdmin.style.display='flex';
       }
     }
   } catch(e){}
 
-  // Pega o ID do agendamento da URL
-  const params=new URLSearchParams(window.location.search);
-  agendId=params.get('id');
+  // Pega o ID do agendamento (prioriza o passado por abrirAtendimento, depois tenta URL)
+  if(!agendId){
+    const params=new URLSearchParams(window.location.search);
+    agendId=params.get('id');
+  }
 
   if(!agendId){
     // Demo mode sem ID
@@ -1984,24 +1990,37 @@ async function initAtendimento(){
 // =====================================================================
 async function carregarDados(){
   try {
-    if(typeof supabaseClient==='undefined'){ carregarDemo(); return; }
+    if(typeof supabaseClient==='undefined'){
+      // Sem Supabase: usa dados já carregados da agenda se disponíveis
+      if(window._agendAtual){ agend=window._agendAtual; renderPaciente(); return; }
+      carregarDemo(); return;
+    }
 
-    // Agendamento
+    // Agendamento: tenta query, mas usa dados locais como fallback
     const {data:ag}=await supabaseClient.from('agendamentos').select('*').eq('id',agendId).single();
-    agend=ag;
+    agend = ag || window._agendAtual || null;
     if(!agend){ carregarDemo(); return; }
 
-    // Paciente (busca por nome)
-    const {data:pacs}=await supabaseClient.from('pacientes').select('*').ilike('nome',agend.paciente_nome).limit(1);
-    paciente=pacs&&pacs.length>0?pacs[0]:null;
+    // Paciente (busca por nome com wildcard)
+    const nomeBusca = agend.paciente_nome || '';
+    if(nomeBusca){
+      const {data:pacs}=await supabaseClient.from('pacientes').select('*').ilike('nome','%'+nomeBusca+'%').limit(1);
+      paciente=pacs&&pacs.length>0?pacs[0]:null;
+    }
 
-    // Anamnese
-    const {data:anas}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome',agend.paciente_nome).order('created_at',{ascending:false}).limit(1);
-    anamnese=anas&&anas.length>0?anas[0]:null;
+    // Anamnese (busca por nome com wildcard)
+    if(nomeBusca){
+      const {data:anas}=await supabaseClient.from('anamneses').select('*').ilike('paciente_nome','%'+nomeBusca+'%').order('created_at',{ascending:false}).limit(1);
+      anamnese=anas&&anas.length>0?anas[0]:null;
+    }
 
     renderPaciente();
 
-  } catch(e){ carregarDemo(); }
+  } catch(e){
+    // Em caso de erro, tenta usar dados locais antes de ir pro demo
+    if(window._agendAtual){ agend=window._agendAtual; renderPaciente(); return; }
+    carregarDemo();
+  }
 }
 
 async function carregarFila(){
@@ -2028,29 +2047,31 @@ function renderFila(lista){
 // =====================================================================
 // RENDER CARD PACIENTE
 // =====================================================================
+function setEl(id, prop, val){ const el=document.getElementById(id); if(el) el[prop]=val; }
+
 function renderPaciente(){
   const nome=agend?.paciente_nome||paciente?.nome||'Paciente';
   const proc=agend?.procedimento||'—';
   const horario=agend?.horario||'';
   const data=agend?.data?new Date(agend.data+'T00:00:00').toLocaleDateString('pt-BR'):'';
 
-  document.getElementById('h-titulo').textContent=`🩺 Atendimento — ${nome}`;
-  document.getElementById('p-nome').textContent=nome;
-  document.getElementById('p-sub').textContent=`${proc}  •  ${horario}  •  ${data}`;
-  document.getElementById('proc-agendado').textContent=proc;
-  document.getElementById('at-procedimento').value=proc;
+  setEl('h-titulo','textContent',`🩺 Atendimento — ${nome}`);
+  setEl('p-nome','textContent',nome);
+  setEl('p-sub','textContent',`${proc}  •  ${horario}  •  ${data}`);
+  setEl('proc-agendado','textContent',proc);
+  setEl('at-procedimento','value',proc);
 
   if(paciente){
-    document.getElementById('p-telefone').textContent=paciente.telefone||'—';
+    setEl('p-telefone','textContent',paciente.telefone||'—');
     const nasc=paciente.nascimento;
     if(nasc){
       const idade=Math.floor((new Date()-new Date(nasc))/31557600000);
-      document.getElementById('p-idade').textContent=`${idade} anos`;
-    } else { document.getElementById('p-idade').textContent='—'; }
+      setEl('p-idade','textContent',`${idade} anos`);
+    } else { setEl('p-idade','textContent','—'); }
     const end=[paciente.endereco,paciente.bairro,paciente.cidade,paciente.estado].filter(Boolean).join(', ');
-    document.getElementById('p-end').textContent=end||'—';
+    setEl('p-end','textContent',end||'—');
   } else {
-    document.getElementById('p-telefone').textContent=agend?.telefone||'—';
+    setEl('p-telefone','textContent',agend?.telefone||'—');
   }
 
   if(anamnese){
